@@ -1,0 +1,2960 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#FFFFFF">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>CAPTAIN INTEREST — The Compound Hero</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+ --bg:#FFFFFF;
+ --surface:#FFFFFF;
+ --surface-2:#F6F8FB;
+ --surface-3:#EEF3F9;
+ --ink:#0F172A;
+ --text:#334155;
+ --muted:#64748B;
+ --line:#E4E9F0;
+ --line-strong:#CBD5E1;
+ --accent:#2563EB;
+ --accent-ink:#1D4ED8;
+ --accent-soft:#EFF4FF;
+ --ok:#0F9D58;
+ --ok-soft:#E9F7EF;
+ --err:#DC2626;
+ --err-soft:#FCECEC;
+ --ep-color:var(--accent);
+ --r:10px; --r-sm:7px; --r-lg:16px;
+ --font:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+ --sh-sm:0 1px 2px rgba(15,23,42,.05);
+ --sh:0 4px 16px rgba(15,23,42,.08);
+ --sh-lg:0 12px 40px rgba(15,23,42,.14);
+ --ease:cubic-bezier(.4,0,.2,1);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden;overscroll-behavior:none}
+body{
+ font-family:var(--font);font-size:15px;line-height:1.6;color:var(--text);
+ background:var(--bg);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+ user-select:none;font-variant-numeric:tabular-nums;
+}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer;background:none;border:0;padding:0}
+img,svg{display:block;max-width:100%}
+b,strong{font-weight:700;color:var(--ink)}
+.hide{display:none!important}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+#app{position:fixed;inset:0;display:flex;flex-direction:column;background:var(--bg)}
+
+/* kickers — clean uppercase label with rule */
+.ep-kicker,.fact-kick,.q-kick,.hottake-kick,.warn-kick,.mc-kick,.ch-res-kicker,.paywall-kick,.ci-label,.pq-tag,.chap-prog-label,.sort-bin-title,.sim-sub{
+ font-variant-numeric:tabular-nums;
+}
+
+/* ============ SPLASH ============ */
+.splash{
+ position:fixed;inset:0;z-index:100;display:flex;flex-direction:column;align-items:center;
+ padding:max(40px,env(safe-area-inset-top,40px)) 24px max(36px,env(safe-area-inset-bottom,36px));
+ gap:20px;background:var(--bg);overflow-y:auto;overflow-x:hidden;
+ -webkit-overflow-scrolling:touch;overscroll-behavior:contain;
+}
+.splash::before,.splash::after{content:none!important}
+.sp-cap{
+ width:200px;max-width:52vw;flex:0 0 auto;margin-top:8px;
+ border-radius:var(--r-lg);overflow:hidden;border:1px solid var(--line);box-shadow:var(--sh);
+ background:var(--surface-3);
+}
+.sp-cap img{width:100%;height:auto;max-height:34vh;object-fit:cover;mix-blend-mode:normal;filter:none}
+.sp-title{
+ font-family:var(--font);font-weight:800;font-size:clamp(38px,10vw,58px);
+ letter-spacing:-.03em;line-height:1;color:var(--ink);text-align:center;transform:none;
+ background:none;-webkit-text-fill-color:currentColor;text-shadow:none;
+}
+.sp-sub{
+ font-family:var(--font);font-weight:400;font-size:16px;line-height:1.55;color:var(--muted);
+ text-align:center;max-width:44ch;letter-spacing:0;
+}
+.sp-hook{
+ position:relative;background:var(--accent-soft);border:1px solid #DBE7FF;border-radius:var(--r);
+ padding:14px 18px;font-size:14px;font-weight:500;line-height:1.5;color:var(--accent-ink);
+ text-align:center;max-width:440px;letter-spacing:0;animation:none;
+}
+.sp-stats{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;max-width:440px;width:100%}
+.sp-stat{
+ flex:1;min-width:96px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);
+ padding:14px 12px;text-align:center;font-size:11px;font-weight:600;letter-spacing:.04em;
+ text-transform:uppercase;color:var(--muted);
+}
+.sp-stat b{display:block;font-family:var(--font);font-weight:800;font-size:24px;color:var(--ink);letter-spacing:-.02em;margin-bottom:3px}
+.sp-btn{
+ margin-top:4px;background:var(--accent);color:#fff;border:none;border-radius:var(--r);
+ font-family:var(--font);font-weight:700;font-size:16px;letter-spacing:.01em;padding:16px 40px;
+ box-shadow:var(--sh-sm);transition:background .15s var(--ease);
+}
+.sp-btn:hover{background:var(--accent-ink)}
+.sp-btn:active{transform:translateY(1px)}
+.sp-warn{font-size:12px;color:var(--muted);text-align:center;letter-spacing:0}
+
+/* ============ TOPBAR ============ */
+.topbar{
+ display:flex;align-items:center;gap:12px;padding:12px 18px;background:var(--bg);
+ border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10;backdrop-filter:none;
+}
+.back{
+ width:38px;height:38px;display:inline-flex;align-items:center;justify-content:center;
+ background:var(--surface);border:1px solid var(--line);color:var(--ink);border-radius:var(--r-sm);
+ font-size:18px;transition:border-color .15s,background .15s;
+}
+.back:hover{border-color:var(--accent);color:var(--accent)}
+.progwrap{flex:1;display:flex;gap:4px}
+.progseg{flex:1;height:4px;background:var(--surface-3);border-radius:2px;overflow:hidden;position:relative}
+.progseg::after{content:"";position:absolute;inset:0;width:var(--p,0%);background:var(--accent);transition:width .3s}
+.progseg.done::after{width:100%;background:var(--accent)}
+.chip{
+ display:inline-flex;align-items:baseline;gap:5px;font-size:10px;font-weight:700;letter-spacing:.08em;
+ text-transform:uppercase;color:var(--muted);padding:0;background:none;border:none;
+}
+.chip span{font-family:var(--font);font-weight:700;font-size:15px;letter-spacing:-.01em;color:var(--ink)}
+.chip.xp span{color:var(--accent)}
+.chip.combo.hot span{color:var(--accent-ink);animation:none}
+
+/* ============ STAGE ============ */
+.stage{flex:1;overflow-y:auto;padding:28px 20px 170px;scrollbar-width:none;-ms-overflow-style:none;background:var(--bg)}
+.stage::-webkit-scrollbar{display:none}
+.stage>div{max-width:640px;margin:0 auto}
+.ep-head{
+ margin-bottom:22px;padding:0 0 18px;border-bottom:1px solid var(--line);background:none;box-shadow:none;border-radius:0;
+}
+.ep-kicker{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);opacity:1}
+.ep-title{font-family:var(--font);font-weight:800;font-size:28px;letter-spacing:-.02em;line-height:1.1;margin-top:6px;color:var(--ink)}
+.ep-sub{font-size:14px;color:var(--muted);margin-top:5px;line-height:1.5}
+.ep-outcome{
+ margin-top:12px;padding:12px 14px;border-radius:var(--r-sm);background:var(--surface-2);
+ border:1px solid var(--line);border-left:3px solid var(--accent);font-size:13px;line-height:1.5;color:var(--text);
+}
+.ep-outcome b{color:var(--accent);letter-spacing:.06em;font-weight:700;font-size:11px;text-transform:uppercase;display:block;margin-bottom:2px}
+
+/* ============ STORY ============ */
+.story{
+ padding:28px 24px;border-radius:var(--r-lg);background:var(--surface);border:1px solid var(--line);
+ box-shadow:var(--sh-sm);font-family:var(--font);font-weight:500;font-size:19px;line-height:1.55;
+ letter-spacing:-.01em;color:var(--ink);min-height:auto;display:block;position:relative;overflow:hidden;
+}
+.story::before{content:none!important}
+.story b{color:var(--accent);font-weight:700}
+.story i{color:var(--muted);font-style:italic}
+
+/* ============ FACT ============ */
+.fact{
+ padding:26px 22px;border-radius:var(--r-lg);background:var(--surface);border:1px solid var(--line);
+ border-left:3px solid var(--accent);box-shadow:var(--sh-sm);
+}
+.fact-kick{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);opacity:1}
+.fact-big{font-family:var(--font);font-weight:800;font-size:30px;line-height:1.1;letter-spacing:-.02em;margin:10px 0 12px;color:var(--ink);text-shadow:none}
+.fact-body{font-size:15px;line-height:1.65;color:var(--text)}
+.fact-body b{color:var(--accent);font-weight:700}
+.fact-table{margin-top:14px;border-collapse:collapse;width:100%;font-size:13px}
+.fact-table th,.fact-table td{padding:9px 10px;border-bottom:1px solid var(--line);text-align:left}
+.fact-table th{font-weight:700;letter-spacing:.04em;color:var(--muted);font-size:11px;text-transform:uppercase}
+.fact-table td b{color:var(--accent)}
+.formula{
+ background:var(--surface-2);border:1px solid var(--line);border-left:3px solid var(--accent);
+ padding:12px 14px;border-radius:var(--r-sm);margin:14px 0;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+ font-size:14px;color:var(--ink);line-height:1.6;
+}
+.formula b{color:var(--accent)}
+
+/* ============ CHARACTER VOICE ============ */
+.cap-voice{
+ padding:22px 22px 20px;border-radius:var(--r-lg);position:relative;background:var(--surface-2);
+ border:1px solid var(--line);margin-top:18px;min-height:auto;box-shadow:none;
+}
+.cap-voice::after{content:none}
+.cap-voice::before{
+ content:"CAPTAIN INTEREST";position:absolute;top:-1px;left:22px;transform:translateY(-50%);
+ background:var(--accent);color:#fff;font-weight:700;font-size:10px;letter-spacing:.08em;
+ padding:3px 10px;border-radius:5px;text-transform:uppercase;
+}
+.cap-voice.hypes::before{content:"PERSPECTIVE"}
+.cap-voice.lesson::before{content:"KEY LESSON"}
+.cap-voice.warns::before{content:"WARNING";background:var(--err)}
+.cap-voice.win::before{content:"MISSION COMPLETE"}
+.cap-voice p{font-family:var(--font);font-weight:500;font-size:16px;line-height:1.55;color:var(--ink);letter-spacing:-.005em;margin-top:6px}
+.cap-voice p b{color:var(--accent)}
+.cap-voice p i{color:var(--muted);font-style:italic}
+
+/* ============ HOT TAKE ============ */
+.hottake{padding:22px;border-radius:var(--r-lg);background:var(--surface);border:1px solid var(--line);box-shadow:var(--sh-sm)}
+.hottake-kick{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+.hottake-q{font-family:var(--font);font-weight:700;font-size:20px;line-height:1.3;letter-spacing:-.01em;margin-bottom:16px;color:var(--ink)}
+.hot-opts{display:flex;flex-direction:column;gap:8px}
+.hot-opt{
+ padding:15px 16px;border-radius:var(--r-sm);background:var(--surface);border:1.5px solid var(--line);
+ font-size:14px;line-height:1.45;text-align:left;color:var(--text);font-family:inherit;transition:border-color .12s,background .12s;
+}
+.hot-opt:hover{border-color:var(--line-strong)}
+.hot-opt.sel{border-color:var(--accent);background:var(--accent-soft);color:var(--accent-ink);font-weight:600}
+
+/* ============ MCQ / OPTIONS ============ */
+.opts{display:flex;flex-direction:column;gap:9px;margin-top:6px}
+.opt{
+ padding:14px 15px;border-radius:var(--r-sm);background:var(--surface);border:1.5px solid var(--line);
+ font-size:14.5px;line-height:1.45;text-align:left;color:var(--text);font-family:inherit;
+ display:flex;align-items:center;gap:12px;transition:border-color .12s,background .12s,opacity .12s;
+}
+.opt:hover{border-color:var(--line-strong)}
+.opt.sel{border-color:var(--accent);background:var(--accent-soft)}
+.opt.ok{border-color:var(--ok);background:var(--ok-soft)}
+.opt.bad{border-color:var(--err);background:var(--err-soft);opacity:1}
+.opt-letter{
+ width:28px;height:28px;flex-shrink:0;border-radius:6px;background:var(--surface-3);
+ display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:var(--muted);border:1px solid var(--line)
+}
+.opt.sel .opt-letter{background:var(--accent);color:#fff;border-color:var(--accent)}
+.opt.ok .opt-letter{background:var(--ok);color:#fff;border-color:var(--ok)}
+.opt.bad .opt-letter{background:var(--err);color:#fff;border-color:var(--err)}
+.q-kick{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
+.q-text{font-family:var(--font);font-weight:700;font-size:20px;line-height:1.35;letter-spacing:-.01em;margin-bottom:16px;color:var(--ink)}
+
+/* ============ POPQUIZ ============ */
+.pq-ring{width:64px;height:64px;margin:0 auto 12px;position:relative}
+.pq-ring svg{transform:rotate(-90deg);width:100%;height:100%}
+.pq-ring circle{fill:none;stroke-width:5}
+.pq-ring .bg{stroke:var(--surface-3)}
+.pq-ring .fg{stroke:var(--accent);stroke-linecap:round;transition:stroke-dashoffset .1s linear}
+.pq-ring .num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--font);font-weight:800;font-size:24px;color:var(--ink)}
+.pq-tag{display:inline-flex;align-self:center;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);text-align:center;margin-bottom:8px;justify-content:center;width:100%}
+
+/* ============ MATCH ============ */
+.match-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:8px}
+.match-tile{
+ padding:13px 12px;border-radius:var(--r-sm);background:var(--surface);border:1.5px solid var(--line);
+ font-size:13px;line-height:1.3;text-align:center;min-height:58px;display:flex;align-items:center;justify-content:center;
+ transition:border-color .12s,background .12s;color:var(--text)
+}
+.match-tile.sel{border-color:var(--accent);background:var(--accent-soft)}
+.match-tile.locked{border-color:var(--ok);background:var(--ok-soft);color:var(--muted);opacity:1;pointer-events:none}
+.match-tile.bad{border-color:var(--err);background:var(--err-soft);animation:nope .35s}
+@keyframes nope{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+
+/* ============ ORDER / stepper buttons ============ */
+.order-list{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+.order-item{padding:12px 14px;border-radius:var(--r-sm);background:var(--surface);border:1px solid var(--line);display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text)}
+.order-item .handle{font-family:var(--font);font-weight:800;color:var(--accent);font-size:18px}
+.order-btn{
+ width:30px;height:30px;border-radius:6px;background:var(--surface);border:1px solid var(--line);color:var(--ink);
+ font-weight:700;font-size:15px;transition:border-color .12s,background .12s;
+}
+.order-btn:hover{border-color:var(--accent);color:var(--accent)}
+
+/* ============ SORT ============ */
+.sort-hint{font-size:12px;text-align:center;color:var(--muted);margin:8px 0 6px;letter-spacing:0}
+.sort-bank{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 14px;min-height:44px;justify-content:center}
+.sort-chip{
+ padding:10px 14px;border-radius:var(--r-sm);background:var(--surface);border:1.5px solid var(--line);
+ color:var(--text);font-size:13px;line-height:1.3;font-family:inherit;transition:border-color .12s,background .12s;
+}
+.sort-chip:hover{border-color:var(--line-strong)}
+.sort-chip.selected{background:var(--accent);color:#fff;border-color:var(--accent)}
+.sort-chip.placed{opacity:.3;pointer-events:none;text-decoration:line-through}
+.sort-bins{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sort-bins.three{grid-template-columns:1fr;gap:10px}
+.sort-bin{padding:14px;border-radius:var(--r);background:var(--surface-2);border:1.5px dashed var(--line-strong);min-height:96px;transition:border-color .15s,background .15s}
+.sort-bin.active{border-color:var(--accent);border-style:solid;background:var(--accent-soft)}
+.sort-bin-title{font-weight:700;font-size:12px;letter-spacing:.08em;text-align:center;padding:2px 0 10px;color:var(--ink);text-transform:uppercase}
+.sort-bin .drop-target{min-height:56px;display:flex;flex-direction:column;gap:6px}
+.sort-bin .dropped{padding:9px 10px;border-radius:6px;background:var(--surface);border:1px solid var(--accent);font-size:12.5px;line-height:1.3;display:flex;align-items:center;gap:6px;color:var(--ink)}
+.sort-bin .dropped.bad{background:var(--err-soft);border-color:var(--err)}
+.sort-bin .dropped.ok{background:var(--ok-soft);border-color:var(--ok)}
+.sort-bin .xbtn{background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:16px;padding:0 4px}
+.sort-bin .xbtn:hover{color:var(--err)}
+
+/* ============ CALC ============ */
+.calc{padding:22px;border-radius:var(--r-lg);background:var(--surface);border:1px solid var(--line);box-shadow:var(--sh-sm)}
+.calc-q{font-family:var(--font);font-weight:700;font-size:20px;line-height:1.3;margin-bottom:10px;color:var(--ink);letter-spacing:-.01em}
+.calc-givens{font-family:var(--font);font-size:13px;background:var(--surface-2);padding:12px 14px;border-radius:var(--r-sm);border:1px solid var(--line);border-left:3px solid var(--accent);margin-bottom:16px;line-height:1.6;color:var(--text)}
+.calc-givens b{color:var(--accent)}
+
+/* ============ WARN ============ */
+.warn{padding:22px;border-radius:var(--r-lg);background:var(--err-soft);border:1px solid #F3C9C9;border-left:3px solid var(--err)}
+.warn-kick{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--err);margin-bottom:6px}
+.warn-title{font-family:var(--font);font-weight:800;font-size:24px;letter-spacing:-.02em;line-height:1.1;margin-bottom:10px;color:var(--ink)}
+.warn-body{font-size:14px;line-height:1.6;color:var(--text)}
+.warn-body b{color:var(--err)}
+
+/* ============ SIMS ============ */
+.sim-card{padding:22px;border-radius:var(--r-lg);background:var(--surface);border:1px solid var(--line);box-shadow:var(--sh-sm)}
+.sim-title{font-family:var(--font);font-weight:800;font-size:20px;letter-spacing:-.02em;margin-bottom:4px;color:var(--ink)}
+.sim-sub{font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.45}
+.sim-row{display:flex;justify-content:space-between;align-items:center;margin:12px 0 5px;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+.sim-row b{color:var(--accent);font-family:var(--font);font-weight:700;font-size:16px;letter-spacing:-.01em;text-transform:none}
+.sim-slider{-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:4px;background:var(--surface-3);outline:none}
+.sim-slider::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--accent);cursor:pointer;border:3px solid #fff;box-shadow:0 0 0 1px var(--accent),var(--sh-sm)}
+.sim-slider::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--accent);cursor:pointer;border:3px solid #fff}
+
+.ci-viz{margin-top:14px;padding:18px 14px;border-radius:var(--r);background:var(--surface-2);border:1px solid var(--line);text-align:center}
+.ci-final{font-family:var(--font);font-weight:800;font-size:42px;letter-spacing:-.03em;color:var(--accent);line-height:1.02;text-shadow:none}
+.ci-label{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:4px}
+.ci-breakdown{display:flex;gap:8px;margin-top:12px}
+.ci-chip{flex:1;padding:11px;border-radius:var(--r-sm);background:var(--surface);border:1px solid var(--line)}
+.ci-chip .sm{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.ci-chip .bg{font-family:var(--font);font-weight:800;font-size:20px;color:var(--ink);margin-top:2px;letter-spacing:-.02em}
+.ci-chip.gain{border-color:var(--ok)}
+.ci-chip.gain .bg{color:var(--ok)}
+.ci-bars{display:flex;align-items:flex-end;gap:10px;margin-top:14px;height:140px;padding:0 2px}
+.ci-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%}
+.ci-barwrap{width:100%;flex:1;display:flex;align-items:flex-end;justify-content:center}
+.ci-bar{width:64%;background:var(--accent);border-radius:5px 5px 0 0;transition:height .5s var(--ease);min-height:2px}
+.ci-bar.si{background:var(--line-strong)}
+.ci-col .lb{font-size:10px;font-weight:600;letter-spacing:.04em;color:var(--muted)}
+.ci-col .val{font-family:var(--font);font-weight:700;font-size:12px;color:var(--accent)}
+.ci-col.si .val{color:var(--muted)}
+
+/* CC / EMI / CIBIL */
+.cc-card{padding:14px 16px;border-radius:var(--r);background:var(--surface-2);border:1px solid var(--line);margin-top:10px}
+.cc-row{display:flex;justify-content:space-between;align-items:center;font-size:13px;margin:6px 0;color:var(--text)}
+.cc-row b{font-family:var(--font);font-weight:700;font-size:16px;color:var(--accent);letter-spacing:-.01em}
+.cc-alert{margin-top:10px;padding:11px 13px;border-radius:var(--r-sm);background:var(--surface-2);border:1px solid var(--line);font-size:12.5px;line-height:1.5;color:var(--text)}
+.cc-alert b{color:var(--ink)}
+.emi-pie{width:170px;height:170px;margin:14px auto;position:relative}
+.emi-pie svg{width:100%;height:100%;transform:rotate(-90deg)}
+.emi-pie .label{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.emi-pie .label .big{font-family:var(--font);font-weight:800;font-size:24px;color:var(--ink);letter-spacing:-.02em}
+.emi-pie .label .sm{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.emi-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.emi-stat{padding:12px;border-radius:var(--r-sm);background:var(--surface-2);border:1px solid var(--line);text-align:center}
+.emi-stat .sm{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.emi-stat .bg{font-family:var(--font);font-weight:800;font-size:18px;color:var(--ink);letter-spacing:-.02em}
+.emi-stat.int .bg{color:var(--err)}
+.sip-compare{display:flex;gap:10px;margin-top:14px}
+.sip-person{flex:1;padding:14px;border-radius:var(--r);background:var(--surface-2);border:1px solid var(--line);text-align:center}
+.sip-person.early{border-color:var(--ok)}
+.sip-person.late{border-color:var(--err)}
+.sip-person .em{display:none}
+.sip-person .nm{font-weight:700;font-size:13px;letter-spacing:.02em;color:var(--ink)}
+.sip-person .bd{font-size:11px;color:var(--muted);margin:6px 0 8px;line-height:1.3}
+.sip-person .result{font-family:var(--font);font-weight:800;font-size:24px;color:var(--accent);letter-spacing:-.02em}
+.cib-gauge{width:200px;height:110px;margin:14px auto 4px;position:relative}
+.cib-gauge svg{width:100%;height:100%}
+.cib-score{text-align:center;font-family:var(--font);font-weight:800;font-size:42px;color:var(--accent);letter-spacing:-.03em;line-height:1}
+.cib-tier{text-align:center;font-weight:600;font-size:13px;letter-spacing:.04em;color:var(--muted);margin-top:4px}
+.cib-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+.cib-btn{padding:11px 10px;border-radius:var(--r-sm);background:var(--surface);border:1px solid var(--line);color:var(--text);font-size:11.5px;line-height:1.3;font-family:inherit;text-align:left;transition:border-color .12s,background .12s}
+.cib-btn:hover{border-color:var(--line-strong)}
+.cib-btn.good{border-color:var(--ok);background:var(--ok-soft)}
+.cib-btn.bad{border-color:var(--err);background:var(--err-soft)}
+
+/* ============ CTA ============ */
+.ctabar{position:fixed;bottom:0;left:0;right:0;z-index:20;padding:14px 20px calc(16px + env(safe-area-inset-bottom));background:linear-gradient(180deg,rgba(255,255,255,0),#fff 34%);display:flex;flex-direction:column;gap:8px}
+.cta-hint{font-size:12px;color:var(--muted);text-align:center;min-height:14px}
+.cta{
+ width:100%;max-width:640px;margin:0 auto;padding:16px;border-radius:var(--r);background:var(--accent);color:#fff;
+ border:none;font-family:var(--font);font-weight:700;font-size:16px;letter-spacing:.01em;
+ box-shadow:var(--sh-sm);transition:background .15s var(--ease),transform .1s;
+}
+.cta:hover:not(:disabled){background:var(--accent-ink)}
+.cta:active:not(:disabled){transform:translateY(1px)}
+.cta:disabled{background:var(--surface-3);color:var(--muted);cursor:not-allowed;box-shadow:none}
+
+/* ============ FEEDBACK ============ */
+.feedback{
+ position:fixed;left:0;right:0;bottom:-100%;z-index:30;padding:22px 20px calc(22px + env(safe-area-inset-bottom));
+ background:var(--surface);border-top:1px solid var(--line);border-radius:18px 18px 0 0;box-shadow:var(--sh-lg);
+ transition:bottom .3s var(--ease);max-height:62vh;overflow-y:auto;max-width:640px;margin:0 auto;
+}
+.feedback::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:var(--err);border-radius:18px 18px 0 0}
+.feedback.ok::before{background:var(--ok)}
+.feedback.info::before{background:var(--accent)}
+.feedback.show{bottom:0}
+.fb-head{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.fb-emoji{
+ width:30px;height:30px;flex-shrink:0;border-radius:7px;display:flex;align-items:center;justify-content:center;
+ font-weight:800;font-size:15px;background:var(--err-soft);color:var(--err);
+}
+.feedback.ok .fb-emoji{background:var(--ok-soft);color:var(--ok)}
+.feedback.info .fb-emoji{background:var(--accent-soft);color:var(--accent)}
+.fb-title{font-family:var(--font);font-weight:800;font-size:20px;letter-spacing:-.02em;color:var(--err);line-height:1.1}
+.feedback.ok .fb-title{color:var(--ok)}
+.feedback.info .fb-title{color:var(--accent)}
+.fb-body{font-size:14.5px;line-height:1.6;color:var(--text)}
+.fb-body b{color:var(--accent);font-weight:700}
+.fb-xp{display:inline-block;margin-top:12px;padding:6px 13px;border-radius:8px;background:var(--accent-soft);border:1px solid #DBE7FF;font-weight:700;font-size:13px;letter-spacing:.02em;color:var(--accent-ink)}
+.fb-cta{width:100%;margin-top:18px;padding:15px;border-radius:var(--r);background:var(--accent);color:#fff;border:none;font-family:var(--font);font-weight:700;font-size:16px;box-shadow:none}
+.fb-cta:hover{background:var(--accent-ink)}
+
+/* ============ TOKEN POP ============ */
+.xppop{
+ position:fixed;left:50%;top:24%;transform:translate(-50%,0) scale(.9);z-index:40;opacity:0;pointer-events:none;will-change:transform,opacity;
+ font-family:var(--font);
+ display:flex;flex-direction:column;align-items:center;text-align:center;
+ background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px 36px 16px;box-shadow:0 20px 52px rgba(15,23,42,.16);
+}
+.xppop .xpp-amt{font-weight:800;font-size:44px;line-height:.95;letter-spacing:-.035em;color:var(--coin);font-variant-numeric:tabular-nums}
+.xppop .xpp-sub{font-weight:700;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-top:8px}
+.xppop .xpp-tag{font-weight:700;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);background:var(--accent-soft);padding:3px 10px;border-radius:100px;margin-top:9px}
+@keyframes tokenPop{0%{opacity:0;transform:translate(-50%,14px) scale(.9)}12%{opacity:1;transform:translate(-50%,-4px) scale(1.05)}24%{transform:translate(-50%,0) scale(1)}80%{opacity:1;transform:translate(-50%,0) scale(1)}100%{opacity:0;transform:translate(-50%,-12px) scale(.98)}}
+
+/* ============ MODALS ============ */
+.modal{position:fixed;inset:0;z-index:50;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(15,23,42,.35);backdrop-filter:blur(2px)}
+.modal.show{display:flex}
+.modal-card{max-width:400px;width:100%;padding:28px 24px;border-radius:18px;background:var(--surface);border:1px solid var(--line);text-align:center;box-shadow:var(--sh-lg);animation:pop .28s var(--ease)}
+@keyframes pop{from{transform:scale(.96);opacity:0}to{transform:scale(1);opacity:1}}
+.mc-kick{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+.mc-big{font-family:var(--font);font-weight:800;font-size:34px;letter-spacing:-.03em;color:var(--ink);margin:4px 0 8px;line-height:1.05}
+.mc-body{font-size:14px;line-height:1.55;color:var(--text);margin-bottom:16px}
+.mc-body b{color:var(--accent)}
+.mc-btn{width:100%;padding:14px;border-radius:var(--r);border:none;background:var(--accent);color:#fff;font-family:var(--font);font-weight:700;font-size:16px}
+.mc-btn:hover{background:var(--accent-ink)}
+
+/* ============ CHECKPOINT ============ */
+.cp-card{max-width:420px;width:100%;padding:28px 24px;border-radius:18px;background:var(--surface);border:1px solid var(--line);text-align:center;box-shadow:var(--sh-lg);animation:pop .3s var(--ease)}
+.cp-ring{width:140px;height:140px;margin:10px auto;position:relative}
+.cp-ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.cp-ring circle{fill:none;stroke-width:9}
+.cp-ring .bg{stroke:var(--surface-3)}
+.cp-ring .fg{stroke:var(--accent);stroke-linecap:round;transition:stroke-dashoffset 1.2s var(--ease)}
+.cp-ring .score{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--ink)}
+.cp-ring .score .big{font-family:var(--font);font-weight:800;font-size:36px;line-height:1;letter-spacing:-.03em}
+.cp-ring .score .sm{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.cp-stats{display:flex;justify-content:space-around;margin:14px 0}
+.cp-stat b{display:block;font-family:var(--font);font-weight:800;font-size:24px;color:var(--accent);letter-spacing:-.02em}
+.cp-stat span{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+
+/* ============ CONFETTI ============ */
+.confetti{position:fixed;inset:0;pointer-events:none;z-index:55;overflow:hidden}
+.confetti span{position:absolute;width:6px;height:10px;top:-20px;border-radius:1px;animation:fall 2.2s linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(420deg);opacity:0}}
+
+/* ============ FINALE ============ */
+.finale-bg{position:fixed;inset:0;z-index:60;display:none;flex-direction:column;padding:max(40px,env(safe-area-inset-top,40px)) 24px max(36px,env(safe-area-inset-bottom,36px));align-items:center;gap:16px;background:var(--bg);overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
+.finale-bg.show{display:flex}
+.finale-bg::after{content:"";flex:0 0 12px}
+.finale-cap{width:120px;height:auto;flex:0 0 auto;border-radius:var(--r);overflow:hidden;border:1px solid var(--line);box-shadow:var(--sh);animation:none;filter:none}
+.finale-cap img{width:100%;height:auto;max-height:24vh;object-fit:cover;mix-blend-mode:normal}
+.finale-title{font-family:var(--font);font-weight:800;font-size:36px;letter-spacing:-.03em;color:var(--ink);text-align:center;line-height:1.02}
+.finale-sub{font-size:15px;color:var(--muted);text-align:center;max-width:360px;line-height:1.4}
+.finale-ring{width:190px;height:190px;position:relative}
+.finale-ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.finale-ring circle{fill:none;stroke-width:12}
+.finale-ring .bg{stroke:var(--surface-3)}
+.finale-ring .fg{stroke:var(--accent);stroke-linecap:round;transition:stroke-dashoffset 1.6s var(--ease)}
+.finale-ring .score{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--ink)}
+.finale-ring .score .big{font-family:var(--font);font-weight:800;font-size:52px;letter-spacing:-.03em;line-height:1}
+.finale-ring .score .lbl{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.finale-rank{font-family:var(--font);font-weight:700;font-size:16px;letter-spacing:.02em;padding:10px 20px;border-radius:10px;background:var(--accent-soft);border:1px solid #DBE7FF;color:var(--accent-ink);text-align:center}
+.finale-stats{display:flex;gap:10px;max-width:420px;width:100%;margin:0 auto}
+.finale-stat{flex:1;text-align:center;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-sm);padding:12px 8px}
+.finale-stat b{display:block;font-family:var(--font);font-weight:800;font-size:20px;color:var(--ink);letter-spacing:-.02em}
+.finale-stat span{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.finale-share{background:var(--accent);color:#fff;border:none;padding:14px 24px;border-radius:var(--r);font-family:var(--font);font-weight:700;font-size:15px;box-shadow:var(--sh-sm)}
+.finale-share:hover{background:var(--accent-ink)}
+.finale-paywall{width:100%;max-width:420px;padding:18px;border-radius:var(--r-lg);background:var(--surface-2);border:1px solid var(--line);margin-top:4px}
+.paywall-kick{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);text-align:center}
+.paywall-title{font-family:var(--font);font-weight:800;font-size:20px;letter-spacing:-.02em;text-align:center;margin:4px 0 12px;color:var(--ink)}
+.paywall-chars{display:flex;gap:8px;justify-content:center}
+.paywall-char{flex:1;text-align:center;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-sm);padding:12px 6px}
+.paywall-char .emo{font-family:var(--font);font-weight:800;font-size:16px;color:var(--muted)}
+.paywall-char .nm{font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin-top:4px}
+.paywall-btn{width:100%;margin-top:12px;padding:13px;border-radius:var(--r);border:none;background:var(--accent);color:#fff;font-family:var(--font);font-weight:700;font-size:15px}
+.paywall-btn:hover{background:var(--accent-ink)}
+
+/* ============ CHAPTER LIST ============ */
+.chap-list{position:fixed;inset:0;z-index:80;display:none;flex-direction:column;padding:max(40px,env(safe-area-inset-top,40px)) 24px max(40px,env(safe-area-inset-bottom,40px));gap:26px;background:var(--bg);overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.chap-list.show{display:flex}
+.chap-list::after{content:"";flex:0 0 16px}
+.chap-hero{display:flex;flex-direction:column;align-items:center;gap:14px;padding:4px 0}
+.chap-hero-img{width:84px;height:84px;border-radius:16px;overflow:hidden;border:1px solid var(--line);box-shadow:var(--sh-sm);background:var(--surface-3)}
+.chap-hero-img img{width:100%;height:100%;object-fit:cover;mix-blend-mode:normal}
+.chap-hero-name{font-family:var(--font);font-weight:800;font-size:30px;letter-spacing:-.03em;color:var(--ink);text-align:center;line-height:1;background:none;-webkit-text-fill-color:currentColor}
+.chap-hero-tag{font-size:14px;color:var(--muted);text-align:center;max-width:340px;line-height:1.5}
+.chap-prog-wrap{width:100%;max-width:520px;margin:0 auto}
+.chap-prog-label{display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.chap-prog-label .reset-link{color:var(--muted);font-size:10px;letter-spacing:.06em;background:none;border:1px solid var(--line);border-radius:6px;padding:5px 10px;transition:border-color .12s,color .12s}
+.chap-prog-label .reset-link:hover{border-color:var(--accent);color:var(--accent)}
+.chap-prog-bar{height:5px;background:var(--surface-3);border-radius:3px;overflow:hidden}
+.chap-prog-fill{height:100%;background:var(--accent);border-radius:3px;transition:width .8s var(--ease)}
+.chap-cards{display:flex;flex-direction:column;gap:10px;width:100%;max-width:520px;margin:0 auto}
+.chap-card{
+ display:flex;align-items:center;gap:14px;padding:16px 18px;border-radius:var(--r);background:var(--surface);
+ border:1px solid var(--line);cursor:pointer;transition:border-color .18s var(--ease),box-shadow .18s var(--ease);
+ opacity:0;transform:translateY(6px);animation:cardIn .35s var(--ease) forwards;position:relative;min-height:82px;box-shadow:var(--sh-sm);
+}
+@keyframes cardIn{to{opacity:1;transform:translateY(0)}}
+.chap-card:hover{border-color:var(--line-strong);box-shadow:var(--sh)}
+.chap-card.locked{opacity:.55;cursor:not-allowed;background:var(--surface-2);box-shadow:none}
+.chap-card.locked:hover{border-color:var(--line);box-shadow:none}
+.chap-card.next{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent),var(--sh-sm)}
+.chap-card.completed{border-color:var(--line)}
+.chap-num{
+ flex:0 0 auto;width:46px;height:46px;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;
+ font-family:var(--font);font-weight:800;font-size:20px;letter-spacing:-.02em;color:var(--muted);
+ background:var(--surface-2);border:1px solid var(--line);
+}
+.chap-card.next .chap-num{background:var(--accent);color:#fff;border-color:var(--accent)}
+.chap-card.completed .chap-num{background:var(--ok-soft);color:var(--ok);border-color:var(--ok)}
+.chap-info{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:3px}
+.chap-title{font-family:var(--font);font-weight:700;font-size:16px;letter-spacing:-.01em;color:var(--ink);line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chap-desc{font-size:12.5px;line-height:1.4;color:var(--muted);overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;max-height:2.8em}
+.chap-meta{display:flex;gap:12px;margin-top:4px}
+.chap-chip{font-size:10.5px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+.chap-chip.xp{color:var(--accent)}
+.chap-status{flex:0 0 auto;display:flex;align-items:center;justify-content:center;width:30px;height:30px;color:var(--muted)}
+.chap-card.next .chap-status{color:var(--accent)}
+.chap-card.completed .chap-status{color:var(--ok)}
+.chap-status svg{width:18px;height:18px}
+.chap-card.locked .chap-tooltip{position:absolute;bottom:-6px;left:50%;transform:translateX(-50%) translateY(100%);background:var(--ink);color:#fff;font-size:11px;padding:6px 10px;border-radius:6px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .2s;z-index:5}
+.chap-card.locked.show-tip .chap-tooltip{opacity:1}
+.chap-replay{position:absolute;top:8px;right:8px;font-size:9.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ok);background:var(--ok-soft);border:1px solid var(--ok);padding:3px 8px;border-radius:5px;opacity:0;transition:opacity .2s}
+.chap-card.completed:hover .chap-replay{opacity:1}
+
+/* ============ CHAPTER RESULTS ============ */
+.ch-results{position:fixed;inset:0;z-index:90;display:none;flex-direction:column;padding:max(40px,env(safe-area-inset-top,40px)) 24px max(36px,env(safe-area-inset-bottom,36px));align-items:center;gap:16px;background:var(--bg);overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
+.ch-results.show{display:flex}
+.ch-results::after{content:"";flex:0 0 16px}
+.ch-res-kicker{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-top:4px}
+.ch-res-title{font-family:var(--font);font-weight:800;font-size:28px;letter-spacing:-.03em;color:var(--ink);text-align:center;line-height:1.05;max-width:340px}
+.ch-res-ring{width:190px;height:190px;position:relative;margin:8px 0 4px}
+.ch-res-ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ch-res-ring circle{fill:none;stroke-width:12}
+.ch-res-ring .bg{stroke:var(--surface-3)}
+.ch-res-ring .fg{stroke:var(--accent);stroke-linecap:round;transition:stroke-dashoffset 1.6s var(--ease)}
+.ch-res-ring .center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--ink)}
+.ch-res-ring .center .big{font-family:var(--font);font-weight:800;font-size:50px;line-height:1;letter-spacing:-.03em}
+.ch-res-ring .center .lbl{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:4px}
+.ch-res-xp{display:inline-flex;align-items:center;gap:8px;padding:9px 18px;border-radius:10px;background:var(--accent-soft);border:1px solid #DBE7FF;color:var(--accent-ink);font-family:var(--font);font-weight:700;font-size:17px;letter-spacing:-.01em}
+.ch-res-learnings{width:100%;max-width:440px;margin-top:8px;padding:20px;border-radius:var(--r-lg);background:var(--surface);border:1px solid var(--line);box-shadow:var(--sh-sm)}
+.ch-res-learnings .head{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:12px;text-align:left}
+.ch-res-learnings ul{list-style:none;display:flex;flex-direction:column;gap:10px}
+.ch-res-learnings li{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;line-height:1.5;color:var(--text)}
+.ch-res-learnings li::before{content:"";flex:0 0 6px;width:6px;height:6px;border-radius:50%;background:var(--accent);margin-top:7px}
+.ch-res-cta{display:flex;flex-direction:column;gap:10px;width:100%;max-width:440px;margin-top:6px}
+.ch-res-btn{padding:15px 18px;border-radius:var(--r);font-family:var(--font);font-weight:700;font-size:16px;cursor:pointer;border:none;transition:background .15s,border-color .15s;display:flex;align-items:center;justify-content:center;gap:8px}
+.ch-res-btn.primary{background:var(--accent);color:#fff}
+.ch-res-btn.primary:hover{background:var(--accent-ink)}
+.ch-res-btn.secondary{background:var(--surface);color:var(--accent);border:1px solid var(--line)}
+.ch-res-btn.secondary:hover{border-color:var(--accent)}
+
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+
+/* ===== GAMEY LAYER ===== */
+:root{--coin:#F59E0B;--coin-soft:#FEF3C7;--ok:#16A34A;--ok-soft:#DCFCE7}
+.sp-btn,.cta,.mc-btn,.fb-cta,.paywall-btn,.finale-share,.ch-res-btn.primary{border-bottom:4px solid var(--accent-ink)!important}
+.sp-btn:active,.cta:active:not(:disabled),.mc-btn:active,.fb-cta:active,.paywall-btn:active,.finale-share:active,.ch-res-btn.primary:active{transform:translateY(3px)!important;border-bottom-width:1px!important}
+.cta:disabled{border-bottom:4px solid var(--line-strong)!important}
+.chip{background:var(--surface-2);border:1px solid var(--line);padding:5px 11px;border-radius:100px}
+.chip.xp span{color:var(--coin)!important}
+.chip.combo.hot span{color:var(--coin)!important}
+.chip.combo.hot{animation:comboFlare .5s var(--ease)}
+@keyframes comboFlare{0%,100%{transform:scale(1)}40%{transform:scale(1.18)}}
+.xppop{border-color:#D8E4F7!important}
+.xppop.fire{animation:tokenPop 1.2s var(--ease) forwards}
+@keyframes xpBounce{0%{opacity:0;transform:translate(-50%,10px) scale(.8)}55%{opacity:1;transform:translate(-50%,-36px) scale(1.14)}100%{opacity:1;transform:translate(-50%,-30px) scale(1)}}
+.opt.ok,.odd-card.ok{border-color:var(--ok)!important;background:var(--ok-soft)!important;animation:answerPop .4s cubic-bezier(.2,1.5,.4,1)}
+.opt.bad,.odd-card.bad{border-color:var(--err)!important;background:var(--err-soft)!important;animation:answerShake .4s}
+.opt.ok .opt-letter{background:var(--ok)!important;border-color:var(--ok)!important;color:#fff!important}
+.opt.bad .opt-letter{background:var(--err)!important;border-color:var(--err)!important;color:#fff!important}
+@keyframes answerPop{0%{transform:scale(1)}45%{transform:scale(1.04)}100%{transform:scale(1)}}
+@keyframes answerShake{0%,100%{transform:translateX(0)}20%{transform:translateX(-5px)}40%{transform:translateX(5px)}60%{transform:translateX(-3px)}80%{transform:translateX(3px)}}
+.progseg::after,.progseg.done::after{background:linear-gradient(90deg,var(--accent),#60A5FA)!important}
+.chap-prog-fill{background:linear-gradient(90deg,var(--accent),#60A5FA)!important}
+.chap-card{transition:transform .16s var(--ease),border-color .16s,box-shadow .16s}
+.chap-card:hover{transform:translateY(-3px)}
+.chap-card.next .chap-num{animation:numPulse 1.8s ease-in-out infinite}
+@keyframes numPulse{0%,100%{box-shadow:0 0 0 0 rgba(37,99,235,.35)}50%{box-shadow:0 0 0 6px rgba(37,99,235,0)}}
+.ci-final,.est-val,.ch-res-ring .center .big{will-change:transform}
+/* Estimate-slider game */
+.est-viz{margin:14px 0 8px;padding:24px;border-radius:var(--r);background:var(--accent-soft);border:1px solid #DBE7FF;text-align:center}
+.est-val{font-family:var(--font);font-weight:800;font-size:48px;letter-spacing:-.03em;color:var(--accent);line-height:1}
+.est-label{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-top:8px}
+.est-scale{display:flex;justify-content:space-between;font-size:11px;font-weight:600;color:var(--muted);margin-top:10px}
+/* Odd-one-out game */
+.odd-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
+.odd-card{padding:26px 12px;border-radius:var(--r);background:var(--surface);border:2px solid var(--line);font-weight:600;font-size:14px;line-height:1.35;color:var(--ink);text-align:center;transition:transform .1s,border-color .12s,background .12s;box-shadow:var(--sh-sm)}
+.odd-card:hover{border-color:var(--line-strong)}
+.odd-card:active{transform:scale(.97)}
+.odd-card.sel{border-color:var(--accent);background:var(--accent-soft);transform:scale(1.02)}
+
+
+/* ===== SPEED ROUND ===== */
+.speed-intro{padding:28px 20px;border-radius:var(--r);background:var(--accent-soft);border:1px solid #DBE7FF;text-align:center}
+.speed-title{font-family:var(--font);font-weight:800;font-size:27px;letter-spacing:-.02em;color:var(--ink);margin:6px 0 8px;line-height:1.1}
+.speed-desc{font-size:14px;color:var(--text);line-height:1.5;max-width:34ch;margin:0 auto 16px}
+.speed-meta{display:flex;gap:10px;justify-content:center;margin-bottom:20px}
+.speed-meta span{font-size:12px;font-weight:600;color:var(--muted);background:var(--surface);border:1px solid var(--line);padding:6px 13px;border-radius:100px}
+.speed-start{font-family:var(--font);font-weight:800;font-size:16px;letter-spacing:.03em;color:#fff;background:var(--accent);border:none;border-bottom:4px solid var(--accent-ink);border-radius:14px;padding:16px 48px;cursor:pointer}
+.speed-start:active{transform:translateY(3px);border-bottom-width:1px}
+.speed-hud{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:10px}
+.speed-clock{font-family:var(--font);font-weight:800;font-size:36px;color:var(--accent);line-height:1;font-variant-numeric:tabular-nums}
+.speed-clock.low{color:var(--err);animation:comboFlare .5s var(--ease)}
+.speed-score{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-align:right}
+.speed-score b{display:block;color:var(--ink);font-size:20px;font-family:var(--font)}
+.speed-bar{height:8px;background:var(--surface-3);border-radius:100px;overflow:hidden;margin-bottom:20px}
+.speed-bar-fill{height:100%;background:linear-gradient(90deg,var(--accent),#60A5FA);border-radius:100px;transition:width 1s linear}
+.speed-qtext{font-family:var(--font);font-weight:700;font-size:20px;line-height:1.3;color:var(--ink);margin-bottom:14px;min-height:56px}
+.speed-opts{display:grid;gap:10px}
+.speed-opt{text-align:left;padding:15px 16px;border-radius:12px;background:var(--surface);border:2px solid var(--line);font-weight:600;font-size:14px;color:var(--ink);cursor:pointer;transition:transform .1s,border-color .12s,background .12s;box-shadow:var(--sh-sm)}
+.speed-opt:active{transform:scale(.98)}
+.speed-opt.ok{border-color:var(--ok);background:var(--ok-soft);animation:answerPop .35s}
+.speed-opt.bad{border-color:var(--err);background:var(--err-soft);animation:answerShake .35s}
+.speed-opt:disabled{cursor:default}
+.speed-result{padding:30px 20px;border-radius:var(--r);background:var(--accent-soft);border:1px solid #DBE7FF;text-align:center}
+.speed-final{font-family:var(--font);font-weight:800;font-size:58px;letter-spacing:-.03em;color:var(--accent);line-height:1}
+.speed-final-label{font-size:16px;font-weight:700;color:var(--ink);margin-top:4px}
+.speed-bonus{display:inline-block;margin-top:12px;font-size:12px;font-weight:700;color:var(--coin);background:var(--coin-soft);border-radius:100px;padding:6px 14px}
+.speed-note{font-size:13px;color:var(--text);line-height:1.55;margin-top:16px;text-align:left}
+
+
+/* ===== CHAPTER-COMPLETE CELEBRATION ===== */
+.ch-res-hero{font-family:var(--font);font-weight:800;font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:#fff;background:linear-gradient(90deg,var(--accent),#60A5FA);padding:9px 22px;border-radius:100px;box-shadow:0 10px 24px rgba(37,99,235,.30);opacity:0;margin-bottom:2px}
+.ch-res-hero.pop{animation:heroPop .7s cubic-bezier(.2,1.5,.4,1) forwards}
+@keyframes heroPop{0%{opacity:0;transform:scale(.4) translateY(12px)}60%{opacity:1;transform:scale(1.14)}100%{opacity:1;transform:scale(1)}}
+.ch-res-ring .center .big{animation:ringPulse 1.6s var(--ease)}
+@keyframes ringPulse{0%{transform:scale(.7);opacity:.4}60%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
+.ch-res-compete{width:100%;max-width:440px;margin-top:4px;padding:18px 20px;border-radius:var(--r-lg);background:linear-gradient(180deg,var(--accent-soft),var(--surface));border:1px solid #DBE7FF;box-shadow:var(--sh-sm)}
+.compete-head{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:12px;text-align:left}
+.compete-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px}
+.compete-row span{font-size:13px;font-weight:600;color:var(--muted)}
+.compete-row b{font-family:var(--font);font-weight:800;font-size:26px;color:var(--accent);letter-spacing:-.02em}
+.compete-bar{height:10px;background:var(--surface-3);border-radius:100px;overflow:hidden}
+.compete-fill{height:100%;width:0;background:linear-gradient(90deg,var(--accent),#60A5FA);border-radius:100px;transition:width 1.2s var(--ease)}
+.compete-note{font-size:13px;line-height:1.55;color:var(--text);margin-top:12px;text-align:left}
+
+.home-btn{display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--accent);font-family:var(--font);font-size:9px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;background:transparent;border:none;cursor:pointer;padding:4px 6px;border-radius:6px;flex-shrink:0}
+.home-btn:hover{background:var(--accent-soft)}
+</style>
+<script src="shared-state.js"></script>
+<script>window.MV_CHARACTER="captain";</script>
+</head>
+<body>
+
+<div id="app">
+
+ <!-- SPLASH -->
+ <div class="splash" id="splash">
+ <div class="sp-cap"><img src="captain.png" alt="Captain Interest"></div>
+ <div class="sp-title">CAPTAIN<br>INTEREST</div>
+ <div class="sp-sub">The hero who turns ₹5,000/month into ₹5.88 CRORE. Meet your compound superpower.</div>
+ <div class="sp-hook"> 90% OF INDIANS DIE POOR BECAUSE THEY NEVER MET HIM</div>
+ <div class="sp-stats">
+ <div class="sp-stat"><b>10</b>chapters</div>
+ <div class="sp-stat"><b>70+</b>drills</div>
+ <div class="sp-stat"><b>12×</b>growth unlocked</div>
+ </div>
+ <button class="sp-btn" id="splashStart">UNLOCK HIM →</button>
+ <div class="sp-warn">// 3 gut-check Qs. nail them → you're ahead of 80% of Indians.</div>
+ </div>
+
+ <!-- TOPBAR -->
+ <div class="topbar hide" id="topbar">
+ <button class="back" id="backBtn">←</button>
+ <div class="progwrap" id="progwrap"></div>
+ <div class="chip combo" id="comboChip"> <span id="comboVal">0</span></div>
+ <div class="chip xp"> <span id="xpVal">0</span></div>
+ <button class="home-btn" onclick="try{syncTotalsToProgress();saveProgress();}catch(e){};location.href='nexus.html'" title="MoneyVerse Dashboard">
+ <svg viewBox="0 0 20 20" width="18" height="18" fill="currentColor"><path d="M10 2.5L2 9h2v8.5h5v-5h2v5h5V9h2L10 2.5z"/></svg>
+ <span>HOME</span>
+ </button>
+ </div>
+
+ <div class="stage hide" id="stage"></div>
+
+ <div class="ctabar hide" id="ctabar">
+ <div class="cta-hint" id="ctaHint"></div>
+ <button class="cta" id="cta">LET'S GO</button>
+ </div>
+</div>
+
+<!-- FEEDBACK -->
+<div class="feedback" id="feedback">
+ <div class="fb-head">
+ <div class="fb-emoji" id="fbEmoji">i</div>
+ <div class="fb-title" id="fbTitle">NICE</div>
+ </div>
+ <div class="fb-body" id="fbBody"></div>
+ <div class="fb-xp hide" id="fbXp">+10</div>
+ <button class="fb-cta" id="fbCta">CONTINUE</button>
+</div>
+
+<div class="xppop" id="xppop">+10</div>
+
+<!-- LEVEL UP -->
+<div class="modal" id="levelupModal">
+ <div class="modal-card">
+ <div class="mc-kick">LEVEL UP</div>
+ <div class="mc-big" id="luTitle"> ROOKIE</div>
+ <div class="mc-body" id="luBody">You crossed <b>75 tokens</b>. Captain's impressed.</div>
+ <button class="mc-btn" id="luBtn">KEEP GOING</button>
+ </div>
+</div>
+
+<!-- CHECKPOINT -->
+<div class="modal" id="cpModal">
+ <div class="cp-card">
+ <div class="mc-kick">CHAPTER COMPLETE</div>
+ <div class="mc-big" id="cpTitle">CHECKPOINT</div>
+ <div class="cp-ring">
+ <svg viewBox="0 0 120 120">
+ <defs><linearGradient id="cpGrad" x1="0" x2="1"><stop offset="0" stop-color="#FF6B7A"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs>
+ <circle class="bg" cx="60" cy="60" r="52"/>
+ <circle class="fg" cx="60" cy="60" r="52" stroke-dasharray="326.7" stroke-dashoffset="326.7" id="cpRingFg"/>
+ </svg>
+ <div class="score"><div class="big" id="cpPct">0%</div><div class="sm">MASTERY</div></div>
+ </div>
+ <div class="cp-stats">
+ <div class="cp-stat"><b id="cpXp">0</b><span>TOKENS EARNED</span></div>
+ <div class="cp-stat"><b id="cpHit">0</b><span>CORRECT</span></div>
+ <div class="cp-stat"><b id="cpMax">0</b><span>MAX COMBO</span></div>
+ </div>
+ <div class="mc-body" id="cpInsight" style="margin-top:10px"></div>
+ <button class="mc-btn" id="cpBtn" style="margin-top:14px">NEXT CHAPTER →</button>
+ </div>
+</div>
+
+<!-- CHAPTER LIST -->
+<div class="chap-list" id="chapList">
+ <div class="chap-hero">
+ <div class="chap-hero-img"><img src="captain.png" alt="Captain Interest"></div>
+ <div class="chap-hero-name">CAPTAIN INTEREST</div>
+ <div class="chap-hero-tag">10 chapters that turn ₹5,000/month into ₹5.88 crore. Master compound, credit, and the money machine.</div>
+ </div>
+ <div class="chap-prog-wrap">
+ <div class="chap-prog-label">
+ <span><span id="chapProgDone">0</span> / 10 CHAPTERS COMPLETED</span>
+ <button class="reset-link" id="chapReset">↺ RESET</button>
+ </div>
+ <div class="chap-prog-bar"><div class="chap-prog-fill" id="chapProgFill" style="width:0%"></div></div>
+ </div>
+ <div class="chap-cards" id="chapCards"></div>
+</div>
+
+<!-- CHAPTER RESULTS -->
+<div class="ch-results" id="chResults">
+ <div class="ch-res-hero" id="chResHero">CHAPTER CLEARED</div>
+ <div class="ch-res-kicker" id="chResKicker">CHAPTER COMPLETE</div>
+ <div class="ch-res-title" id="chResTitle">CHAPTER TITLE</div>
+ <div class="ch-res-ring">
+ <svg viewBox="0 0 200 200">
+ <defs><linearGradient id="chResGrad" x1="0" x2="1"><stop offset="0" stop-color="#FF6B7A"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs>
+ <circle class="bg" cx="100" cy="100" r="86"/>
+ <circle class="fg" cx="100" cy="100" r="86" stroke-dasharray="540.35" stroke-dashoffset="540.35" id="chResRingFg"/>
+ </svg>
+ <div class="center"><div class="big" id="chResPct">0%</div><div class="lbl">MASTERY</div></div>
+ </div>
+ <div class="ch-res-xp"> <span id="chResXp">+0</span> TOKENS EARNED</div>
+ <div class="ch-res-compete" id="chResCompete">
+ <div class="compete-head">CLASS LEADERBOARD · YOU vs EVERYONE</div>
+ <div class="compete-row"><span>Your total tokens</span><b id="competeXp">0</b></div>
+ <div class="compete-bar"><div class="compete-fill" id="competeFill"></div></div>
+ <div class="compete-note" id="competeNote"></div>
+ </div>
+ <div class="ch-res-learnings">
+ <div class="head"> WHAT YOU LEARNED</div>
+ <ul id="chResList"></ul>
+ </div>
+ <div class="ch-res-cta">
+ <button class="ch-res-btn primary" id="chResNext">NEXT CHAPTER →</button>
+ <button class="ch-res-btn secondary" id="chResBack">← BACK TO CHAPTERS</button>
+ </div>
+</div>
+
+<!-- FINALE -->
+<div class="finale-bg" id="finale">
+ <div class="finale-cap"><img src="captain.png" alt="Captain Interest"></div>
+ <div class="finale-title">CAPTAIN: ASSEMBLED</div>
+ <div class="finale-sub" id="finaleSub">You now understand compound interest better than 90% of Indian adults.</div>
+ <div class="finale-ring">
+ <svg viewBox="0 0 200 200">
+ <defs><linearGradient id="finGrad" x1="0" x2="1"><stop offset="0" stop-color="#E8001D"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs>
+ <circle class="bg" cx="100" cy="100" r="86"/>
+ <circle class="fg" cx="100" cy="100" r="86" stroke-dasharray="540.35" stroke-dashoffset="540.35" id="finRingFg"/>
+ </svg>
+ <div class="score"><div class="big" id="finPct">0%</div><div class="lbl">MASTERY</div></div>
+ </div>
+ <div class="finale-rank" id="finRank"> ROOKIE</div>
+ <div class="finale-stats">
+ <div class="finale-stat"><b id="finXp">0</b><span>TOKENS</span></div>
+ <div class="finale-stat"><b id="finHit">0</b><span>CORRECT</span></div>
+ <div class="finale-stat"><b id="finMax">0</b><span>MAX COMBO</span></div>
+ </div>
+ <button class="finale-share" id="finShare"> SHARE ON WHATSAPP</button>
+ <div class="finale-paywall">
+ <div class="paywall-kick">UP NEXT — UNLOCK FULL VERSE</div>
+ <div class="paywall-title">FINAL CHAPTER: WEALTH</div>
+ <div class="paywall-chars">
+ <div class="paywall-char"><div class="emo">IN</div><div class="nm">INFLARE</div></div>
+ <div class="paywall-char"><div class="emo">RE</div><div class="nm">RECSUS</div></div>
+ <div class="paywall-char"><div class="emo">MW</div><div class="nm">MR. WEAL</div></div>
+ </div>
+ <button class="paywall-btn" id="paywallBtn">GET EARLY ACCESS </button>
+ </div>
+</div>
+
+<script>
+/* =====================================================
+ CAPTAIN INTEREST — Compound Interest Mastery
+ ===================================================== */
+
+const LEVELS = [
+  {xp:0,   rank:"NEWBIE"},
+  {xp:75,  rank:"ROOKIE"},
+  {xp:175, rank:"INVESTOR"},
+  {xp:300, rank:"COMPOUNDER"},
+  {xp:450, rank:"WEALTH BUILDER"},
+  {xp:650, rank:"CAPITALIST"},
+  {xp:900, rank:"MONEY MASTER"}
+];
+
+const EPISODES = [
+
+/* ---------- EP 0: HOOK ---------- */
+{
+ id:0, color:"#E8001D",
+ title:"GUT CHECK",
+ sub:"3 Qs that decide if you need this course. Miss any → you do.",
+ outcome:"Recognize the hidden cost of not knowing compound interest.",
+ insight:"Compound interest rewards patience. Ignorance of it is the most expensive mistake of a 20-year-old.",
+ skipXpCount:3,
+ screens:[
+ { type:"popquiz", secs:20, kicker:"GUT CHECK #1",
+ q:"You&rsquo;re 22 and start investing a fixed sum every month until you&rsquo;re 60. What decides how rich you end up?",
+ opts:["Picking the perfect stock every year","Starting now and never stopping","Timing every market dip perfectly","Waiting until you earn a lot more"], ans:1,
+ okMsg:"TIME WINS.",
+ okBody:"Starting early and letting it run beats stock-picking and market-timing every single time. A steady monthly investment from age 22 quietly compounds into crores &mdash; the magic is time in the market, not clever moves.",
+ errMsg:"IT&rsquo;S ABOUT TIME.",
+ errBody:"The biggest lever is starting now and never interrupting. Compounding does the heavy lifting &mdash; you just have to let it run for decades." },
+ { type:"popquiz", secs:20, kicker:"GUT CHECK #2",
+ q:"You max out your credit card and only ever pay the &lsquo;minimum due&rsquo;. What actually happens?",
+ opts:["You clear it in about a year","You stay trapped for years as interest piles up","The bank quietly waives the rest","Your credit score improves"], ans:1,
+ okMsg:"THE TRAP SNAPS.",
+ okBody:"Paying only the minimum keeps you in debt for years while high interest compounds on the balance. The &lsquo;minimum due&rsquo; is designed to keep you paying, not to get you out. Always clear the full statement.",
+ errMsg:"IT&rsquo;S A TRAP.",
+ errBody:"Minimum-only payments on a big balance mean years of debt and a mountain of interest. Pay in full, every time." },
+ { type:"popquiz", secs:20, kicker:"GUT CHECK #3",
+ q:"Riya starts investing at 22. Rohan invests the same amount but starts at 32. Both stop at 60. Who ends up richer?",
+ opts:["Rohan &mdash; he invests in peak earning years","Riya &mdash; her extra early years compound the most","They finish roughly equal","Impossible to say"], ans:1,
+ okMsg:"EARLY WINS BIG.",
+ okBody:"Riya&rsquo;s ten extra early years compound into a lead Rohan can never catch &mdash; even though he invests just as much later. Starting early isn&rsquo;t a small edge; it&rsquo;s a life-changing one.",
+ errMsg:"START EARLY.",
+ errBody:"The earliest years compound the longest, so Riya&rsquo;s head start dwarfs Rohan&rsquo;s. Every year you delay costs you dearly by retirement." }
+ ]
+},
+
+/* ---------- EP 1: WHAT IS INTEREST ---------- */
+{
+ id:1, color:"#E8001D",
+ title:"WHAT IS INTEREST?",
+ sub:"Rent on money. The language of every loan, deposit, EMI.",
+ outcome:"Define interest. Calculate simple interest. Know when you're the lender vs borrower.",
+ insight:"Interest is the price of time. Lenders get paid; borrowers pay up.",
+ estMin:5, xpReward:50,
+ keyLearnings:[
+ "Interest is rent on money — paid by borrowers, earned by lenders.",
+ "Simple Interest formula: SI = P × R × T / 100.",
+ "Every loan, EMI, FD, bond runs on the same idea: paying for time.",
+ "'No-cost EMI' isn't free — the interest is hidden in price or fees.",
+ "Your goal: become a net lender, not a lifelong borrower."
+ ],
+ screens:[
+ { type:"story", icon:"hero",
+ text:"Every rupee has a shadow — a second number that grows while you sleep.<br><br>Bankers call it <b>interest</b>. Captain Interest calls it <b>rent on money</b>." },
+
+ { type:"fact",
+ kick:"THE DEFINITION",
+ big:"INTEREST = RENT ON MONEY",
+ body:"When you <b>borrow</b> — you pay rent.<br>When you <b>lend</b> (FD, bond, savings) — you collect rent.<br><br>Every loan, EMI, FD, bond, credit card — it all runs on one concept: someone uses someone else's money and pays for the time."
+ },
+
+ { type:"fact",
+ kick:"SIMPLE INTEREST — THE FORMULA",
+ big:"SI = P × R × T / 100",
+ body:"<b>P</b> = Principal (amount borrowed/lent)<br><b>R</b> = Rate (% per year)<br><b>T</b> = Time (years)<br><br>Simple = interest only on the original principal. Never on the interest itself. Used for: short-term loans, car loans, bonds (coupons)."
+ },
+
+ { type:"mcq", kicker:"WHICH SIDE?",
+ q:"You lend a friend money and charge a little interest. In that deal, you are the&hellip;",
+ opts:["Borrower, paying for the loan","Lender, earning rent on your money","Guarantor","Regulator"], ans:1,
+ okMsg:"YOU'RE THE LENDER.",
+ okBody:"Charging interest puts you on the earning side &mdash; your money works for you. The whole game is spending your life more on the lender side (savings, investments) than the borrower side (loans, EMIs).",
+ errMsg:"OTHER WAY ROUND.",
+ errBody:"When you charge interest, you earn it &mdash; you're the lender. Wealth grows by owning more lender-side assets than borrower-side debts." },
+
+ { type:"capSays", tone:"lesson",
+ text:"Listen up, soldier. Every time you swipe a card, take a loan, or park cash in FD — you're playing the interest game.<br><br>The question isn't <i>if</i> you play. It's <b>which side</b>." },
+
+ { type:"fact",
+ kick:"TWO SIDES. PICK WISELY.",
+ big:"LENDER vs BORROWER",
+ body:"<b>Lender (you win)</b>: FDs, bonds, mutual funds, equity, P2P, your savings account<br><b>Borrower (you pay)</b>: credit card, personal loan, home loan, EMI on phone, BNPL<br><br>Most Indians are borrowers their whole life. Your goal: <b>become a net lender</b> as early as possible."
+ },
+
+ { type:"mcq",
+ kicker:"REAL-LIFE TEST",
+ q:"Which of these puts you on the LENDER side of the interest equation?",
+ opts:[
+ "Buying a phone on a no-cost EMI",
+ "Paying your CC bill's minimum due",
+ "Opening a Fixed Deposit at the bank",
+ "Taking a personal loan for a trip"
+ ], ans:2,
+ okMsg:"FD = YOU'RE THE LENDER.",
+ okBody:"When you open an FD, <b>you lend your money to the bank</b>. Bank pays you interest. All the others → you're borrowing, paying out. Rule: <b>if money is moving IN to you, you're the lender</b>.",
+ errMsg:"FD is the answer.",
+ errBody:"FD = you lend to bank → bank pays you interest. The rest are YOU paying interest. Flip to the lender side — that's where compounding lives."
+ },
+
+ { type:"trueFalse",
+ kicker:"GUT CHECK",
+ q:"A 'no-cost' EMI offer means the store isn't really earning anything from you.",
+ ans:false,
+ okMsg:"FALSE.",
+ okBody:"'No-cost EMI' = the interest is <b>bundled into the sticker price</b>, or the bank collects processing fees / loses the discount you'd have got by paying upfront. Banks don't lend for free. <b>Someone always pays the interest</b> — usually you.",
+ errMsg:"FALSE.",
+ errBody:"No-cost EMI is marketing. The bank/merchant bakes the interest into the price or a processing fee. <b>You always pay — just invisibly.</b>"
+ },
+
+ { type:"oddone", kicker:"LENDER OR BORROWER?", q:"Three of these COST you interest. Tap the one that PAYS interest to you.", opts:["Credit-card balance","Home-loan EMI","Fixed deposit","Personal loan"], odd:2, okMsg:"YOU'RE THE LENDER.", okBody:"A fixed deposit makes the bank your borrower &mdash; they pay <b>you</b> interest. Every rupee you save or invest flips you to the earning side of the equation. The rich sit on the lender side; the broke stay on the borrower side.", errMsg:"OTHER WAY ROUND.", errBody:"Cards, EMIs and personal loans all charge <b>you</b>. Only the FD pays you &mdash; there you are the lender. Wealth is built by owning more lender-side assets than borrower-side debts." },
+ { type:"speed", kicker:"RAPID FIRE", q:"Interest, fast.", time:25, intro:"Five quick real-life calls. Tap fast &mdash; every right answer is XP.", questions:[
+ { q:"To be on the side that EARNS interest, you&hellip;", opts:["Borrow more","Save and invest so others pay you","Max a credit card","Take an EMI"], ans:1 },
+ { q:"A shop offers &lsquo;no-cost EMI&rsquo;. Smart assumption?", opts:["It is truly free","The cost is usually baked into the price","It builds your score","It is charity"], ans:1 },
+ { q:"Which puts you on the paying (borrower) side?", opts:["Opening an FD","Buying an index fund","Taking a personal loan","Lending to a friend"], ans:2 },
+ { q:"Fastest way to stop paying interest?", opts:["Avoid high-cost debt and pay bills in full","Take another loan","Pay only minimums","Ignore due dates"], ans:0 },
+ { q:"Interest is best seen as&hellip;", opts:["Rent on money","A random tax","Luck","A scam"], ans:0 }
+ ], okBody:"The whole game: spend your life on the earning side of interest, not the paying side." },
+ { type:"checkpoint", epTitle:"INTEREST DEFINED" }
+ ]
+},
+
+/* ---------- EP 2: SIMPLE vs COMPOUND + INVESTING ---------- */
+{
+ id:2, color:"#FF4D5E",
+ title:"COMPOUND — THE SUPERPOWER",
+ sub:"Simple vs compound. MFs, equity, bonds. The crore-making engine.",
+ outcome:"Calculate CI. Explain MFs/equity/bonds. Choose the right vehicle for compounding.",
+ insight:"Compound interest is interest on interest. Over 30+ years, it turns tiny SIPs into crores.",
+ estMin:8, xpReward:80,
+ keyLearnings:[
+ "Compound formula: A = P(1 + r/n)^(nt) — interest earns interest.",
+ "Long time × decent returns beats high returns × short time.",
+ "Mutual funds = pooled investing. SIPs work from just ₹500/mo.",
+ "Equity = ownership; bonds = lending. Different risk, different return.",
+ "Nifty index SIP at 22 (₹5K/mo, 12%) → ₹5.88 Cr by age 60."
+ ],
+ screens:[
+ { type:"story", icon:"rocket",
+ text:"Simple interest is a staircase.<br>Compound interest is a rocket.<br><br>Einstein called it <b>'the 8th wonder of the world.'</b><br><br>Let Captain show you why." },
+
+ { type:"fact",
+ kick:"COMPOUND INTEREST — THE FORMULA",
+ big:"A = P(1 + r/n)^(nt)",
+ body:"<b>A</b> = final amount<br><b>P</b> = principal<br><b>r</b> = annual rate (decimal)<br><b>n</b> = compounding per year<br><b>t</b> = years<br><br>The magic: interest earns interest. That tiny <b>^nt</b> is where wealth is made. On a 30-year timeline, it's the difference between lakhs and crores."
+ },
+
+ { type:"capSays", tone:"hypes",
+ text:"Here's what nobody taught you in school:<br><br>You don't get rich from <i>high returns</i>. You get rich from <b>long time × decent returns</b>.<br><br>12% for 40 years beats 20% for 10 years. Every single time." },
+
+ { type:"sim-si-vs-ci",
+ title:"SIMPLE vs COMPOUND — WATCH THE GAP",
+ sub:"Slide the years. See how the two lines diverge."
+ },
+
+ { type:"sim-compound",
+ title:"THE CRORE MACHINE",
+ sub:"Pick your SIP. Watch ₹X/mo become a fortune."
+ },
+
+ { type:"fact",
+ kick:"INVESTING VEHICLE #1",
+ big:"MUTUAL FUNDS",
+ body:"A <b>mutual fund</b> is a pool. You + thousands of others give money. A professional manager buys stocks/bonds with it. You own <b>units</b>. Unit value = <b>NAV</b>.<br><br><b>Types</b>: Equity (stocks), Debt (bonds), Hybrid (mix), Index (mirrors Nifty/Sensex).<br><br><b>SIP</b> = invest ₹X every month automatically. Cheapest entry: <b>₹500/month</b>."
+ },
+
+ { type:"fact",
+ kick:"HOW A MUTUAL FUND WORKS",
+ big:"POOL → MANAGER → UNITS",
+ body:"1. <b>You invest ₹5,000</b> in an index fund (NAV = ₹100) → you get <b>50 units</b>.<br>2. Fund manager buys Nifty 50 stocks with the pool.<br>3. A year later: Nifty up 12% → NAV = ₹112. Your 50 units = <b>₹5,600</b>.<br>4. You keep investing monthly → more units → more compounding.<br><br><b>Expense ratio</b> = 0.1–2% fee. Index funds ≈ 0.2% (cheapest). Active ≈ 1–2%."
+ },
+
+ { type:"fact",
+ kick:"INVESTING VEHICLE #2",
+ big:"EQUITY = OWNERSHIP",
+ body:"A <b>share/equity</b> = tiny piece of a real company. Buy 1 Reliance share → you're literally a part-owner of Reliance.<br><br><b>You earn from</b>: dividends (quarterly cash) + capital gains (price goes up).<br><br><b>Long-term Nifty 50 return</b>: ~12–14% CAGR. Higher than FDs, real estate, gold. <b>But volatile short-term.</b> Equity rewards patience, not traders."
+ },
+
+ { type:"fact",
+ kick:"INVESTING VEHICLE #3",
+ big:"BONDS = LENDING",
+ body:"A <b>bond</b> = you lend money to govt/company. They pay you fixed interest (coupon) + return principal at maturity.<br><br><b>Types</b>:<br>· <b>G-Sec</b> (govt bond, ~7%, safest)<br>· <b>Corporate</b> (7–10%, medium risk)<br>· <b>Tax-free bonds</b> (5–6%, zero tax)<br>· <b>RBI Retail</b> (7.1%, for individuals)<br><br>Safe because you're first in line if the company/govt defaults. Secure — but returns are lower than equity."
+ },
+
+ { type:"sort",
+ kicker:"RISK / RETURN / HORIZON",
+ q:"Drop each investment vehicle into its right risk bucket.",
+ bins:[
+ {id:"low", label:"LOW RISK (3–7%)"},
+ {id:"mid", label:"MEDIUM (7–10%)"},
+ {id:"high", label:"HIGH (10%+)"}
+ ],
+ items:[
+ {id:"a", label:"Savings account (2.5–3.5%)", bin:"low"},
+ {id:"b", label:"Bank FD (6–7.5%)", bin:"low"},
+ {id:"c", label:"G-Sec bond (7%)", bin:"low"},
+ {id:"d", label:"Corporate bond (8–9%)", bin:"mid"},
+ {id:"e", label:"Debt mutual fund (7–9%)", bin:"mid"},
+ {id:"f", label:"Hybrid mutual fund (8–10%)", bin:"mid"},
+ {id:"g", label:"Nifty 50 index fund (12–14% long-term)", bin:"high"},
+ {id:"h", label:"Individual stocks / small-cap (variable)",bin:"high"}
+ ],
+ okMsg:"PORTFOLIO SENSE UNLOCKED.",
+ okBody:"Rule: <b>risk = return, when held long enough</b>. Short-term = cash/FD. 5+ years = equity. Perfect young-person mix: 70% equity index + 20% debt + 10% liquid cash.",
+ errBody:"Low: savings/FD/G-Sec. Mid: corporate bonds, debt funds. High: equity/index/small-cap. The trade-off is always risk for return over time."
+ },
+
+ { type:"hotTake",
+ kicker:"YOUR FIRST PAYCHECK",
+ q:"You just got your first paycheck and can invest a little every month. Best place to start?",
+ opts:[
+ "Buy individual stocks and hope to pick a winner",
+ "FD — it's safe, I'll grow it later",
+ "Monthly SIP in a Nifty 50 index fund",
+ "Wait until I've saved a big lump sum, then invest"
+ ],
+ insight:"Correct = <b>Nifty 50 index SIP</b>. At 22 with ₹5K/mo at 12%, you retire at 60 with <b>₹5.88 Cr</b>. Individual stocks = high risk without expertise. FD = can't beat inflation. Waiting for lakh = wasting most valuable year. <b>Start small. Start now. Index fund. Auto-debit.</b>"
+ },
+
+ { type:"mcq",
+ kicker:"WHAT KILLS COMPOUNDING?",
+ q:"Which of these DESTROYS the power of compounding fastest?",
+ opts:[
+ "Chasing very high, risky returns",
+ "Interrupting it — pulling the money out early",
+ "Paying small monthly charges and fees",
+ "Compounding too frequently"
+ ], ans:1,
+ okMsg:"INTERRUPTION KILLS IT.",
+ okBody:"Compounding is a 'ride the exponential' game. Stop and restart → you lose the tallest part of the curve. <b>Every time you withdraw and spend</b>, you reset. The real enemy isn't lower returns — it's <b>pulling the money out too early</b>.",
+ errMsg:"Interruption is the killer.",
+ errBody:"The exponential curve gets steep near the end. Withdraw early → you cut off the crore-making years. <b>Don't touch your SIP. Ever.</b> Treat it like it doesn't exist."
+ },
+
+ { type:"mcq", kicker:"THE COMPOUND MOVE",
+ q:"You get a surprise bonus. Which choice actually uses the compound superpower?",
+ opts:["Blow it on the newest phone","Park it in your SIP and leave it untouched for years","Keep it idle in savings to feel safe","Lend it to a friend for a favour"], ans:1,
+ okMsg:"TIME DOES THE WORK.",
+ okBody:"No maths needed &mdash; the move that compounds is the boring one: invest it early and don't touch it. Left alone for years at market returns, that one bonus quietly grows into a big number while you sleep.",
+ errMsg:"THINK LONGER.",
+ errBody:"Spending or idling it wastes the superpower. Compounding rewards money that's invested early and left alone &mdash; that's the whole game." },
+ { type:"speed", kicker:"RAPID FIRE", q:"Compounding, fast.", time:25, intro:"Five quick calls on the crore-making engine. Beat the clock.", questions:[
+ { q:"The single biggest driver of compounding is&hellip;", opts:["A hot tip","Time in the market","Pure luck","Timing the top"], ans:1 },
+ { q:"Markets dip 15%. Your long-term SIP should&hellip;", opts:["Stop","Keep running","Be withdrawn","Pause for a year"], ans:1 },
+ { q:"Best habit for the compound superpower?", opts:["Invest early, automate, don&rsquo;t touch it","Trade daily","Wait till you&rsquo;re rich","Chase quick doubles"], ans:0 },
+ { q:"Get a bonus. Compounding rewards you most if you&hellip;", opts:["Invest it and leave it for years","Spend it now","Keep it idle","Lend it out"], ans:0 },
+ { q:"Two people, same fund. The winner usually&hellip;", opts:["Started earlier","Checked prices hourly","Panicked in dips","Kept switching funds"], ans:0 }
+ ], okBody:"Time beats timing every single time. Start early, automate, and never interrupt the compounding." },
+ { type:"checkpoint", epTitle:"COMPOUNDING MASTERED" }
+ ]
+},
+
+/* ---------- EP 3: CREDIT CARDS ---------- */
+{
+ id:3, color:"#C1121F",
+ title:"CREDIT CARDS: DECODED",
+ sub:"The plastic trap. Billing cycles. The minimum-payment nightmare.",
+ outcome:"Understand billing cycles, grace periods, APR vs monthly rate. Escape the min-payment trap.",
+ insight:"CC is a tool. Miss one month → it becomes a weapon that can destroy your wealth.",
+ estMin:7, xpReward:70,
+ keyLearnings:[
+ "Pay the FULL bill within the grace period → zero interest, free credit.",
+ "Min payment trap: 5% min at 42% APR → ₹1L takes 15 yrs to clear.",
+ "APR vs monthly rate: 42% APR ≈ 3.5%/mo, compounds brutally.",
+ "Use a CC for points + grace period — never as a long-term loan.",
+ "Always pay TOTAL DUE, never just MIN DUE."
+ ],
+ screens:[
+ { type:"story", icon:"card",
+ text:"That rectangle in your wallet?<br>It's the most expensive loan in the Indian financial system.<br><br>APR: <b>36–46%</b>.<br>Your FD pays you 7%. Your CC charges <b>42%</b>. Think about that." },
+
+ { type:"fact",
+ kick:"HOW A CC ACTUALLY WORKS",
+ big:"THE 3 KEY NUMBERS",
+ body:"<b>Credit limit</b>: max you can borrow (e.g., ₹1L).<br><b>Billing cycle</b>: 28–31 days. Bill generated at end.<br><b>Due date</b>: ~20 days after bill date. Pay FULL before this = <b>zero interest</b> (the grace period).<br><br><b>Grace period = 20–50 free days of credit</b>. This is the ONLY way to use a CC smartly."
+ },
+
+ { type:"fact",
+ kick:"THE SWIPE TIMELINE",
+ big:"BUY NOW, PAY LATER — SMARTLY",
+ body:"• Buy on day 1 → statement on day 30 → due on day 50<br>• You get up to <b>50 free days</b> of credit<br>• Pay full on day 50 → zero interest, free rewards<br>• Pay late or partial → interest kicks in on <b>every swipe</b>, retroactive to the purchase date<br><br>One late payment blows up the whole party."
+ },
+
+ { type:"sim-cc-trap",
+ title:"THE MIN-PAYMENT TRAP",
+ sub:"Slide the 'pay only minimum' toggle. Watch your ₹1L bill become ₹2.5L."
+ },
+
+ { type:"warn",
+ kick:"THE TRAP",
+ title:"MINIMUM PAYMENT = FINANCIAL SLAVERY",
+ body:"Minimum payment is usually <b>5%</b> of outstanding. Banks advertise it as helpful. It's the opposite.<br><br>Pay ₹5,000/month on ₹1L bill at 42% APR → <b>15+ years to clear it, ₹1.5L in interest alone</b>. The number on the card NEVER goes meaningfully down. <b>Pay IN FULL or don't swipe.</b>"
+ },
+
+ { type:"capSays", tone:"warns",
+ text:"Golden rule: Use CC like a <b>debit card with delay</b>.<br><br>If you can't pay the full bill next month, you can't afford it this month. Period.<br><br>Miss one payment → they add 42% interest on EVERY swipe from the purchase date. Even ones you'd have paid for." },
+
+ { type:"mcq", kicker:"WHAT HAPPENS NEXT",
+ q:"You can only pay the minimum on your card this month. What actually happens next?",
+ opts:["The bank forgives the rest","Interest keeps compounding on the unpaid balance","Your limit rises as a reward","Nothing &mdash; it's totally fine"], ans:1,
+ okMsg:"THE TRAP SNAPS.",
+ okBody:"Paying the minimum keeps the account current, but the unpaid balance keeps compounding at a brutal rate. Do it a few months and a small bill balloons. Treat the full statement as the real bill.",
+ errMsg:"IT COMPOUNDS.",
+ errBody:"Minimum-due doesn't clear the debt &mdash; the leftover keeps growing at card rates. That's exactly how people get stuck for years." },
+
+ { type:"mcq",
+ kicker:"SMART USE",
+ q:"Best strategy to USE a credit card intelligently?",
+ opts:[
+ "Max it out and pay min only — builds credit history",
+ "Never get one — they're dangerous",
+ "Use freely, auto-debit FULL bill amount each month",
+ "Only use the minimum limit"
+ ], ans:2,
+ okMsg:"AUTO-DEBIT THE FULL BILL.",
+ okBody:"Set up auto-pay for <b>100% of statement balance</b> on due date. Now: you get the 50-day float, reward points, credit score boost — and NEVER pay interest. CCs are free money if you pay in full. Minimum-payers subsidize your rewards.",
+ errMsg:"Auto-debit FULL amount.",
+ errBody:"The only safe way to use CC: auto-pay full bill monthly. You get rewards + credit history + zero interest. Miss the full pay even once → it becomes a 42% loan."
+ },
+
+ { type:"trueFalse",
+ kicker:"MYTH",
+ q:"Having multiple credit cards always HURTS your credit score.",
+ ans:false,
+ okMsg:"FALSE.",
+ okBody:"Multiple cards (paid on time) <b>help</b> your score — because they lower your <b>credit utilization ratio</b>. Having ₹10K used out of ₹5L total limit = 2% utilization (great). Out of ₹50K limit = 20% (average). <b>More limit = better score (if you don't abuse it).</b>",
+ errMsg:"It's FALSE.",
+ errBody:"More available credit = lower utilization % = better CIBIL. BUT this only helps if you pay on time. Paid-in-full = more cards actually boost your score."
+ },
+
+ { type:"mcq", kicker:"THE SMART MOVE",
+ q:"Your credit-card bill is large and you're short on cash this month. What's the smart move?",
+ opts:["Pay only the minimum due","Pay as much as you possibly can, ideally the full amount","Skip it and pay next month","Take a cash advance to cover it"], ans:1,
+ okMsg:"STARVE THE INTEREST.",
+ okBody:"Minimum-due is the trap &mdash; interest keeps compounding on whatever you leave unpaid. Paying the maximum you can starves that punishing rate. A cash advance is even costlier. Never let a balance revolve.",
+ errMsg:"AVOID THE TRAP.",
+ errBody:"Minimums and cash advances both feed the interest monster. Pay as much as you can, as fast as you can &mdash; the balance is the enemy." },
+ { type:"speed", kicker:"RAPID FIRE", q:"Credit cards, fast.", time:25, intro:"Five quick calls to stay out of the plastic trap. Tap fast.", questions:[
+ { q:"Your statement lands. Safe move?", opts:["Pay in full by the due date","Pay the minimum","Wait a month","Take a cash advance"], ans:0 },
+ { q:"&lsquo;Minimum due&rsquo; mostly exists to&hellip;", opts:["Help you","Keep you paying interest longer","Clear the bill","Boost your score"], ans:1 },
+ { q:"A credit-card cash advance is&hellip;", opts:["Free","Very expensive from day one","Smart","Interest-free"], ans:1 },
+ { q:"To protect your score, keep card usage&hellip;", opts:["Under about 30% of the limit","At 100%","Above 90%","Fully maxed"], ans:0 },
+ { q:"Safest way to enjoy a card?", opts:["Treat it like a debit card you clear monthly","Revolve a balance","Only pay minimums","Cash out often"], ans:0 }
+ ], okBody:"A card is a tool, not free money. Clear it in full, keep usage low, and it works for you." },
+ { type:"checkpoint", epTitle:"PLASTIC CONQUERED" }
+ ]
+},
+
+/* ---------- EP 4: EMIs ---------- */
+{
+ id:4, color:"#FF4D5E",
+ title:"EMIs — THE MONTHLY TRAP",
+ sub:"How EMIs really work. Sticker price vs total cost. Prepayment magic.",
+ outcome:"Compute an EMI. Know what a 20-year loan REALLY costs. Use prepayment correctly.",
+ insight:"Every EMI is compound interest — working AGAINST you. Prepay early, win big.",
+ estMin:7, xpReward:70,
+ keyLearnings:[
+ "An EMI is compound interest pointing AGAINST you every month.",
+ "₹50K/mo for 20 yrs at 8.5% = ₹1.2 Cr paid on a ₹50L home loan.",
+ "Early years = mostly interest; later years = mostly principal.",
+ "Prepayment in years 1–5 cuts total interest dramatically.",
+ "Compare loans on TOTAL COST, not just monthly EMI."
+ ],
+ screens:[
+ { type:"story", icon:"house",
+ text:"'₹50,000/month EMI' sounds small.<br><br>Over 20 years at 8.5%? You'll pay the bank <b>₹1.2 CRORE</b>. Your ₹50L home costs <b>double</b>.<br><br>Captain will show you exactly where the money goes." },
+
+ { type:"fact",
+ kick:"THE EMI FORMULA",
+ big:"EMI = P × r × (1+r)^n / ((1+r)^n − 1)",
+ body:"<b>P</b> = loan amount<br><b>r</b> = monthly rate (annual ÷ 12)<br><b>n</b> = total months<br><br>Ugly formula. The insight is simpler: <b>early EMIs are mostly interest, late EMIs are mostly principal</b>. First 7 years of a 20-year home loan → <b>70% of your EMI is INTEREST</b>."
+ },
+
+ { type:"sim-emi",
+ title:"SEE WHAT YOUR LOAN REALLY COSTS",
+ sub:"Slide loan amount, rate, years. Watch the interest slice swallow you."
+ },
+
+ { type:"fact",
+ kick:"STICKER vs TOTAL COST",
+ big:"THE DOUBLE-YOUR-MONEY TAX",
+ body:"<b>₹50L home loan @ 8.5% × 20 years</b>:<br>· EMI: ₹43,391<br>· Total paid: <b>₹1.04 Cr</b><br>· Interest paid: <b>₹54.1 L</b> (MORE than the principal!)<br><br>Your 'cheap' ₹50L home actually cost ₹1.04Cr. Banks don't lie — they just let you do the math."
+ },
+
+ { type:"capSays", tone:"lesson",
+ text:"The secret weapon most Indians never use: <b>PREPAYMENT</b>.<br><br>Pay 1 extra EMI a year into principal → you'll close a 20-year loan in <b>~17 years</b> and save <b>~₹10 lakh in interest</b>.<br><br>Pay 2 extra EMIs a year → close in 15 years, save ₹18L. Same EMI. Just a little more." },
+
+ { type:"mcq", kicker:"BEST USE OF CASH",
+ q:"You get a surprise windfall while a long home loan is running. Smartest move for lifetime cost?",
+ opts:["Prepay a chunk of the loan principal early","Upgrade your car","Leave it idle in savings","Start a second loan"], ans:0,
+ okMsg:"ATTACK THE PRINCIPAL.",
+ okBody:"Early prepayment kills principal before years of interest can stack onto it &mdash; saving far more than the same money earns idle in savings. A loan's early years are almost all interest, so prepaying then bites hardest.",
+ errMsg:"PREPAY EARLY.",
+ errBody:"The biggest interest savings come from hitting principal early. Idle savings or a new loan can't beat that guaranteed saving." },
+
+ { type:"mcq", kicker:"CRITICAL CHOICE",
+ q:"You have spare cash. You could prepay your home loan or invest it long-term. What should the choice really depend on?",
+ opts:["Always prepay &mdash; all debt is evil","Always invest &mdash; markets always win","How many years are left on the loan and how you handle risk","Just flip a coin"], ans:2,
+ okMsg:"IT DEPENDS.",
+ okBody:"With many years left, long-term investing can out-earn a cheap home-loan rate; near the end, prepaying gives a guaranteed saving and peace of mind. And if market swings stress you, certainty wins. There&rsquo;s no one answer &mdash; it depends on your timeline and temperament.",
+ errMsg:"IT DEPENDS.",
+ errBody:"Neither &lsquo;always prepay&rsquo; nor &lsquo;always invest&rsquo; is right. It hinges on the loan&rsquo;s remaining years and your comfort with risk." },
+
+ { type:"trueFalse",
+ kicker:"HIDDEN FEE",
+ q:"Banks can charge you a 'foreclosure penalty' for closing your home loan early.",
+ ans:false,
+ okMsg:"FALSE (for home loans).",
+ okBody:"RBI rule (2019): <b>no foreclosure charges on floating-rate home loans for individuals</b>. Banks USED to charge 2–5% to discourage prepayment. Now it's illegal for home loans. (Still legal on fixed-rate home loans + personal/car loans — read the fine print.)",
+ errMsg:"It's FALSE for home loans.",
+ errBody:"RBI banned foreclosure charges on floating-rate home loans for individuals. Prepay freely. (But personal loans, car loans still can charge — verify before signing.)"
+ },
+
+ { type:"oddone", kicker:"KILL THE INTEREST", q:"Three of these CUT your total home-loan interest. Tap the one that does NOT.", opts:["Prepaying early","Choosing a shorter tenure","Negotiating a lower rate","Stretching to a longer tenure"], odd:3, okMsg:"EXACTLY.", okBody:"A longer tenure lowers your monthly EMI but <b>balloons</b> the total interest &mdash; you pay for more years. The other three all shrink what the bank earns off you. Comfort today, crore lost tomorrow.", errMsg:"LOOK AGAIN.", errBody:"Prepaying, shorter tenure and lower rates all reduce interest. Stretching the tenure does the opposite &mdash; smaller EMI, far bigger total cost. Banks love borrowers who chase a low EMI." },
+ { type:"speed", kicker:"RAPID FIRE", q:"EMIs, fast.", time:25, intro:"Five quick calls on loans and EMIs. Beat the clock.", questions:[
+ { q:"To pay the LEAST total interest, prefer&hellip;", opts:["A longer tenure","A shorter tenure you can afford","Only minimum payments","Never prepaying"], ans:1 },
+ { q:"A surprise bonus mid-loan is best used to&hellip;", opts:["Prepay principal early","Upgrade your phone","Sit idle","Start a new loan"], ans:0 },
+ { q:"A low EMI with a very long tenure usually means&hellip;", opts:["You pay far more interest overall","You save money","No interest","Free credit"], ans:0 },
+ { q:"Early years of an EMI are mostly&hellip;", opts:["Interest","Principal","Fees only","Savings"], ans:0 },
+ { q:"&lsquo;No-cost EMI&rsquo; most often&hellip;", opts:["Hides the cost in price or fees","Is genuinely free","Reduces your bill","Pays you"], ans:0 }
+ ], okBody:"A low EMI can be the most expensive choice. Keep tenures tight and attack principal early." },
+ { type:"checkpoint", epTitle:"EMIs MASTERED" }
+ ]
+},
+
+/* ---------- EP 5: CIBIL ---------- */
+{
+ id:5, color:"#C1121F",
+ title:"CIBIL & CREDIT SCORES",
+ sub:"The number that decides your loan, rent, even a job. 300–900.",
+ outcome:"Know how CIBIL is calculated. Build a 750+ score. Check & correct errors.",
+ insight:"Your CIBIL is a 3-digit summary of your financial behavior. Banks, landlords, employers all see it.",
+ estMin:6, xpReward:60,
+ keyLearnings:[
+ "CIBIL = 3-digit score (300–900) summarising your repayment history.",
+ "Built from 5 factors: payment history, utilization, age, mix, inquiries.",
+ "750+ unlocks lower interest rates, easy approvals, premium cards.",
+ "Keep utilization under 30%, never miss a payment, keep oldest card alive.",
+ "Pull your free report yearly — disputes resolve in ~30 days."
+ ],
+ screens:[
+ { type:"story", icon:"score",
+ text:"300 — locked out of financial life.<br>750+ — red carpet: lower loan rates, higher limits, rent approved, even some jobs.<br><br>That one score decides more than your CGPA ever did." },
+
+ { type:"fact",
+ kick:"THE RANGE",
+ big:"300 – 900",
+ body:"<b>300–650</b>: poor — loans refused or at 18%+<br><b>650–720</b>: average — approved, high rate<br><b>720–780</b>: good — standard rates<br><b>780–900</b>: excellent — best rates, credit card upgrades, pre-approved loans<br><br>Agencies: <b>CIBIL, Experian, Equifax, CRIF</b>. Each scores slightly differently. Check all four free 1×/year."
+ },
+
+ { type:"fact",
+ kick:"THE 5 FACTORS",
+ big:"WHAT BUILDS YOUR SCORE",
+ body:"<table class='fact-table'><tr><th>Factor</th><th>Weight</th></tr><tr><td>Payment History (on-time?)</td><td><b>35%</b></td></tr><tr><td>Credit Utilization (&lt;30% of limit?)</td><td><b>30%</b></td></tr><tr><td>Credit Age (older = better)</td><td><b>15%</b></td></tr><tr><td>Credit Mix (cards + loans)</td><td><b>10%</b></td></tr><tr><td>New Inquiries (fewer is better)</td><td><b>10%</b></td></tr></table>"
+ },
+
+ { type:"sim-cibil",
+ title:"BUILD YOUR SCORE — LIVE",
+ sub:"Tap actions. Watch your score swing. Learn what actually moves the needle."
+ },
+
+ { type:"match",
+ kicker:"ACTION → IMPACT",
+ q:"Match each action to its effect on your CIBIL score.",
+ pairs:[
+ {a:"Pay CC bill in full, on time, 12 months", b:"+40–80 pts (strong)"},
+ {a:"Max out CC to 90% of limit", b:"−50–80 pts (utilization spike)"},
+ {a:"Apply to 5 loans in a month", b:"−20–40 pts (hard inquiries)"},
+ {a:"Close your oldest credit card", b:"−20–30 pts (credit age drops)"}
+ ],
+ okMsg:"YOU READ THE SCORE.",
+ okBody:"Payment history > everything. One missed EMI drops 50–100 pts. Max utilization drops 50+. Keep oldest card open + pay full monthly + don't shop for loans simultaneously. <b>Boring = high score.</b>",
+ errBody:"Payments in full on time = the biggest lever. High utilization & multiple inquiries = silent killers. Older account age = trust built over time."
+ },
+
+ { type:"sort",
+ kicker:"GOOD vs BAD HABITS",
+ q:"Sort these behaviors — good for your CIBIL or bad?",
+ bins:[
+ {id:"good", label:"BUILDS SCORE"},
+ {id:"bad", label:"KILLS SCORE"}
+ ],
+ items:[
+ {id:"a", label:"Auto-paying CC bill in full monthly", bin:"good"},
+ {id:"b", label:"Using <30% of credit limit", bin:"good"},
+ {id:"c", label:"Keeping your oldest card open forever", bin:"good"},
+ {id:"d", label:"Mixing credit types (card + loan)", bin:"good"},
+ {id:"e", label:"Missing even ONE EMI", bin:"bad"},
+ {id:"f", label:"Maxing out card to 90%+", bin:"bad"},
+ {id:"g", label:"Applying for 5 loans in one month", bin:"bad"},
+ {id:"h", label:"Never taking any loan or card", bin:"bad"}
+ ],
+ okMsg:"CIBIL INSTINCT UNLOCKED.",
+ okBody:"Surprise: <b>never using credit = bad too</b>. No history = 'NA/NH' score (~0). Banks can't judge you, so they reject or offer the worst rates. Take a small loan / small CC → pay in full → build history from age 22.",
+ errBody:"The counterintuitive one: <b>zero credit = zero score</b>. Banks need to see you can handle debt. Start small, pay full, and your score builds."
+ },
+
+ { type:"mcq", kicker:"WHY IT MATTERS",
+ q:"Two people apply for the same home loan &mdash; one has an excellent credit score, the other a poor one. What&rsquo;s the real difference?",
+ opts:["Nothing &mdash; banks treat them the same","The poor score pays a higher rate (costing lakhs more) or gets rejected","The poor score just waits a little longer","The good score pays extra, as a &lsquo;premium&rsquo;"], ans:1,
+ okMsg:"YOUR SCORE = LAKHS.",
+ okBody:"A strong score unlocks the lowest rates; a weak one gets a costlier rate, or a flat rejection. Across a long home loan that gap quietly adds up to <b>lakhs</b> of extra interest. Your credit score is a seven-figure asset &mdash; guard it.",
+ errMsg:"IT COSTS LAKHS.",
+ errBody:"A poor score means a higher rate or rejection. Over a long loan that is lakhs in extra interest. The score is one of the most valuable numbers in your financial life." },
+
+ { type:"trueFalse",
+ kicker:"MYTH",
+ q:"Checking your own CIBIL score lowers it.",
+ ans:false,
+ okMsg:"FALSE.",
+ okBody:"Checking your OWN score = 'soft inquiry'. Zero impact. <b>Hard inquiries</b> (when a bank checks because you applied for a loan) are what drop it. Check yours every 3 months free on CIBIL, Experian, Equifax, CRIF. Catch errors early.",
+ errMsg:"FALSE.",
+ errBody:"Your own check = soft inquiry = no effect. Bank check (for your loan app) = hard inquiry = small dip. Check yourself freely."
+ },
+
+ { type:"mcq", kicker:"BUILD THE ASSET",
+ q:"You want a strong credit score. Which everyday habit builds it fastest?",
+ opts:["Closing all your old cards","Paying every bill in full and on time, every month","Using almost your entire card limit","Applying for many loans to build history"], ans:1,
+ okMsg:"CONSISTENCY WINS.",
+ okBody:"No hacks required &mdash; the score rewards on-time, in-full payments and low usage. Maxing your limit or spraying loan applications drags it down. A great score is a habit, not a trick.",
+ errMsg:"IT'S ABOUT HABITS.",
+ errBody:"Closing cards, maxing limits and over-applying all hurt. The score climbs on quiet consistency: pay in full, on time, keep usage low." },
+ { type:"speed", kicker:"RAPID FIRE", q:"Credit score, fast.", time:25, intro:"Five quick calls on your 3-digit asset. Tap fast.", questions:[
+ { q:"Fastest way to build a great score?", opts:["Pay in full, on time, every month","Max your cards","Apply for many loans","Close old cards"], ans:0 },
+ { q:"Missing an EMI mainly hurts your&hellip;", opts:["Aadhaar","Credit score","PAN card","Salary"], ans:1 },
+ { q:"A 750+ score gets you&hellip;", opts:["Cheaper loans and higher limits","Nothing","A penalty","Higher rates"], ans:0 },
+ { q:"Ideal credit utilisation is&hellip;", opts:["Under about 30%","90% or more","Exactly 100%","It doesn&rsquo;t matter"], ans:0 },
+ { q:"Your score is best treated as&hellip;", opts:["A 3-digit asset to protect","A random number","A one-time thing","Irrelevant"], ans:0 }
+ ], okBody:"Your score is quietly built by boring consistency &mdash; on time, in full, low usage. Guard it." },
+ { type:"checkpoint", epTitle:"SCORE WEAPONIZED" }
+ ]
+},
+
+/* ---------- EP 6: LOAN LITERACY ---------- */
+{
+ id:6, color:"#E8001D",
+ title:"LOAN LITERACY",
+ sub:"Personal, education, home, vehicle. Rates. Hidden charges.",
+ outcome:"Compare loans correctly. Spot hidden charges. Choose the right loan for the right goal.",
+ insight:"Not all debt is equal. Home/education loans build you. Personal/BNPL loans drain you.",
+ estMin:6, xpReward:60,
+ keyLearnings:[
+ "Not all debt is equal — home/education builds you, personal/BNPL drains you.",
+ "Compare loans on APR + fees + prepayment penalty, not flat rate.",
+ "Flat rate ≠ reducing rate — flat hides the true cost.",
+ "BNPL is a loan in disguise — it shows up on your CIBIL.",
+ "Match loan tenor to asset life — long for home, short for phone."
+ ],
+ screens:[
+ { type:"story", icon:"bank",
+ text:"Not all debt is villainy.<br><br>Some loans <b>build you</b> — home, education.<br>Some loans <b>drain you</b> — personal, consumer durable, BNPL.<br><br>The difference = what the money does AFTER you borrow it." },
+
+ { type:"fact",
+ kick:"THE LOAN LADDER (2024)",
+ big:"TYPICAL RATES IN INDIA",
+ body:"<table class='fact-table'><tr><th>Loan</th><th>Rate</th><th>Tenure</th></tr><tr><td>Home loan (floating)</td><td><b>8.5–9.5%</b></td><td>10–30 yr</td></tr><tr><td>Education loan</td><td><b>9–12%</b></td><td>7–15 yr</td></tr><tr><td>Gold loan</td><td><b>9–12%</b></td><td>1–3 yr</td></tr><tr><td>Vehicle loan</td><td><b>9–14%</b></td><td>3–7 yr</td></tr><tr><td>Personal loan</td><td><b>11–18%</b></td><td>1–5 yr</td></tr><tr><td>Credit card (APR)</td><td><b>36–46%</b></td><td>open</td></tr></table>"
+ },
+
+ { type:"match", kicker:"CHEAP vs COSTLY",
+ q:"Match each loan to what makes it cheap or expensive.",
+ pairs:[
+ {a:"Home loan", b:"Cheapest — backed by your house"},
+ {a:"Education loan", b:"Fair — funds your earning power"},
+ {a:"Personal loan", b:"Pricey — nothing backs it"},
+ {a:"Credit-card debt", b:"The most expensive consumer debt"}
+ ],
+ okMsg:"LADDER CLEAR.",
+ okBody:"The rule is simple: <b>secured</b> loans (home, gold) are cheap because collateral protects the lender; <b>unsecured</b> ones (personal, credit card) are dear because nothing does. Pick secured whenever you can.",
+ errBody:"Secured (collateral-backed) = cheap. Unsecured = expensive. Credit-card debt is the costliest consumer borrowing there is." },
+
+ { type:"fact",
+ kick:"THE HIDDEN CHARGES",
+ big:"WHAT THEY DON'T ADVERTISE",
+ body:"<b>Processing fee</b>: 0.5–3% of loan amount (upfront)<br><b>Documentation/legal</b>: ₹5K–25K<br><b>GST on fees</b>: 18%<br><b>Foreclosure penalty</b>: 2–5% (not home loans for individuals)<br><b>Prepayment charge</b>: 2–5% (personal/car)<br><b>Late payment</b>: ₹500–2,000 per miss + 2–3% penal interest<br><b>Insurance bundled</b>: adds 0.5–2% to effective rate<br><br>Always ask for <b>APR (effective) not just advertised rate</b>."
+ },
+
+ { type:"mcq", kicker:"COMPARE PROPERLY",
+ q:"Two loans, same amount and tenure. One has a lower rate but a big processing fee; the other a slightly higher rate and no fee. What should you compare?",
+ opts:["Only the interest rate","Only the monthly EMI","The total all-in cost over the full tenure","Which bank has a nicer app"], ans:2,
+ okMsg:"TOTAL COST WINS.",
+ okBody:"A flashy low rate can hide fat processing fees, insurance and penalties. Always compare the total you'll actually pay start-to-finish &mdash; the all-in cost &mdash; not the headline rate or a single EMI.",
+ errMsg:"LOOK AT EVERYTHING.",
+ errBody:"Rate alone lies. Add every fee across the whole tenure and compare the true total &mdash; that's the number that leaves your pocket." },
+
+ { type:"capSays", tone:"lesson",
+ text:"Before you sign ANY loan, ask 3 questions:<br><br>1. <b>What's the APR</b> (all-in effective rate)?<br>2. <b>What are prepayment / foreclosure charges</b>?<br>3. <b>Is there bundled insurance</b> I'm being forced to buy?<br><br>If the loan officer flinches on any of these → you're being played." },
+
+ { type:"mcq",
+ kicker:"GOOD DEBT vs BAD DEBT",
+ q:"Which of these is 'good debt' — debt that builds wealth long-term?",
+ opts:[
+ "A personal loan for a holiday",
+ "Buy-now-pay-later on a new phone",
+ "An education loan for a high-paying career",
+ "A credit-card swipe on new furniture"
+ ], ans:2,
+ okMsg:"EDUCATION LOAN.",
+ okBody:"<b>Good debt</b> = borrowed money creates more income than it costs (degree → salary > interest). <b>Bad debt</b> = borrowed money creates memories/depreciating assets (trip/phone/furniture). The loan isn't evil; <b>what you buy with it</b> is.",
+ errMsg:"Education loan.",
+ errBody:"Good debt = income-generating or appreciating asset. Bad debt = consumption/depreciating. Rule: <b>would I take this loan if the purchase cost 20% more?</b> If no, don't take it."
+ },
+
+ { type:"trueFalse",
+ kicker:"INCOME TAX",
+ q:"Home loan interest AND education loan interest get tax benefits under the OLD tax regime.",
+ ans:true,
+ okMsg:"TRUE.",
+ okBody:"<b>Sec 24(b)</b>: home loan interest → ₹2L/yr deduction on self-occupied property.<br><b>Sec 80EE</b>: first-time home buyers → extra ₹50K.<br><b>Sec 80E</b>: education loan interest → 100% deductible, <b>no cap</b>, for 8 years.<br>These CUT your effective loan rate by 20–30%. Old regime benefit — check if it makes sense for you.",
+ errMsg:"TRUE.",
+ errBody:"Sec 24(b) + 80EE (home), Sec 80E (education). Old regime. Can reduce effective rate significantly. Tax benefits are part of true loan cost."
+ },
+
+ { type:"oddone", kicker:"GOOD DEBT vs BAD DEBT", q:"Three of these are high-cost consumer debt. Tap the one that can actually build you.", opts:["Credit-card revolving","Payday / instant app loan","Education loan","Buy-now-pay-later"], odd:2, okMsg:"THAT'S GOOD DEBT.", okBody:"An education loan buys an <b>asset that earns</b> &mdash; higher lifetime income &mdash; usually at a fair rate with tax benefits. The other three fund consumption at brutal rates. Rule: borrow for things that grow, never for things that shrink.", errMsg:"NOT QUITE.", errBody:"Cards, payday apps and BNPL are consumption debt at punishing rates. An education loan funds an income-producing asset &mdash; that's the only one that can pay you back." },
+ { type:"speed", kicker:"RAPID FIRE", q:"Good vs bad debt, fast.", time:25, intro:"Five quick calls on borrowing smart. Beat the clock.", questions:[
+ { q:"Which is &lsquo;good debt&rsquo;?", opts:["An education or skill loan","Card revolving","A payday app loan","BNPL on a phone"], ans:0 },
+ { q:"Comparing two loans, judge by&hellip;", opts:["Total all-in cost","The nicest app","Only the EMI","Only the rate"], ans:0 },
+ { q:"Borrow mainly for things that&hellip;", opts:["Grow or earn","Lose value fast","Impress others","Feel nice today"], ans:0 },
+ { q:"A rock-bottom &lsquo;teaser&rsquo; rate can hide&hellip;", opts:["Fat fees and penalties","Free money","Cashback","Nothing"], ans:0 },
+ { q:"Closing a loan early is usually&hellip;", opts:["Worth checking &mdash; small penalty, big interest saved","Always banned","Always free","Pointless"], ans:0 }
+ ], okBody:"Borrow for assets that grow, never for things that shrink &mdash; and always compare the true total cost." },
+ { type:"checkpoint", epTitle:"LOAN SMART" }
+ ]
+},
+
+/* ---------- EP 7: INTEREST RATE & ECONOMY ---------- */
+{
+ id:7, color:"#E8001D",
+ title:"RATES & THE ECONOMY",
+ sub:"RBI repo → your EMI, your salary, your Nifty.",
+ outcome:"Understand how RBI's rate decisions ripple through EMIs, stocks, bonds, real estate, and jobs.",
+ insight:"The repo rate is the single most powerful number in your financial life.",
+ estMin:8, xpReward:80,
+ keyLearnings:[
+ "Repo rate = the price RBI charges banks; it ripples through everything.",
+ "Rate up → EMIs up, stocks down, existing bonds down, gold up.",
+ "RBI uses rates to control inflation — your salary is downstream of this.",
+ "Watch the RBI policy meeting (every 2 months) — it moves your money.",
+ "A SIP that never stops outperforms 99% of cycle-timers."
+ ],
+ screens:[
+ { type:"story", icon:"wave",
+ text:"6 times a year, one room in Mumbai moves every EMI, every stock price, every job posting in India.<br><br>It's called the MPC. Their decision = the <b>repo rate</b>.<br><br>Your Netflix bill cares about it. So should you." },
+
+ { type:"fact",
+ kick:"THE CASCADE",
+ big:"REPO → BANKS → YOU",
+ body:"<b>Repo</b> = rate at which RBI lends to banks.<br>Banks add ~3% and lend to you.<br>So: repo 6.5% → your home loan ~9.5%.<br><br>When RBI <b>raises</b> repo:<br>· EMIs go up<br>· FDs pay more<br>· Stocks fall (costlier borrowing)<br>· Real estate slows<br><br>When RBI <b>cuts</b>: opposite. Your EMI + stock portfolio + housing prices all move together."
+ },
+
+ { type:"fact",
+ kick:"THE RIPPLE — WHO WINS, WHO LOSES",
+ big:"RATE HIKES",
+ body:"<b> Winners</b>: savers (FDs ↑), bond fund holders (after old bonds mature), new FD buyers<br><b> Losers</b>: home loan holders (EMI ↑), stock investors (market falls), businesses borrowing to expand, real estate buyers<br><br>RBI doesn't hike for fun — they hike to fight <b>Inflare</b> (inflation). Every rate move = a calculated trade-off between growth and prices."
+ },
+
+ { type:"match",
+ kicker:"WHAT MOVES WHAT",
+ q:"Match each RBI move to its typical market reaction.",
+ pairs:[
+ {a:"RBI cuts repo by 0.5%", b:"Stocks rally · EMIs drop · Real estate activates"},
+ {a:"RBI hikes repo by 0.5%", b:"Stocks sell off · EMIs rise · FD rates improve"},
+ {a:"RBI holds repo (no change)", b:"Markets calm · wait-and-watch"},
+ {a:"RBI adds surprise hike", b:"Sharp correction · rupee strengthens"}
+ ],
+ okMsg:"YOU READ THE MACRO.",
+ okBody:"Markets hate surprises, love predictability. Most pros watch the <b>MPC statement + forward guidance</b>, not just the number. <b>The signal matters more than the rate itself.</b>",
+ errBody:"Cut = loose money = stocks & real estate up. Hike = tight money = stocks down, FDs up. Surprise moves = volatility spike."
+ },
+
+ { type:"sort",
+ kicker:"HOW SHOULD YOU REACT?",
+ q:"RBI just cut repo by 0.5%. Sort these personal actions — smart or dumb?",
+ bins:[
+ {id:"smart", label:"SMART MOVE"},
+ {id:"dumb", label:"DON'T"}
+ ],
+ items:[
+ {id:"a", label:"Ask bank to reset home loan at new lower rate", bin:"smart"},
+ {id:"b", label:"Lock in a 5-year FD at current rate before cuts", bin:"smart"},
+ {id:"c", label:"Increase equity SIP — rate cuts = tailwind for stocks", bin:"smart"},
+ {id:"d", label:"Rush to refinance to fixed rate", bin:"dumb"},
+ {id:"e", label:"Break existing FD to chase stocks", bin:"dumb"},
+ {id:"f", label:"Take a new loan just because rates are lower", bin:"dumb"}
+ ],
+ okMsg:"MACRO-TO-MICRO CONVERTED.",
+ okBody:"Smart moves: <b>reset loan rate, lock FD at peak, SIP into equity</b>. Don't: panic-refinance, break FDs, take loans you don't need. Rate cycles = <b>wealth transfer opportunity</b> if you're ready.",
+ errBody:"Key plays on a cut: reset variable loans, lock long-term FDs, maintain/increase equity SIPs. Don't chase — most people buy stocks after the rally already happened."
+ },
+
+ { type:"mcq", kicker:"RATE CUT MOVE",
+ q:"RBI cuts rates and your bank lowers your home-loan rate. What's the wealth-building move?",
+ opts:["Reduce your EMI and spend the difference","Keep the EMI the same and finish the loan sooner","Stop paying for a while","Take a fresh loan because money is cheap"], ans:1,
+ okMsg:"KEEP THE EMI.",
+ okBody:"When your rate drops, holding the EMI steady quietly shortens the loan and slashes total interest. Cutting the EMI feels nice but drags the loan on &mdash; and cheap money is a trap if it just makes you borrow more.",
+ errMsg:"HOLD IT STEADY.",
+ errBody:"Keeping the same EMI after a rate cut means more goes to principal &mdash; you finish early and pay far less interest." },
+
+ { type:"mcq", kicker:"MACRO LITERACY",
+ q:"Markets fall sharply after a surprise move by the RBI. Best response for a young investor with a running SIP?",
+ opts:["Stop the SIP &mdash; markets are scary","Sell everything and move to FDs","Keep the SIP running &mdash; you&rsquo;re buying cheaper","Pause and wait for a recovery"], ans:2,
+ okMsg:"KEEP BUYING.",
+ okBody:"A dip is a sale for anyone still investing monthly &mdash; the same amount buys more units. Stopping a SIP during a fall is the classic wealth-destroying mistake. Volatility is the price of equity returns, not a reason to flee.",
+ errMsg:"KEEP THE SIP.",
+ errBody:"Falls make your monthly SIP buy more for less. Panicking and stopping locks in the loss. Stay the course." },
+
+ { type:"trueFalse",
+ kicker:"FINAL INSIGHT",
+ q:"In the long run, whether RBI hikes or cuts matters less than whether you stayed invested.",
+ ans:true,
+ okMsg:"TRUE.",
+ okBody:"Over 30 years, Nifty has seen ~20 rate hikes, 20 cuts, 3 major crashes, 2 booms. A SIP that never stopped outperformed <b>99% of active investors</b> who timed the cycles. <b>Time in market &gt; timing the market.</b> Captain's #1 law.",
+ errMsg:"Very TRUE.",
+ errBody:"Rate cycles come and go. The people who got rich from Nifty were the ones who <b>didn't stop</b>. Compounding only rewards those who stayed at the table."
+ },
+
+ { type:"mcq", kicker:"READ THE SIGNAL",
+ q:"The RBI just CUT interest rates. What's a smart personal response?",
+ opts:["Panic-sell all your stocks","Lock in a good FD rate before banks drop theirs","Stop your SIP","Move everything into cash"], ans:1,
+ okMsg:"READ THE WIND.",
+ okBody:"When rates fall, new FDs will pay less and loans get cheaper. Locking a good FD rate early can be smart, and cheaper EMIs help borrowers. You don't need the exact number &mdash; just which way the wind is blowing.",
+ errMsg:"STAY CALM, ACT SMART.",
+ errBody:"Rate cuts aren't a reason to panic-sell or stop investing. They quietly reprice FDs and loans &mdash; position for that, don't flee." },
+ { type:"speed", kicker:"RAPID FIRE", q:"The economy, fast.", time:25, intro:"Five quick calls on the forces moving your money. Tap fast.", questions:[
+ { q:"RBI raises rates. Broadly, loans get&hellip;", opts:["Costlier","Cheaper","Free","Banned"], ans:0 },
+ { q:"When rates fall, a smart saver may&hellip;", opts:["Lock a good FD rate early","Panic-sell stocks","Stop investing","Hoard cash"], ans:0 },
+ { q:"Inflation means your idle cash&hellip;", opts:["Loses buying power","Grows","Is perfectly safe","Earns interest"], ans:0 },
+ { q:"The repo rate mainly signals&hellip;", opts:["The price of money in the economy","Stock tips","Only the gold price","Nothing"], ans:0 },
+ { q:"Best reaction to scary headlines as a young investor?", opts:["Keep the SIP running","Sell everything","Stop investing","Time the bottom"], ans:0 }
+ ], okBody:"You can&rsquo;t control the economy &mdash; only your response. Read the signals, keep investing, don&rsquo;t panic." },
+ { type:"checkpoint", epTitle:"MACRO MASTERED" }
+ ]
+},
+
+/* ---------- EP 8: THE RULE OF 72 ---------- */
+{
+ id:8, color:"#E8001D",
+ title:"THE RULE OF 72",
+ sub:"The 5-second trick to know exactly when your money doubles.",
+ outcome:"Estimate doubling time in your head. Count lifetime doublings. Spot any 'double your money' scam instantly.",
+ insight:"72 divided by the return = years to double. It turns compounding into mental math you can do at a chai stall.",
+ estMin:6, xpReward:70,
+ keyLearnings:[
+ "Rule of 72: years to double = 72 / annual return %.",
+ "At 12% money doubles every 6 years; at 6% it takes 12 years.",
+ "36 years at 12% = 6 doublings = 64x your money.",
+ "Reverse it: 'double in 2 years' means ~36% return — almost always a scam.",
+ "A 2% higher return looks tiny but adds whole extra doublings over a life."
+ ],
+ screens:[
+ { type:"story", icon:"rocket",
+ text:"Forget the ugly compound formula.<br><br>There's a <b>5-second trick</b> bankers use to know when money doubles.<br><br>It's called the <b>Rule of 72</b>. Let Captain hand you the cheat code." },
+
+ { type:"sim-rule72", title:"THE DOUBLING MACHINE", sub:"Slide the return. Watch how fast ₹1 lakh doubles — and doubles again." },
+
+ { type:"fact", kick:"THE CHEAT CODE", big:"72 ÷ RATE = YEARS TO DOUBLE",
+ body:"Want to know when money doubles? <b>Divide 72 by the annual return.</b><br><br>· 6% → 72/6 = <b>12 years</b><br>· 9% → 72/9 = <b>8 years</b><br>· 12% → 72/12 = <b>6 years</b><br><br>No calculator. No formula. Just one division." },
+
+ { type:"popquiz", secs:15, kicker:"QUICK CALL",
+ q:"A scheme promises to DOUBLE your money in under a year. Your gut, using the Rule of 72, says&hellip;",
+ opts:["Amazing &mdash; jump in","Almost certainly a scam","Invest just half","Wait a month first"], ans:1,
+ okMsg:"SCAM.",
+ okBody:"Doubling in under a year implies a ~72%+ return, sustained &mdash; nothing legitimate delivers that. The Rule of 72 is your five-second fraud detector: if the promised doubling time is short, run.",
+ errMsg:"IT&rsquo;S A SCAM.",
+ errBody:"A sub-one-year double implies an impossible return. Real investing never guarantees that &mdash; walk away." },
+
+ { type:"match", kicker:"HABIT → IMPACT",
+ q:"Match each investing habit to what it does to your wealth.",
+ pairs:[
+ {a:"Starting 10 years earlier", b:"Extra doublings in a lifetime"},
+ {a:"Earning a higher long-term return", b:"Money doubles in fewer years"},
+ {a:"Stopping your SIP in a dip", b:"Interrupts the compounding"},
+ {a:"A ‘double in a year’ scheme", b:"Almost certainly a scam"}
+ ],
+ okMsg:"DOUBLING SENSE UNLOCKED.",
+ okBody:"The whole point of the Rule of 72 isn&rsquo;t the maths &mdash; it&rsquo;s the instinct: start early, aim for solid returns, never interrupt compounding, and smell a scam when the doubling sounds too fast.",
+ errBody:"Start early and stay invested for more doublings; higher returns double faster; interrupting or chasing impossible doubles destroys wealth." },
+
+ { type:"mcq", kicker:"THE REAL LESSON",
+ q:"The Rule of 72 shows money doubling every few years. What's the real-life lesson?",
+ opts:["Chase the hottest stock each week","Start early and stay invested so more doublings fit in your life","Try to time the market perfectly","Withdraw after every double"], ans:1,
+ okMsg:"LET IT RUN.",
+ okBody:"Each extra doubling multiplies everything before it. Starting ten years earlier can mean one or two more doublings in a lifetime &mdash; often more powerful than a bigger salary. The win is patience, not prediction.",
+ errMsg:"PATIENCE, NOT TIMING.",
+ errBody:"You can't out-trade compounding. Start early, stay in, and let the doublings stack &mdash; that's where the real money is." },
+
+ { type:"hotTake", kicker:"SPOT THE SCAM",
+ q:"A 'plan' promises to DOUBLE your money in just a few months. Real, or scam?",
+ opts:["Could be a great opportunity","Almost certainly a scam"],
+ insight:"Double in 18 months = doubling every 1.5 years → Rule of 72 says that's a <b>~48% annual return</b>, sustained. No legitimate investment does that reliably. <b>Ponzi schemes, chit-fund frauds, and 'crypto doublers' all use this exact hook.</b> The Rule of 72 is your built-in scam detector: if the promised doubling time implies a return above ~20%, walk away." },
+
+ { type:"trueFalse", kicker:"GUT CHECK",
+ q:"A slightly higher return barely matters over a long investing life.",
+ ans:false,
+ okMsg:"FALSE.",
+ okBody:"10% doubles every 7.2 yrs → ~4 doublings in 30 yrs (16×). 12% doubles every 6 yrs → 5 doublings (32×). That '<b>tiny</b>' 2% gave you a <b>whole extra doubling</b> — double the final money. Fees and small rate gaps are life-changing over decades.",
+ errMsg:"FALSE — 2% is huge.",
+ errBody:"2% more = roughly one extra doubling over 30 years = ~2× the final corpus. Never dismiss a 'small' rate difference." },
+
+ { type:"mcq", kicker:"SCAM DETECTOR",
+ q:"A cousin swears his plan doubles your money every single year, guaranteed. What should you think?",
+ opts:["Sounds amazing &mdash; invest fast","That implies an impossible return &mdash; almost certainly a scam","Only put in half","Ask him to guarantee triple"], ans:1,
+ okMsg:"DETECTOR ON.",
+ okBody:"Flip the Rule of 72: doubling in one year implies about 72% a year, sustained. Nothing legitimate does that. The rule isn't for flexing maths &mdash; it's for smelling fraud in five seconds.",
+ errMsg:"TRUST THE RULE.",
+ errBody:"A one-year double implies an impossible ~72% return. Legit investing doesn't work like that &mdash; walk away." },
+ { type:"fact", kick:"THE COUSINS OF 72", big:"72 DOUBLES. 114 TRIPLES. 144 IS 4x.",
+ body:"The Rule of 72 has a family.<br><br>&middot; <b>72 &divide; rate</b> = years to <b>double</b><br>&middot; <b>114 &divide; rate</b> = years to <b>triple</b><br>&middot; <b>144 &divide; rate</b> = years to <b>quadruple</b><br><br>Same trick, bigger multiples &mdash; a whole mental toolkit for judging any return on the spot." },
+ { type:"fact", kick:"INFLATION&rsquo;S RULE OF 72", big:"PRICES DOUBLE TOO",
+ body:"Now aim the rule at <b>prices</b>.<br><br>At ~6% inflation, the cost of living <b>doubles in about 12 years</b>. Your ₹100 chai becomes ₹200. Your ₹20,000 rent becomes ₹40,000.<br><br>That is why idle cash quietly loses half its power &mdash; inflation compounds against you just as fast as returns compound for you." },
+ { type:"oddone", kicker:"USE IT RIGHT", q:"Three of these are smart uses of the Rule of 72. Tap the one that misuses it.", opts:["Sniff-testing a get-rich-quick scheme","Comparing how fast two funds double","Guessing tomorrow&rsquo;s lottery number","Checking if an FD keeps up with inflation"], odd:2, okMsg:"NOT FOR LUCK.", okBody:"The rule judges <b>growth rates</b> &mdash; doublings, scams, inflation. It says nothing about random luck like lotteries. Use it to reason about returns, never to gamble.", errMsg:"WRONG TOOL.", errBody:"The Rule of 72 is a growth-rate tool, not a luck tool. It compares returns and warns of scams &mdash; lotteries are pure chance." },
+ { type:"capSays", tone:"win",
+ text:"You now carry a calculator in your head.<br><br>72 for doubling, 114 for tripling, 144 for 4x &mdash; and the same rule warns you when <b>inflation</b> is eating your cash.<br><br>Next time someone quotes you a return, you will know exactly what it means." },
+ { type:"speed", kicker:"RAPID FIRE", q:"Rule of 72, fast.", time:25, intro:"Five quick calls with your new mental calculator. Beat the clock.", questions:[
+ { q:"&lsquo;Doubles your money in a year, guaranteed&rsquo; reads as&hellip;", opts:["A likely scam","A great deal","Totally safe","Normal"], ans:0 },
+ { q:"The real value of the Rule of 72 is&hellip;", opts:["A quick scam detector and sense of doubling","Exact returns","Tax filing","Trading signals"], ans:0 },
+ { q:"To fit more doublings into your life, you should&hellip;", opts:["Start investing early","Wait till 40","Withdraw often","Trade daily"], ans:0 },
+ { q:"A higher yearly return means your money&hellip;", opts:["Doubles in fewer years","Never doubles","Doubles slower","Stays flat"], ans:0 },
+ { q:"A &lsquo;small&rsquo; 2% higher return, held for decades, is&hellip;", opts:["A big deal","Meaningless","A scam","Only for the rich"], ans:0 }
+ ], okBody:"One division judges any return and smells any scam. That&rsquo;s a lifelong superpower in five seconds." },
+ { type:"checkpoint", epTitle:"RULE OF 72 LOCKED" }
+ ]
+},
+
+/* ---------- EP 9: WHERE INTEREST HIDES ---------- */
+{
+ id:9, color:"#FF4D5E",
+ title:"WHERE INTEREST HIDES",
+ sub:"Savings accounts, FDs, sweeps — and the tax quietly eating your interest.",
+ outcome:"Park cash in the right spot. Build an FD ladder. Understand TDS on interest before it surprises you.",
+ insight:"Idle cash bleeds to inflation. But every 'safe' option has a hidden cost — liquidity, lock-in, or tax.",
+ estMin:7, xpReward:70,
+ keyLearnings:[
+ "Savings ~3%, FD ~7%, liquid fund ~6.5% but withdraw anytime.",
+ "FD laddering: split across tenures for liquidity AND better rates.",
+ "Sweep-in FD auto-moves idle savings above a threshold into an FD.",
+ "TDS: bank cuts 10% tax on FD interest once it crosses ₹40,000/year.",
+ "Emergency fund lives in liquid instruments — never equity."
+ ],
+ screens:[
+ { type:"story", icon:"bank",
+ text:"Your salary lands. It sits in a savings account earning <b>3%</b>.<br><br>Inflation is <b>6%</b>.<br><br>Every idle month, that cash quietly <b>loses</b> value. Captain will show you where interest actually hides." },
+
+ { type:"sim-fd-ladder", title:"BUILD AN FD LADDER", sub:"Split ₹5 lakh across tenures. Watch liquidity fight rate." },
+
+ { type:"fact", kick:"THE PARKING SPOTS", big:"SAVINGS vs FD vs LIQUID FUND",
+ body:"<table class='fact-table'><tr><th>Where</th><th>Return</th><th>Access</th></tr><tr><td>Savings account</td><td><b>2.5–4%</b></td><td>Instant</td></tr><tr><td>Liquid mutual fund</td><td><b>6–7%</b></td><td>1 day</td></tr><tr><td>Sweep-in FD</td><td><b>6–7%</b></td><td>Auto</td></tr><tr><td>Fixed deposit</td><td><b>7–7.5%</b></td><td>Locked</td></tr></table>The rule: <b>more return usually means less instant access</b>." },
+
+ { type:"sort", kicker:"MATCH THE JOB",
+ q:"Where should each pot of money actually live?",
+ bins:[
+ {id:"now", label:"NEED IN DAYS"},
+ {id:"soon", label:"NEED IN 1–2 YRS"},
+ {id:"later", label:"5+ YEARS"}
+ ],
+ items:[
+ {id:"a", label:"This month's rent", bin:"now"},
+ {id:"b", label:"Emergency fund (6 months)", bin:"now"},
+ {id:"c", label:"Bike down-payment next year", bin:"soon"},
+ {id:"d", label:"Wedding in 18 months", bin:"soon"},
+ {id:"e", label:"Retirement corpus", bin:"later"},
+ {id:"f", label:"Kid's college (12 yrs away)", bin:"later"}
+ ],
+ okMsg:"LIQUIDITY MATCHED.",
+ okBody:"Short-term money = liquid/savings (safety + access). Long-term money = equity (growth). <b>Never</b> put next month's rent in stocks, or a 20-year goal in a savings account. Match the money to the horizon.",
+ errBody:"Days away → savings/liquid. 1–2 yrs → FD/short debt. 5+ yrs → equity. Time horizon decides the parking spot." },
+
+ { type:"fact", kick:"THE HIDDEN TAX", big:"TDS ON YOUR INTEREST",
+ body:"When your FD interest crosses <b>₹40,000 in a year</b> (₹50,000 for seniors), the bank auto-deducts <b>10% TDS</b> before paying you.<br><br>No PAN on file? They cut <b>20%</b>.<br><br>It's not extra tax — it's advance tax you adjust at filing. But it <b>surprises</b> everyone the first time. Interest is fully taxable at your slab." },
+
+ { type:"mcq", kicker:"RIGHT REACTION",
+ q:"Your FD interest grows big enough that the bank starts deducting TDS. What's the right reaction?",
+ opts:["Panic &mdash; it's a penalty","Relax &mdash; it's advance tax you adjust at filing, or submit Form 15G/15H if eligible","Close the FD immediately","Hide the interest"], ans:1,
+ okMsg:"NOT A PENALTY.",
+ okBody:"TDS is just tax paid in advance on your behalf &mdash; you reconcile it when you file returns, and if your income is below the taxable limit you submit Form 15G/15H to stop it. Interest is taxable; plan for it, don't fear it.",
+ errMsg:"IT'S ADVANCE TAX.",
+ errBody:"TDS isn't a fine or a loss &mdash; it's tax collected early that you settle at filing. Nothing to panic about." },
+
+ { type:"trueFalse", kicker:"MYTH",
+ q:"Money sitting in a savings account beats inflation over time.",
+ ans:false,
+ okMsg:"FALSE.",
+ okBody:"Savings pays ~3%. Inflation runs ~6%. Your money's <b>buying power shrinks ~3% every year</b> it sits idle. 'Safe' cash is a slow, guaranteed loss. Keep only your emergency fund + short-term needs here; the rest must earn more than inflation.",
+ errMsg:"FALSE.",
+ errBody:"3% savings vs 6% inflation = you lose ~3%/year in real terms. Idle cash is a silent leak." },
+
+ { type:"capSays", tone:"lesson",
+ text:"Cash needs a <b>job</b>.<br><br>Emergency money → liquid fund (safe + fast).<br>Idle salary balance → sweep-in FD (auto-earns).<br>Long-term money → equity (grows).<br><br>Money with no job is money quietly dying." },
+
+ { type:"oddone", kicker:"EMERGENCY FUND RULES", q:"An emergency fund must be safe and instant. Tap the one that does NOT belong in it.", opts:["Liquid mutual fund","Sweep-in FD","High-yield savings","Equity mutual fund"], odd:3, okMsg:"RIGHT CALL.", okBody:"Equity can drop 30% exactly when your emergency hits &mdash; job loss and market crashes love to arrive together. Emergency money must be <b>safe and same-day liquid</b>. Chase returns elsewhere; here, chase certainty.", errMsg:"TOO RISKY.", errBody:"Equity is for long-term growth, not emergencies &mdash; it can crash the day you need the cash. Keep the buffer in liquid funds, sweep FDs or savings." },
+ { type:"fact", kick:"THE SWEEP TRICK", big:"IDLE CASH THAT AUTO-EARNS",
+ body:"A <b>sweep-in FD</b> quietly watches your savings account.<br><br>Anything above a balance you set is <b>auto-moved into an FD</b> earning ~7%. The moment you need it, it sweeps back instantly &mdash; no penalty, no paperwork.<br><br>Your lazy salary balance starts earning FD rates without you lifting a finger." },
+ { type:"fact", kick:"SIZE THE BUFFER", big:"HOW BIG IS AN EMERGENCY FUND?",
+ body:"The rule of thumb: about <b>6 months of essential expenses</b> &mdash; rent, food, EMIs, bills (not shopping and trips).<br><br>Keep it in <b>liquid funds or savings</b>, never in stocks. It is insurance, not an investment. Its only job is to be there, instantly, on your worst day." },
+ { type:"trueFalse", kicker:"GUT CHECK",
+ q:"It is smart to chase the highest possible return for your emergency fund.",
+ ans:false,
+ okMsg:"FALSE.",
+ okBody:"Your emergency fund&rsquo;s only job is to be there &mdash; instantly and safely &mdash; on the day everything goes wrong. Return comes a distant second. <b>Liquidity and safety win.</b> Chase returns with your long-term money, not your buffer.",
+ errMsg:"FALSE.",
+ errBody:"Emergency money must be safe and instant, not high-return. Park it in liquid/savings; take risk elsewhere." },
+ { type:"capSays", tone:"lesson",
+ text:"Every rupee needs a job matched to its timeline.<br><br>Days away &rarr; liquid / savings.<br>A year or two &rarr; short FD.<br>Decades away &rarr; equity.<br><br>Money in the wrong slot either loses value to inflation or isn&rsquo;t there when you need it." },
+ { type:"speed", kicker:"RAPID FIRE", q:"Parking cash, fast.", time:25, intro:"Five quick calls on where money should live. Tap fast.", questions:[
+ { q:"Your 6-month emergency fund belongs in&hellip;", opts:["Liquid/savings you can grab fast","Equity stocks","Crypto","A locked 5-year FD"], ans:0 },
+ { q:"Cash idling at 3% while inflation runs 6%&hellip;", opts:["Loses real value","Grows","Beats inflation","Is ideal"], ans:0 },
+ { q:"When the bank deducts TDS on FD interest, it is&hellip;", opts:["Advance tax you adjust later","A fine","A scam","Lost forever"], ans:0 },
+ { q:"Money you need next month should NOT sit in&hellip;", opts:["Equity/stocks","Savings","A liquid fund","Your wallet"], ans:0 },
+ { q:"The point of an FD ladder is&hellip;", opts:["Liquidity plus decent rates","Higher risk","Dodging tax illegally","Locking everything forever"], ans:0 }
+ ], okBody:"Match every rupee to its timeline. Safe and liquid for soon; growth for later. Never mix them up." },
+ { type:"checkpoint", epTitle:"CASH PARKED SMART" }
+ ]
+},
+
+/* ---------- EP 10: YOUR MONEY MACHINE ---------- */
+{
+ id:10, color:"#E8001D",
+ title:"YOUR MONEY MACHINE",
+ sub:"Net worth, automation, and the system that runs without you.",
+ outcome:"Track net worth honestly. Automate saving before spending. Assemble everything Captain taught into one machine.",
+ insight:"Wealth isn't your salary — it's the machine you build: earn, keep a slice, compound it, never interrupt.",
+ estMin:7, xpReward:80,
+ keyLearnings:[
+ "Net worth = what you own minus what you owe. The only honest scoreboard.",
+ "Pay yourself first: auto-SIP on salary day, before you can spend it.",
+ "A high savings RATE beats a high salary over time.",
+ "Automate salary → SIP + bill-pay + sweep, so willpower never decides.",
+ "The machine: earn, keep a %, compound it, and never stop the SIP."
+ ],
+ screens:[
+ { type:"story", icon:"hero",
+ text:"Rich isn't a big salary.<br><br>Rich is a <b>machine</b> — money comes in, a slice is auto-saved, it compounds, and it never stops.<br><br>Time to build yours. This is Captain's final mission." },
+
+ { type:"sim-networth", title:"YOUR NET WORTH", sub:"Tap what you own and owe. Watch the real number appear." },
+
+ { type:"fact", kick:"THE SCOREBOARD", big:"NET WORTH = ASSETS − LIABILITIES",
+ body:"Forget your salary. Your real financial score is <b>net worth</b>:<br><br><b>Assets</b> (cash, FDs, mutual funds, EPF, property) <b>minus liabilities</b> (loans, credit-card dues).<br><br>Track it every month. If the number climbs, you're winning — regardless of what you earn." },
+
+ { type:"mcq", kicker:"THE REAL LEVER",
+ q:"One friend earns a lot but saves a tiny slice. Another earns less but saves a big slice. Who builds wealth faster?",
+ opts:["The big earner &mdash; salary is everything","The one who saves a bigger share of income","They tie","Impossible to say"], ans:1,
+ okMsg:"SAVINGS RATE WINS.",
+ okBody:"What you <b>keep</b> builds wealth, not what you earn. Someone who saves a large share of a modest income beats a big earner who spends almost everything. A high savings rate is the real lever &mdash; and it&rsquo;s fully in your control.",
+ errMsg:"RATE &gt; SALARY.",
+ errBody:"Wealth comes from the share you save, not the size of the paycheck. High earners who spend it all stay broke; disciplined savers pull ahead." },
+
+ { type:"sim-compound", title:"THE MACHINE RUNS", sub:"Set your monthly save. Watch 30 years of it compound into a fortune." },
+
+ { type:"sort", kicker:"BUILD THE SYSTEM",
+ q:"Sort each habit — does it build the money machine, or break it?",
+ bins:[
+ {id:"build", label:"BUILDS IT"},
+ {id:"break", label:"BREAKS IT"}
+ ],
+ items:[
+ {id:"a", label:"Auto-SIP on salary day", bin:"build"},
+ {id:"b", label:"Track net worth monthly", bin:"build"},
+ {id:"c", label:"Pay credit card in full, on time", bin:"build"},
+ {id:"d", label:"Keep a 6-month emergency fund", bin:"build"},
+ {id:"e", label:"Stop your SIP when markets dip", bin:"break"},
+ {id:"f", label:"Pay only the CC minimum", bin:"break"},
+ {id:"g", label:"Upgrade lifestyle with every raise", bin:"break"},
+ {id:"h", label:"Raid investments for wants", bin:"break"}
+ ],
+ okMsg:"THE MACHINE IS BUILT.",
+ okBody:"Automate the good, kill the leaks. The whole game: <b>auto-save first, compound relentlessly, never interrupt, don't let lifestyle eat your raises.</b> Do this for 30 years and you retire rich — boringly, reliably rich.",
+ errBody:"Builds: automation, tracking, paying in full, emergency fund. Breaks: stopping SIPs, min payments, lifestyle creep, raiding investments." },
+
+ { type:"capSays", tone:"win",
+ text:"You made it, soldier.<br><br>You know interest, compounding, credit cards, EMIs, CIBIL, loans, the economy, the Rule of 72, where cash hides — and how to build the machine.<br><br><b>Now go automate one SIP. Today. That's how the war is won.</b>" },
+
+ { type:"mcq", kicker:"THE REAL TARGET",
+ q:"Financial freedom feels vague. What actually marks the finish line?",
+ opts:["Owning the biggest car on your street","Having enough invested that its safe yearly income covers your living costs","A very high salary","Finally paying off your phone"], ans:1,
+ okMsg:"THAT'S FREEDOM.",
+ okBody:"Freedom isn't income or stuff &mdash; it's when your investments safely throw off enough to cover how you live. At that point, work becomes optional. That's the target the whole machine aims at.",
+ errMsg:"IT'S ABOUT INVESTMENTS.",
+ errBody:"A salary or a car isn't freedom &mdash; both can vanish. Freedom is investments large enough to fund your life on their own." },
+ { type:"fact", kick:"THE 50-30-20 RULE", big:"A BUDGET SKELETON",
+ body:"A dead-simple split for your take-home pay:<br><br>&middot; <b>~50% needs</b> &mdash; rent, food, bills, EMIs<br>&middot; <b>~30% wants</b> &mdash; fun, eating out, upgrades<br>&middot; <b>~20% saving &amp; investing</b><br><br>Automate that 20% <b>first</b>, on salary day, and the machine runs whether or not you feel disciplined." },
+ { type:"fact", kick:"THE SILENT KILLER", big:"BEWARE LIFESTYLE CREEP",
+ body:"Every raise whispers the same thing: <b>upgrade everything</b>.<br><br>If your spending climbs as fast as your income, you will earn more your whole life and still retire broke.<br><br>The fix: <b>bank most of every raise</b> straight into your SIP. Let your lifestyle lag your income, on purpose." },
+ { type:"fact", kick:"SHIELD THE MACHINE", big:"INSURANCE = ARMOUR",
+ body:"One hospital bill or one accident can erase years of compounding.<br><br>Cheap <b>term life</b> + <b>health insurance</b> is the machine&rsquo;s shield &mdash; it protects the wealth you are building from a single bad day.<br><br>Insurance isn&rsquo;t an investment. It&rsquo;s the wall around your investments." },
+ { type:"oddone", kicker:"KEEP IT RUNNING", q:"Three of these keep the money machine running. Tap the one that breaks it.", opts:["Auto-SIP on salary day","Banking most of every raise","Upgrading your lifestyle with each raise","Keeping a 6-month buffer"], odd:2, okMsg:"THAT&rsquo;S THE LEAK.", okBody:"Lifestyle creep is the quiet killer &mdash; it eats every raise before it can compound. Automation, banking raises and a buffer all build the machine; upgrading with every raise slowly dismantles it.", errMsg:"LIFESTYLE CREEP.", errBody:"Automating savings, banking raises and holding a buffer all help. Spending every raise is the habit that keeps people broke on a big salary." },
+ { type:"capSays", tone:"win",
+ text:"This is the whole machine.<br><br>Earn &rarr; automatically keep a slice &rarr; compound it &rarr; shield it with insurance &rarr; <b>never interrupt it</b>.<br><br>A salary makes you look rich. The machine actually makes you rich. Go start it &mdash; today." },
+ { type:"speed", kicker:"FINAL BOSS", q:"The whole machine.", time:30, intro:"Six rapid calls covering everything Captain taught you. Prove the machine is built.", questions:[
+ { q:"Your real financial scoreboard is&hellip;", opts:["Net worth (own minus owe)","Your salary","Your car","Your phone"], ans:0 },
+ { q:"&lsquo;Pay yourself first&rsquo; means&hellip;", opts:["Auto-invest on salary day, before spending","Spend first, save leftovers","Never save","Pay bills last"], ans:0 },
+ { q:"Who builds wealth faster?", opts:["The one who saves a high % of income","The big earner who spends it all","The daily trader","The one who waits"], ans:0 },
+ { q:"The emergency fund lives in&hellip;", opts:["Liquid / savings","Equity","Crypto","A friend&rsquo;s startup"], ans:0 },
+ { q:"When markets dip, the machine says&hellip;", opts:["Keep the SIP running","Stop the SIP","Sell everything","Wait 5 years to start"], ans:0 },
+ { q:"The one habit that wins the whole war&hellip;", opts:["Automate saving and never interrupt compounding","Chase hot stocks","Time the market","Upgrade lifestyle each raise"], ans:0 }
+ ], okBody:"You now own the whole system: interest, compounding, credit, EMIs, scores, loans, macro, doubling, safe cash, and the machine that ties it together. Captain Interest is fully unlocked." },
+ { type:"checkpoint", epTitle:"MACHINE ASSEMBLED" }
+ ]
+}
+];
+
+/* =====================================================
+ STATE
+ ===================================================== */
+const state = {
+ ep:0, screen:0,
+ xp:0, level:0, combo:0, maxCombo:0,
+ correct:0, total:0,
+ skipHits:0,
+ simComplete:false, simCompleteFn:null,
+ selected:null,
+ matchLocks:0, matchFirst:null,
+ sortPlaced:{}, _selChip:null, _selChipEl:null,
+ ctaMode:"ready",
+ // per-chapter snapshots
+ chapStartXp:0, chapStartCorrect:0, chapStartMax:0, chapTotalQs:0, chapHits:0,
+};
+
+const $ = s=>document.querySelector(s);
+const splash=$("#splash"),topbar=$("#topbar"),stage=$("#stage"),ctabar=$("#ctabar"),cta=$("#cta"),ctaHint=$("#ctaHint"),fb=$("#feedback"),xppop=$("#xppop");
+const chapList=$("#chapList"),chResults=$("#chResults");
+
+/* ===== PERSISTENCE ===== */
+const PROG_KEY="moneyverse_demo_captainInterest_progress";
+let progress = loadProgress();
+
+function loadProgress(){
+ try{
+ const raw=localStorage.getItem(PROG_KEY);
+ if(!raw)return defaultProgress();
+ const p=JSON.parse(raw);
+ if(typeof p.totalXp!=="number") p.totalXp=0;
+ if(typeof p.totalCorrect!=="number") p.totalCorrect=0;
+ if(typeof p.totalMax!=="number") p.totalMax=0;
+ for(let i=1;i<=10;i++) if(!p[i]) p[i]={status:i===1?"unlocked":"locked",score:0,xpEarned:0,completedAt:null};
+ return p;
+ }catch(e){return defaultProgress();}
+}
+function defaultProgress(){
+ const p={hookDone:false,totalXp:0,totalCorrect:0,totalMax:0};
+ for(let i=1;i<=10;i++) p[i]={status:i===1?"unlocked":"locked",score:0,xpEarned:0,completedAt:null};
+ return p;
+}
+function saveProgress(){
+ try{localStorage.setItem(PROG_KEY,JSON.stringify(progress));}catch(e){}
+ try{ if(window.MoneyVerseState) MoneyVerseState.mirrorFromProgress(MV_CHARACTER, progress); }catch(e){}
+}
+function markChapterComplete(id,score,xpEarned){
+ if(!progress[id])return;
+ progress[id].status="completed";
+ progress[id].score=Math.max(progress[id].score,score);
+ progress[id].xpEarned=Math.max(progress[id].xpEarned,xpEarned);
+ progress[id].completedAt=Date.now();
+ if(id<10 && progress[id+1] && progress[id+1].status==="locked") progress[id+1].status="unlocked";
+ syncTotalsToProgress();
+ saveProgress();
+ try{ if(window.parent!==window) window.parent.postMessage({source:"mv-demo",event:"chapter_completed",character:(window.MV_CHARACTER||""),chapter:id},"*"); }catch(e){}
+}
+function syncTotalsToProgress(){
+ progress.totalXp=state.xp;
+ progress.totalCorrect=state.correct;
+ progress.totalMax=state.maxCombo;
+}
+function resetProgress(){
+ progress=defaultProgress();
+ saveProgress();
+ state.xp=0;state.correct=0;state.combo=0;state.maxCombo=0;state.total=0;state.skipHits=0;
+ $("#xpVal").textContent=0;$("#comboVal").textContent=0;$("#comboChip").classList.remove("hot");
+}
+// Restore session totals from saved progress
+state.xp=progress.totalXp||0;
+state.correct=progress.totalCorrect||0;
+state.maxCombo=progress.totalMax||0;
+// keep level in sync with restored tokens
+(function(){while(state.level<LEVELS.length-1 && state.xp>=LEVELS[state.level+1].xp) state.level++;})();
+// reflect restored tokens in the topbar (hidden until a chapter starts)
+$("#xpVal").textContent=state.xp;
+function progressDoneCount(){let n=0;for(let i=1;i<=10;i++) if(progress[i] && progress[i].status==="completed") n++;return n;}
+
+/* ===== ICONS ===== */
+const ICON_LOCK=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>`;
+const ICON_PLAY=`<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.14v13.72a1 1 0 0 0 1.54.84l10.4-6.86a1 1 0 0 0 0-1.68L9.54 4.3A1 1 0 0 0 8 5.14z"/></svg>`;
+const ICON_CHECK=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 12 10 17 19 7"/></svg>`;
+
+/* ===== CHAPTER LIST ===== */
+function enterChapterList(){
+ // hide everything else
+ splash.style.display="none";
+ topbar.classList.add("hide");stage.classList.add("hide");ctabar.classList.add("hide");
+ $("#finale").classList.remove("show");
+ chResults.classList.remove("show");
+ $("#cpModal").classList.remove("show");
+ renderChapterList();
+ chapList.classList.add("show");
+ chapList.scrollTop=0;
+}
+
+function renderChapterList(){
+ const done=progressDoneCount();
+ $("#chapProgDone").textContent=done;
+ $("#chapProgFill").style.width=Math.round((done/10)*100)+"%";
+ const wrap=$("#chapCards");wrap.innerHTML="";
+ // chapters are EPISODES[1..7] (skip EP 0 hook)
+ for(let i=1;i<=10;i++){
+ const ep=EPISODES[i]; if(!ep) continue;
+ const st=progress[i].status;
+ const card=document.createElement("div");
+ card.className="chap-card "+st;
+ // mark the next playable card as "next" (visual emphasis)
+ if(st==="unlocked") card.classList.add("next");
+ card.style.animationDelay=((i-1)*60)+"ms";
+ const num=String(i).padStart(2,"0");
+ const desc=(ep.outcome||ep.sub||"").replace(/<[^>]+>/g,"");
+ const statusIcon = st==="locked"?ICON_LOCK : st==="completed"?ICON_CHECK : ICON_PLAY;
+ card.innerHTML=`
+ <div class="chap-num">${num}</div>
+ <div class="chap-info">
+ <div class="chap-title">${ep.title}</div>
+ <div class="chap-desc">${desc}</div>
+ <div class="chap-meta">
+ <span class="chap-chip">${ep.estMin||5} MIN</span>
+ <span class="chap-chip xp">+${ep.xpReward||50}</span>
+ </div>
+ </div>
+ <div class="chap-status">${statusIcon}</div>
+ ${st==="completed"?`<div class="chap-replay">REPLAY</div>`:""}
+ ${st==="locked"?`<div class="chap-tooltip">Complete chapter ${i-1} to unlock</div>`:""}
+ `;
+ if(st==="locked"){
+ card.onclick=()=>{
+ card.classList.add("show-tip");
+ clearTimeout(card._tt);
+ card._tt=setTimeout(()=>card.classList.remove("show-tip"),1600);
+ };
+ } else {
+ card.onclick=()=>enterChapter(i);
+ }
+ wrap.appendChild(card);
+ }
+}
+
+function enterChapter(id){
+ chapList.classList.remove("show");
+ chResults.classList.remove("show");
+ topbar.classList.remove("hide");stage.classList.remove("hide");ctabar.classList.remove("hide");
+ // snapshot for per-chapter results
+ state.chapStartXp=state.xp;
+ state.chapStartCorrect=state.correct;
+ state.chapStartMax=state.maxCombo;
+ state.chapTotalQs=0;state.chapHits=0;
+ // count gradeable questions in this chapter
+ EPISODES[id].screens.forEach(s=>{
+ if(s.type==="mcq"||s.type==="trueFalse"||s.type==="popquiz"||s.type==="calc"||s.type==="match"||s.type==="sort"||s.type==="estimate"||s.type==="oddone") state.chapTotalQs++;
+ if(s.type==="speed") state.chapTotalQs+=s.questions.length;
+ });
+ startEpisode(id);
+}
+
+/* ===== CHAPTER RESULTS ===== */
+function showChapterResults(id){
+ const ep=EPISODES[id];
+ const xpEarned=Math.max(0,state.xp-state.chapStartXp);
+ const hits=Math.max(0,state.correct-state.chapStartCorrect);
+ const total=Math.max(state.chapTotalQs,hits);
+ const score=total>0?Math.round((hits/total)*100):100;
+ markChapterComplete(id,score,xpEarned);
+ // populate
+ $("#chResKicker").textContent=`CHAPTER ${id} COMPLETE`;
+ $("#chResTitle").textContent=ep.title;
+ countUp($("#chResXp"),0,xpEarned,1400,v=>"+"+v);
+ // ring count-up
+ const circ=540.35;
+ $("#chResRingFg").setAttribute("stroke-dashoffset",circ);
+ countUp($("#chResPct"),0,score,1400,v=>v+"%");
+ setTimeout(()=>$("#chResRingFg").setAttribute("stroke-dashoffset",circ-(circ*score/100)),120);
+ // learnings (staggered)
+ const list=$("#chResList");list.innerHTML="";
+ (ep.keyLearnings||[]).forEach((kl,i)=>{
+ const li=document.createElement("li");
+ li.textContent=kl;
+ li.style.animationDelay=(400+i*120)+"ms";
+ list.appendChild(li);
+ });
+ // CTA wiring — no auto-advance; the student returns to the list and picks the next chapter
+ const nextBtn=$("#chResNext");
+ const backBtn=$("#chResBack");
+ if(id>=10){
+ nextBtn.style.display="";
+ nextBtn.className="ch-res-btn primary";
+ nextBtn.textContent="SEE FINAL RANK →";
+ nextBtn.onclick=()=>{chResults.classList.remove("show");showFinale();};
+ backBtn.className="ch-res-btn secondary";
+ backBtn.textContent="← BACK TO CHAPTERS";
+ } else {
+ nextBtn.style.display="none";
+ backBtn.className="ch-res-btn primary";
+ backBtn.textContent="CHOOSE YOUR NEXT CHAPTER →";
+ }
+ backBtn.onclick=()=>{chResults.classList.remove("show");enterChapterList();};
+ // show
+ topbar.classList.add("hide");stage.classList.add("hide");ctabar.classList.add("hide");
+ chResults.classList.add("show");
+ chResults.scrollTop=0;
+ const hero=$("#chResHero");if(hero){hero.classList.remove("pop");void hero.offsetWidth;hero.classList.add("pop");}
+ // competitive standing — students compete on total XP
+ const aheadPct=Math.min(96,30+Math.round(state.xp/12));
+ countUp($("#competeXp"),0,state.xp,1400);
+ $("#competeNote").innerHTML=`You're ahead of <b>${aheadPct}%</b> of learners. Score the most tokens to beat everyone and claim <b>#1</b> on the class leaderboard.`;
+ const cf=$("#competeFill");if(cf){cf.style.width="0%";setTimeout(()=>cf.style.width=aheadPct+"%",320);}
+ burst();setTimeout(burst,220);setTimeout(burst,460);setTimeout(burst,780);setTimeout(burst,1080);
+}
+
+function countUp(el,from,to,dur,fmt){
+ const t0=performance.now();
+ function tick(t){
+ const k=Math.min(1,(t-t0)/dur);
+ const v=Math.round(from+(to-from)*(1-Math.pow(1-k,3)));
+ el.textContent=fmt?fmt(v):v;
+ if(k<1) requestAnimationFrame(tick);
+ }
+ requestAnimationFrame(tick);
+}
+
+/* ===== ENTRY ===== */
+$("#splashStart").onclick=()=>{
+ splash.style.display="none";
+ if(!progress.hookDone){
+ // run the hook (EP 0) once; on completion we'll mark hookDone and route to list
+ topbar.classList.remove("hide");stage.classList.remove("hide");ctabar.classList.remove("hide");
+ startEpisode(0);
+ } else {
+ enterChapterList();
+ }
+};
+$("#backBtn").onclick=()=>{
+ // exits current chapter back to list (no full reload, no progress loss)
+ if(state.ep===0){
+ if(confirm("Skip the gut check and go to chapters?")){progress.hookDone=true;saveProgress();enterChapterList();}
+ return;
+ }
+ enterChapterList();
+};
+$("#chapReset").onclick=()=>{
+ if(confirm("Reset all chapter progress? This wipes scores and re-locks chapters 2–7.")){
+ resetProgress();
+ renderChapterList();
+ }
+};
+
+function startEpisode(idx){
+ state.ep=idx;state.screen=0;
+ const ep=EPISODES[idx];
+ document.documentElement.style.setProperty("--ep-color",ep.color);
+ const wrap=$("#progwrap");wrap.innerHTML="";
+ ep.screens.forEach(()=>wrap.appendChild(Object.assign(document.createElement("div"),{className:"progseg"})));
+ renderScreen();
+}
+
+function updateProgress(){
+ document.querySelectorAll("#progwrap .progseg").forEach((s,i)=>{
+ if(i<state.screen)s.classList.add("done");
+ else if(i===state.screen){s.classList.remove("done");s.style.setProperty("--p","50%");}
+ else{s.classList.remove("done");s.style.setProperty("--p","0%");}
+ });
+}
+
+function nextScreen(){
+ state.screen++;
+ state.selected=null;state.simComplete=false;state.simCompleteFn=null;
+ state.matchLocks=0;state.matchFirst=null;
+ state.sortPlaced={};state._selChip=null;state._selChipEl=null;
+ state.hotEngaged=false;
+ const ep=EPISODES[state.ep];
+ if(state.screen>=ep.screens.length){finishEpisode();return;}
+ renderScreen();
+}
+
+function finishEpisode(){
+ const ep=EPISODES[state.ep];
+ if(ep.skipXpCount){
+ // EP 0 hook: mark complete + route to chapter list (not directly into EP 1)
+ progress.hookDone=true;saveProgress();
+ if(state.skipHits===ep.skipXpCount){
+ showFeedback("ok"," ACED IT","You're already ahead of most Indians. Captain's chapter list is unlocked.","+30",()=>enterChapterList());
+ } else {
+ showFeedback("info"," YOU NEED THIS","Missed some? That's the whole point — Captain's chapter list is now unlocked.","",()=>enterChapterList());
+ }
+ return;
+ }
+ // chapters 1-7 → per-chapter results screen (not the old all-flow checkpoint)
+ showChapterResults(state.ep);
+}
+
+function showCheckpoint(){
+ const ep=EPISODES[state.ep];
+ $("#cpTitle").textContent=ep.title;
+ const pct=Math.min(100,Math.round((state.xp/(75*(state.ep+1)))*100));
+ $("#cpPct").textContent=pct+"%";
+ $("#cpXp").textContent=state.xp;$("#cpHit").textContent=state.correct;$("#cpMax").textContent=state.maxCombo;
+ $("#cpInsight").innerHTML=" "+ep.insight;
+ const circ=2*Math.PI*52;
+ setTimeout(()=>$("#cpRingFg").setAttribute("stroke-dashoffset",circ-(circ*pct/100)),100);
+ $("#cpModal").classList.add("show");
+ $("#cpBtn").onclick=()=>{
+ $("#cpModal").classList.remove("show");
+ if(state.ep>=EPISODES.length-1)showFinale();
+ else{state.ep++;startEpisode(state.ep);}
+ };
+ burst();
+}
+
+function renderScreen(){
+ const ep=EPISODES[state.ep];
+ const sc=ep.screens[state.screen];
+ clearInterval(state.speedTimer);
+ updateProgress();
+ stage.innerHTML="";
+ const head=document.createElement("div");
+ head.className="ep-head";
+ head.innerHTML=`
+ <div class="ep-kicker">CH ${ep.id} · ${state.screen+1}/${ep.screens.length}</div>
+ <div class="ep-title">${ep.title}</div>
+ <div class="ep-sub">${ep.sub}</div>
+ ${ep.outcome?`<div class="ep-outcome"><b>LEARNING OUTCOME</b> · ${ep.outcome}</div>`:""}
+ `;
+ stage.appendChild(head);
+ const c=document.createElement("div");
+ stage.appendChild(c);
+ switch(sc.type){
+ case "story": renderStory(c,sc); setCta("passive","CONTINUE","Tap to advance"); break;
+ case "fact": renderFact(c,sc); setCta("passive","GOT IT","Read and tap"); break;
+ case "capSays": renderCap(c,sc); setCta("passive","CONTINUE",""); break;
+ case "hotTake": renderHotTake(c,sc); setCta("hot","SHARE YOUR TAKE","Pick one — no wrong answer"); break;
+ case "mcq": renderMCQ(c,sc); setCta("graded","CHECK","Choose one"); break;
+ case "trueFalse": renderTF(c,sc); setCta("graded","CHECK","True or false?"); break;
+ case "popquiz": renderPopquiz(c,sc); setCta("graded","CHECK"," Tap fast"); break;
+ case "match": renderMatch(c,sc); setCta("sim","LOCK","Match all pairs"); break;
+ case "sort": renderSort(c,sc); setCta("sim","SUBMIT","Place all cards"); break;
+ case "calc": renderCalc(c,sc); setCta("graded","CHECK","Pick the answer"); break;
+ case "warn": renderWarn(c,sc); setCta("passive","NEXT",""); break;
+ case "sim-si-vs-ci": renderSimSiCi(c,sc); setCta("sim","GOT IT","Slide the years"); break;
+ case "sim-compound": renderSimCompound(c,sc); setCta("sim","GOT IT","Try different SIPs"); break;
+ case "sim-cc-trap": renderSimCC(c,sc); setCta("sim","LESSON LEARNED","See the trap"); break;
+ case "sim-emi": renderSimEMI(c,sc); setCta("sim","GOT IT","See the reality"); break;
+ case "sim-cibil": renderSimCIBIL(c,sc); setCta("sim","GOT IT","Hit 750+"); break;
+ case "sim-rule72": renderSimRule72(c,sc); setCta("sim","GOT IT","Slide the rate"); break;
+ case "sim-fd-ladder":renderSimFdLadder(c,sc); setCta("sim","GOT IT","Allocate the pool"); break;
+ case "sim-networth": renderSimNetworth(c,sc); setCta("sim","GOT IT","Tap your items"); break;
+ case "estimate": renderEstimate(c,sc); setCta("graded","LOCK IT IN","Drag to your best guess"); enableCta(); break;
+ case "oddone": renderOddOne(c,sc); setCta("graded","CHECK","Tap the odd one out"); break;
+ case "speed": renderSpeed(c,sc); setCta("sim","CONTINUE","Finish the round to continue"); break;
+ case "checkpoint": finishEpisode(); break;
+ default: c.textContent="Unknown: "+sc.type;
+ }
+ stage.scrollTop=0;
+}
+
+/* ===== RENDERERS ===== */
+function renderStory(el,sc){
+ const d=document.createElement("div");
+ d.className="story";d.dataset.icon=sc.icon||"hero";
+ d.innerHTML=`<div>${sc.text}</div>`;
+ el.appendChild(d);
+}
+function renderFact(el,sc){
+ const d=document.createElement("div");
+ d.className="fact";
+ d.innerHTML=`<div class="fact-kick">${sc.kick}</div><div class="fact-big">${sc.big}</div><div class="fact-body">${sc.body}</div>`;
+ el.appendChild(d);
+}
+function renderCap(el,sc){
+ const d=document.createElement("div");
+ d.className="cap-voice "+(sc.tone||"");
+ d.innerHTML=`<p>${sc.text}</p>`;
+ el.appendChild(d);
+}
+function renderHotTake(el,sc){
+ const d=document.createElement("div");
+ d.className="hottake";
+ d.innerHTML=`<div class="hottake-kick">${sc.kicker}</div><div class="hottake-q">${sc.q}</div><div class="hot-opts"></div>`;
+ const opts=d.querySelector(".hot-opts");
+ sc.opts.forEach(o=>{
+ const b=document.createElement("button");
+ b.className="hot-opt";b.textContent=o;
+ b.onclick=()=>{d.querySelectorAll(".hot-opt").forEach(x=>x.classList.remove("sel"));b.classList.add("sel");state.hotEngaged=true;enableCta();};
+ opts.appendChild(b);
+ });
+ el.appendChild(d);
+ state._currentInsight=sc.insight;
+}
+function renderMCQ(el,sc){
+ const d=document.createElement("div");
+ d.innerHTML=`<div class="q-kick">${sc.kicker}</div><div class="q-text">${sc.q}</div><div class="opts"></div>`;
+ const opts=d.querySelector(".opts");
+ const L=["A","B","C","D","E"];
+ sc.opts.forEach((o,i)=>{
+ const b=document.createElement("button");
+ b.className="opt";
+ b.innerHTML=`<div class="opt-letter">${L[i]}</div><div>${o}</div>`;
+ b.onclick=()=>{d.querySelectorAll(".opt").forEach(x=>x.classList.remove("sel"));b.classList.add("sel");state.selected=i;enableCta();};
+ opts.appendChild(b);
+ });
+ el.appendChild(d);state._currentSc=sc;
+}
+function renderTF(el,sc){
+ const d=document.createElement("div");
+ d.innerHTML=`<div class="q-kick">${sc.kicker}</div><div class="q-text">${sc.q}</div><div class="opts"></div>`;
+ const opts=d.querySelector(".opts");
+ ["TRUE","FALSE"].forEach((t,i)=>{
+ const b=document.createElement("button");b.className="opt";
+ b.innerHTML=`<div class="opt-letter">${i===0?"":""}</div><div>${t}</div>`;
+ b.onclick=()=>{d.querySelectorAll(".opt").forEach(x=>x.classList.remove("sel"));b.classList.add("sel");state.selected=i===0;enableCta();};
+ opts.appendChild(b);
+ });
+ el.appendChild(d);state._currentSc=sc;
+}
+function renderPopquiz(el,sc){
+ const d=document.createElement("div");
+ d.innerHTML=`
+ <div class="pq-tag"> TIMED · ${sc.secs}s</div>
+ <div class="pq-ring"><svg viewBox="0 0 80 80"><circle class="bg" cx="40" cy="40" r="32"/><circle class="fg" cx="40" cy="40" r="32" stroke-dasharray="201.06" stroke-dashoffset="0" id="pqFg"/></svg><div class="num" id="pqNum">${sc.secs}</div></div>
+ <div class="q-kick">${sc.kicker}</div><div class="q-text">${sc.q}</div><div class="opts"></div>`;
+ const opts=d.querySelector(".opts");
+ const L=["A","B","C","D"];
+ sc.opts.forEach((o,i)=>{
+ const b=document.createElement("button");b.className="opt";
+ b.innerHTML=`<div class="opt-letter">${L[i]}</div><div>${o}</div>`;
+ b.onclick=()=>{d.querySelectorAll(".opt").forEach(x=>x.classList.remove("sel"));b.classList.add("sel");state.selected=i;enableCta();};
+ opts.appendChild(b);
+ });
+ el.appendChild(d);
+ const circ=201.06;let t=sc.secs;
+ const iv=setInterval(()=>{
+ t-=0.1;
+ if(t<=0){clearInterval(iv);$("#pqNum").textContent="0";$("#pqFg").setAttribute("stroke-dashoffset",circ);state._pqTimedOut=true;state.selected=state.selected??-1;onCheckClick();return;}
+ $("#pqNum").textContent=Math.ceil(t);$("#pqFg").setAttribute("stroke-dashoffset",circ-(circ*t/sc.secs));
+ },100);
+ state._pqTimer=iv;state._currentSc=sc;
+}
+function renderMatch(el,sc){
+ const d=document.createElement("div");
+ d.innerHTML=`<div class="q-kick">${sc.kicker}</div><div class="q-text">${sc.q}</div><div class="match-grid" id="matchGrid"></div>`;
+ const grid=d.querySelector("#matchGrid");
+ const left=sc.pairs.map((p,i)=>({side:"L",idx:i,text:p.a}));
+ const right=sc.pairs.map((p,i)=>({side:"R",idx:i,text:p.b}));
+ for(let i=right.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[right[i],right[j]]=[right[j],right[i]];}
+ const rows=Math.max(left.length,right.length);
+ for(let r=0;r<rows;r++){
+ [left[r],right[r]].forEach(cell=>{
+ if(!cell)return;
+ const t=document.createElement("div");t.className="match-tile";
+ t.dataset.side=cell.side;t.dataset.idx=cell.idx;t.textContent=cell.text;
+ t.onclick=()=>onMatchTap(t,sc);
+ grid.appendChild(t);
+ });
+ }
+ el.appendChild(d);state._currentSc=sc;
+ state.simCompleteFn=()=>state.matchLocks>=sc.pairs.length;
+}
+function onMatchTap(tile,sc){
+ if(tile.classList.contains("locked")||tile.classList.contains("bad"))return;
+ if(!state.matchFirst){tile.classList.add("sel");state.matchFirst=tile;return;}
+ if(state.matchFirst===tile){tile.classList.remove("sel");state.matchFirst=null;return;}
+ const a=state.matchFirst,b=tile;
+ if(a.dataset.side===b.dataset.side){a.classList.remove("sel");b.classList.add("sel");state.matchFirst=b;return;}
+ if(a.dataset.idx===b.dataset.idx){
+ a.classList.remove("sel");a.classList.add("locked");b.classList.add("locked");
+ state.matchLocks++;state.matchFirst=null;popXP(10);
+ if(state.matchLocks>=sc.pairs.length)enableCta();
+ } else {
+ a.classList.remove("sel");a.classList.add("bad");b.classList.add("bad");
+ setTimeout(()=>{a.classList.remove("bad");b.classList.remove("bad");},500);
+ state.matchFirst=null;breakCombo();
+ }
+}
+
+function renderSort(el,sc){
+ const d=document.createElement("div");
+ const binsHtml=sc.bins.map(b=>`<div class="sort-bin" data-bin="${b.id}"><div class="sort-bin-title">${b.label}</div><div class="drop-target" id="drop-${b.id}"></div></div>`).join("");
+ d.innerHTML=`<div class="q-kick">${sc.kicker}</div><div class="q-text">${sc.q}</div><div class="sort-hint" id="sortHint">1 Tap a card → 2 tap a bin</div><div class="sort-bank" id="sortBank"></div><div class="sort-bins${sc.bins.length>=3?' three':''}" id="sortBins">${binsHtml}</div>`;
+ const bank=d.querySelector("#sortBank");
+ const items=[...sc.items].sort(()=>Math.random()-0.5);
+ items.forEach(it=>{
+ const chip=document.createElement("button");chip.className="sort-chip";chip.dataset.id=it.id;chip.textContent=it.label;
+ chip.onclick=()=>selectSortChip(chip,it,sc);bank.appendChild(chip);
+ });
+ d.querySelectorAll(".sort-bin").forEach(bin=>{
+ bin.onclick=e=>{if(e.target.closest(".xbtn"))return;placeSortChip(bin.dataset.bin,sc);};
+ });
+ el.appendChild(d);state._currentSc=sc;
+ state.simCompleteFn=()=>Object.keys(state.sortPlaced).length===sc.items.length;
+}
+function selectSortChip(chip,item,sc){
+ if(chip.classList.contains("placed"))return;
+ const hint=document.getElementById("sortHint");
+ if(state._selChip===item.id){
+ chip.classList.remove("selected");state._selChip=null;state._selChipEl=null;
+ document.querySelectorAll(".sort-bin.active").forEach(b=>b.classList.remove("active"));
+ if(hint)hint.innerHTML="1 Tap a card → 2 tap a bin";return;
+ }
+ document.querySelectorAll(".sort-chip.selected").forEach(c=>c.classList.remove("selected"));
+ chip.classList.add("selected");state._selChip=item.id;state._selChipEl=chip;
+ document.querySelectorAll(".sort-bin").forEach(b=>b.classList.add("active"));
+ if(hint)hint.innerHTML=" Tap the BIN where this belongs";
+}
+function placeSortChip(binId,sc){
+ if(!state._selChip)return;
+ const itemId=state._selChip,chip=state._selChipEl,item=sc.items.find(i=>i.id===itemId);
+ if(state.sortPlaced[itemId]){const o=document.querySelector(`[data-chip="${itemId}"]`);if(o)o.remove();}
+ state.sortPlaced[itemId]=binId;chip.classList.add("placed");chip.classList.remove("selected");
+ const drop=document.querySelector(`#drop-${binId}`);
+ const pill=document.createElement("div");pill.className="dropped";pill.dataset.chip=itemId;
+ pill.innerHTML=`<span style="flex:1">${item.label}</span><button class="xbtn">×</button>`;
+ pill.querySelector(".xbtn").onclick=e=>{e.stopPropagation();delete state.sortPlaced[itemId];pill.remove();chip.classList.remove("placed");ctaDisable();};
+ drop.appendChild(pill);
+ state._selChip=null;state._selChipEl=null;
+ document.querySelectorAll(".sort-bin.active").forEach(b=>b.classList.remove("active"));
+ const hint=document.getElementById("sortHint"),placed=Object.keys(state.sortPlaced).length,total=sc.items.length;
+ if(placed===total){if(hint)hint.innerHTML=` ALL ${total} PLACED — hit SUBMIT`;enableCta();}
+ else{if(hint)hint.innerHTML=`${placed}/${total} placed · next card`;}
+}
+
+function renderCalc(el,sc){
+ const d=document.createElement("div");d.className="calc";
+ d.innerHTML=`<div class="q-kick">${sc.kicker}</div><div class="calc-q">${sc.q}</div><div class="calc-givens">${sc.givens}</div><div class="opts"></div>`;
+ const opts=d.querySelector(".opts");const L=["A","B","C","D"];
+ sc.opts.forEach((o,i)=>{
+ const b=document.createElement("button");b.className="opt";
+ b.innerHTML=`<div class="opt-letter">${L[i]}</div><div>${o}</div>`;
+ b.onclick=()=>{d.querySelectorAll(".opt").forEach(x=>x.classList.remove("sel"));b.classList.add("sel");state.selected=i;enableCta();};
+ opts.appendChild(b);
+ });
+ el.appendChild(d);state._currentSc=sc;
+}
+function renderWarn(el,sc){
+ const d=document.createElement("div");d.className="warn";
+ d.innerHTML=`<div class="warn-kick">${sc.kick}</div><div class="warn-title">${sc.title}</div><div class="warn-body">${sc.body}</div>`;
+ el.appendChild(d);
+}
+
+/* ===== SIMS ===== */
+function renderSimSiCi(el,sc){
+ const d=document.createElement("div");d.className="sim-card";
+ d.innerHTML=`
+ <div class="sim-title">${sc.title}</div>
+ <div class="sim-sub">${sc.sub}</div>
+ <div class="sim-row">PRINCIPAL <b id="sv_p">₹1,00,000</b></div>
+ <input type="range" class="sim-slider" id="sv_pS" min="10000" max="1000000" step="10000" value="100000">
+ <div class="sim-row">RATE <b id="sv_r">10%</b></div>
+ <input type="range" class="sim-slider" id="sv_rS" min="4" max="20" step="0.5" value="10">
+ <div class="sim-row">YEARS <b id="sv_y">20</b></div>
+ <input type="range" class="sim-slider" id="sv_yS" min="1" max="40" step="1" value="20">
+ <div class="ci-bars" id="svBars"></div>
+ <div class="ci-breakdown">
+ <div class="ci-chip"><div class="sm">SIMPLE AT END</div><div class="bg" id="sv_si">₹3,00,000</div></div>
+ <div class="ci-chip gain"><div class="sm">COMPOUND AT END</div><div class="bg" id="sv_ci">₹6,72,750</div></div>
+ </div>
+ <div style="font-size:12px;opacity:.8;margin-top:8px;text-align:center">Compound earns <b id="sv_gap" style="color:var(--ok)">₹3,72,750</b> more — and the gap grows with time.</div>`;
+ el.appendChild(d);
+ const bars=d.querySelector("#svBars");
+ function update(){
+ const p=+$("#sv_pS").value,r=+$("#sv_rS").value,y=+$("#sv_yS").value;
+ $("#sv_p").textContent="₹"+formatINR(p);$("#sv_r").textContent=r+"%";$("#sv_y").textContent=y;
+ const si=p+(p*r*y/100);
+ const ci=p*Math.pow(1+r/100,y);
+ $("#sv_si").textContent="₹"+formatINR(Math.round(si));
+ $("#sv_ci").textContent="₹"+formatINR(Math.round(ci));
+ $("#sv_gap").textContent="₹"+formatINR(Math.round(ci-si));
+ // redraw bars — sample at 5 time slices
+ bars.innerHTML="";
+ const slices=[Math.max(1,Math.round(y*0.2)),Math.max(2,Math.round(y*0.4)),Math.max(3,Math.round(y*0.6)),Math.max(4,Math.round(y*0.8)),y];
+ const maxCI=p*Math.pow(1+r/100,y);
+ slices.forEach(yr=>{
+ const vSi=p+(p*r*yr/100);
+ const vCi=p*Math.pow(1+r/100,yr);
+ const col=document.createElement("div");col.className="ci-col";
+ col.innerHTML=`
+ <div class="ci-barwrap" style="display:flex;gap:3px;align-items:flex-end;height:100%;width:100%;">
+ <div class="ci-bar si" style="height:${(vSi/maxCI)*100}%;width:45%"></div>
+ <div class="ci-bar" style="height:${(vCi/maxCI)*100}%;width:45%"></div>
+ </div>
+ <div class="lb">Y${yr}</div>`;
+ bars.appendChild(col);
+ });
+ state.simComplete=true;enableCta();
+ }
+ ["sv_pS","sv_rS","sv_yS"].forEach(id=>$("#"+id).addEventListener("input",update));
+ update();
+}
+
+function renderSimCompound(el,sc){
+ const d=document.createElement("div");d.className="sim-card";
+ d.innerHTML=`
+ <div class="sim-title">${sc.title}</div>
+ <div class="sim-sub">${sc.sub}</div>
+ <div class="sim-row">MONTHLY SIP <b id="sip_m">₹5,000</b></div>
+ <input type="range" class="sim-slider" id="sip_mS" min="500" max="50000" step="500" value="5000">
+ <div class="sim-row">EXPECTED RETURN <b id="sip_r">12%</b></div>
+ <input type="range" class="sim-slider" id="sip_rS" min="6" max="18" step="0.5" value="12">
+ <div class="sim-row">YEARS <b id="sip_y">30</b></div>
+ <input type="range" class="sim-slider" id="sip_yS" min="1" max="45" step="1" value="30">
+ <div class="ci-viz">
+ <div class="ci-label">AT RETIREMENT YOU HAVE</div>
+ <div class="ci-final" id="sip_final">₹1.76 CR</div>
+ <div class="ci-breakdown">
+ <div class="ci-chip"><div class="sm">YOU INVESTED</div><div class="bg" id="sip_inv">₹18L</div></div>
+ <div class="ci-chip gain"><div class="sm">CAPTAIN EARNED FOR YOU</div><div class="bg" id="sip_gain">₹1.58 CR</div></div>
+ </div>
+ </div>`;
+ el.appendChild(d);
+ function update(){
+ const m=+$("#sip_mS").value,r=+$("#sip_rS").value/100/12,y=+$("#sip_yS").value,n=y*12;
+ $("#sip_m").textContent="₹"+formatINR(m);$("#sip_r").textContent=(r*12*100).toFixed(1)+"%";$("#sip_y").textContent=y;
+ const fv=m*((Math.pow(1+r,n)-1)/r)*(1+r);
+ const invested=m*n;
+ $("#sip_final").textContent=niceMoney(fv);
+ $("#sip_inv").textContent=niceMoney(invested);
+ $("#sip_gain").textContent=niceMoney(fv-invested);
+ state.simComplete=true;enableCta();
+ }
+ ["sip_mS","sip_rS","sip_yS"].forEach(id=>$("#"+id).addEventListener("input",update));
+ update();
+}
+
+function renderSimCC(el,sc){
+ const d=document.createElement("div");d.className="sim-card";
+ d.innerHTML=`
+ <div class="sim-title">${sc.title}</div>
+ <div class="sim-sub">${sc.sub}</div>
+ <div class="sim-row">OUTSTANDING BALANCE <b id="cc_b">₹1,00,000</b></div>
+ <input type="range" class="sim-slider" id="cc_bS" min="10000" max="500000" step="5000" value="100000">
+ <div class="sim-row">APR <b id="cc_r">42%</b></div>
+ <input type="range" class="sim-slider" id="cc_rS" min="20" max="48" step="1" value="42">
+ <div class="sim-row">MIN PAYMENT % <b id="cc_p">5%</b></div>
+ <input type="range" class="sim-slider" id="cc_pS" min="2" max="20" step="1" value="5">
+ <div class="cc-card">
+ <div class="cc-row">MONTHS TO CLEAR <b id="cc_months">180</b></div>
+ <div class="cc-row">TOTAL INTEREST PAID <b id="cc_intr" style="color:var(--err)">₹1,50,000</b></div>
+ <div class="cc-row">TOTAL OUTFLOW <b id="cc_tot">₹2,50,000</b></div>
+ </div>
+ <div class="cc-alert" id="cc_alert"></div>`;
+ el.appendChild(d);
+ function update(){
+ const B=+$("#cc_bS").value,APR=+$("#cc_rS").value,pPct=+$("#cc_pS").value/100;
+ $("#cc_b").textContent="₹"+formatINR(B);$("#cc_r").textContent=APR+"%";$("#cc_p").textContent=(pPct*100)+"%";
+ const rMo=APR/12/100;
+ let bal=B,months=0,paid=0;
+ while(bal>1 && months<600){
+ const interest=bal*rMo;
+ const pay=Math.max(bal*pPct,100); // min pay floor
+ const actual=Math.min(pay,bal+interest);
+ bal=bal+interest-actual;paid+=actual;months++;
+ if(actual<=interest)break; // trap condition
+ }
+ const intr=paid-B;
+ $("#cc_months").textContent=months>=600?"NEVER (trapped)":months;
+ $("#cc_intr").textContent="₹"+formatINR(Math.max(0,Math.round(intr)));
+ $("#cc_tot").textContent="₹"+formatINR(Math.round(paid));
+ const alert=$("#cc_alert");
+ if(months>=600)alert.innerHTML=" <b>TRAP:</b> Your min payment doesn't even cover monthly interest. Balance grows forever.";
+ else if(months>120)alert.innerHTML=" <b>"+Math.round(months/12)+" years</b> to clear. You'll pay <b>"+Math.round(intr/B*100)+"%</b> of the original balance in interest alone.";
+ else alert.innerHTML=" Lower min% traps you. Higher pays off faster. <b>Best: pay in FULL.</b>";
+ state.simComplete=true;enableCta();
+ }
+ ["cc_bS","cc_rS","cc_pS"].forEach(id=>$("#"+id).addEventListener("input",update));
+ update();
+}
+
+function renderSimEMI(el,sc){
+ const d=document.createElement("div");d.className="sim-card";
+ d.innerHTML=`
+ <div class="sim-title">${sc.title}</div>
+ <div class="sim-sub">${sc.sub}</div>
+ <div class="sim-row">LOAN AMOUNT <b id="em_p">₹50,00,000</b></div>
+ <input type="range" class="sim-slider" id="em_pS" min="100000" max="20000000" step="50000" value="5000000">
+ <div class="sim-row">RATE <b id="em_r">8.5%</b></div>
+ <input type="range" class="sim-slider" id="em_rS" min="6" max="18" step="0.1" value="8.5">
+ <div class="sim-row">YEARS <b id="em_y">20</b></div>
+ <input type="range" class="sim-slider" id="em_yS" min="1" max="30" step="1" value="20">
+ <div class="emi-pie">
+ <svg viewBox="0 0 120 120">
+ <circle cx="60" cy="60" r="50" fill="none" stroke="#2563EB" stroke-width="20" stroke-dasharray="314.16" stroke-dashoffset="0"/>
+ <circle id="emiIntArc" cx="60" cy="60" r="50" fill="none" stroke="#DC2626" stroke-width="20" stroke-dasharray="314.16" stroke-dashoffset="163"/>
+ </svg>
+ <div class="label"><div class="big" id="em_emi">₹43,391</div><div class="sm">EMI / MONTH</div></div>
+ </div>
+ <div class="emi-stats">
+ <div class="emi-stat"><div class="sm">PRINCIPAL</div><div class="bg" id="em_principal">₹50L</div></div>
+ <div class="emi-stat int"><div class="sm">INTEREST PAID</div><div class="bg" id="em_int">₹54L</div></div>
+ <div class="emi-stat" style="grid-column:span 2"><div class="sm">TOTAL OUTFLOW</div><div class="bg" id="em_total" style="color:var(--gold)">₹1.04 CR</div></div>
+ </div>`;
+ el.appendChild(d);
+ function update(){
+ const P=+$("#em_pS").value,R=+$("#em_rS").value,Y=+$("#em_yS").value;
+ const r=R/12/100,n=Y*12;
+ const emi=(P*r*Math.pow(1+r,n))/(Math.pow(1+r,n)-1);
+ const total=emi*n;const intr=total-P;
+ $("#em_p").textContent="₹"+formatINR(P);$("#em_r").textContent=R.toFixed(1)+"%";$("#em_y").textContent=Y;
+ $("#em_emi").textContent="₹"+formatINR(Math.round(emi));
+ $("#em_principal").textContent=niceMoney(P);
+ $("#em_int").textContent=niceMoney(intr);
+ $("#em_total").textContent=niceMoney(total);
+ // pie dash — interest share
+ const intShare=intr/total;
+ const circ=314.16;
+ $("#emiIntArc").setAttribute("stroke-dashoffset",circ*(1-intShare));
+ state.simComplete=true;enableCta();
+ }
+ ["em_pS","em_rS","em_yS"].forEach(id=>$("#"+id).addEventListener("input",update));
+ update();
+}
+
+function renderSimCIBIL(el,sc){
+ const d=document.createElement("div");d.className="sim-card";
+ d.innerHTML=`
+ <div class="sim-title">${sc.title}</div>
+ <div class="sim-sub">${sc.sub}</div>
+ <div class="cib-gauge">
+ <svg viewBox="0 0 200 110">
+ <defs><linearGradient id="cibGrad" x1="0" x2="1">
+ <stop offset="0" stop-color="#E4E9F0"/><stop offset=".5" stop-color="#93B4F5"/><stop offset="1" stop-color="#2563EB"/>
+ </linearGradient></defs>
+ <path d="M 20 100 A 80 80 0 0 1 180 100" stroke="#2A0E12" stroke-width="14" fill="none"/>
+ <path id="cibArc" d="M 20 100 A 80 80 0 0 1 180 100" stroke="url(#cibGrad)" stroke-width="14" fill="none" stroke-dasharray="251" stroke-dashoffset="125"/>
+ </svg>
+ </div>
+ <div class="cib-score" id="cib_score">650</div>
+ <div class="cib-tier" id="cib_tier">AVERAGE — loans approved at high rate</div>
+ <div class="cib-actions">
+ <button class="cib-btn good" data-delta="35"> Paid CC bill in full (12 months streak)</button>
+ <button class="cib-btn good" data-delta="20"> Kept utilization under 30%</button>
+ <button class="cib-btn good" data-delta="15"> Opened a small personal loan, paid on time</button>
+ <button class="cib-btn good" data-delta="10"> Kept oldest card active (5+ yrs)</button>
+ <button class="cib-btn bad" data-delta="-80"> Missed one EMI</button>
+ <button class="cib-btn bad" data-delta="-60"> Maxed card to 95% of limit</button>
+ <button class="cib-btn bad" data-delta="-30"> Applied for 4 loans same week</button>
+ <button class="cib-btn bad" data-delta="-25"> Closed your oldest credit card</button>
+ </div>`;
+ el.appendChild(d);
+ let score=650;
+ function render(){
+ score=Math.max(300,Math.min(900,score));
+ $("#cib_score").textContent=score;
+ const pct=(score-300)/600;
+ const circ=251;
+ $("#cibArc").setAttribute("stroke-dashoffset",circ*(1-pct));
+ const t=$("#cib_tier");
+ let tier="POOR — loans refused or at 18%+";let col="var(--err)";
+ if(score>=780){tier="EXCELLENT — best rates · pre-approved";col="var(--ok)";}
+ else if(score>=720){tier="GOOD — standard rates";col="var(--ice)";}
+ else if(score>=650){tier="AVERAGE — approved at high rate";col="var(--gold)";}
+ t.textContent=tier;t.style.color=col;
+ $("#cib_score").style.color=col;
+ if(score>=750){state.simComplete=true;enableCta();}
+ }
+ d.querySelectorAll(".cib-btn").forEach(b=>{
+ b.onclick=()=>{score+=+b.dataset.delta;render();};
+ });
+ render();
+ // allow completion even if they don't hit 750 after 4 taps
+ setTimeout(()=>{state.simComplete=true;enableCta();},1500);
+}
+
+
+function renderSimRule72(el,sc){
+ const d=document.createElement("div");d.className="sim-card";
+ d.innerHTML=`
+ <div class="sim-title">${sc.title}</div>
+ <div class="sim-sub">${sc.sub}</div>
+ <div class="sim-row">ANNUAL RETURN <b id="r72_r">12%</b></div>
+ <input type="range" class="sim-slider" id="r72_rS" min="3" max="24" step="0.5" value="12">
+ <div class="ci-viz">
+ <div class="ci-label">YEARS TO DOUBLE</div>
+ <div class="ci-final" id="r72_yr">6.0</div>
+ <div style="font-size:12px;opacity:.85;margin-top:6px">72 &divide; <span id="r72_rate">12</span> = <b id="r72_yr2" style="color:var(--gold)">6.0</b> years per double</div>
+ </div>
+ <div class="ci-label" style="margin-top:12px">&#8377;1,00,000 OVER 36 YEARS</div>
+ <div class="ci-bars" id="r72_bars"></div>`;
+ el.appendChild(d);
+ const bars=d.querySelector("#r72_bars");
+ function update(){
+ const r=+$("#r72_rS").value, yr=72/r;
+ $("#r72_r").textContent=r+"%";$("#r72_rate").textContent=r;
+ $("#r72_yr").textContent=yr.toFixed(1);$("#r72_yr2").textContent=yr.toFixed(1);
+ const doublings=Math.min(6,Math.floor(36/yr));
+ const maxVal=100000*Math.pow(2,Math.max(1,doublings));
+ bars.innerHTML="";
+ for(let k=0;k<=doublings;k++){
+ const val=100000*Math.pow(2,k);
+ const col=document.createElement("div");col.className="ci-col";
+ col.innerHTML=`<div class="ci-barwrap"><div class="ci-bar" style="height:${(val/maxVal)*100}%;width:70%"></div></div><div class="val">${niceMoney(val)}</div><div class="lb">Y${Math.round(k*yr)}</div>`;
+ bars.appendChild(col);
+ }
+ state.simComplete=true;enableCta();
+ }
+ $("#r72_rS").addEventListener("input",update);update();
+}
+
+function renderSimFdLadder(el,sc){
+ const d=document.createElement("div");d.className="sim-card";
+ const rungs=[{k:"1yr",lbl:"1 YEAR",rate:6.5},{k:"2yr",lbl:"2 YEAR",rate:7.0},{k:"3yr",lbl:"3 YEAR",rate:7.25},{k:"5yr",lbl:"5 YEAR",rate:7.5}];
+ const pool=500000, step=50000, alloc={"1yr":0,"2yr":0,"3yr":0,"5yr":0};
+ d.innerHTML=`
+ <div class="sim-title">${sc.title}</div>
+ <div class="sim-sub">${sc.sub}</div>
+ <div class="sim-row">UNALLOCATED <b id="fd_left">&#8377;5,00,000</b></div>
+ <div id="fd_rungs"></div>
+ <div class="cc-card">
+ <div class="cc-row">BLENDED RATE <b id="fd_rate">&mdash;</b></div>
+ <div class="cc-row">SOONEST ACCESS <b id="fd_liq">&mdash;</b></div>
+ </div>
+ <div class="cc-alert" id="fd_note">Allocate all &#8377;5L. Longer tenure = higher rate, later access.</div>`;
+ el.appendChild(d);
+ const rw=d.querySelector("#fd_rungs");
+ rungs.forEach(r=>{
+ const row=document.createElement("div");row.className="cc-card";row.style.marginTop="8px";
+ row.innerHTML=`<div class="cc-row"><span>${r.lbl} @ ${r.rate}%</span><span><button class="order-btn" data-m="${r.k}" data-d="-1">&minus;</button> <b id="fd_${r.k}" style="min-width:76px;display:inline-block;text-align:center">&#8377;0</b> <button class="order-btn" data-m="${r.k}" data-d="1">+</button></span></div>`;
+ rw.appendChild(row);
+ });
+ const used=()=>Object.values(alloc).reduce((a,b)=>a+b,0);
+ function update(){
+ const left=pool-used();
+ $("#fd_left").textContent="₹"+formatINR(left);
+ rungs.forEach(r=>{$("#fd_"+r.k).textContent="₹"+formatINR(alloc[r.k]);});
+ if(used()>0){
+ const blended=rungs.reduce((a,r)=>a+alloc[r.k]*r.rate,0)/used();
+ $("#fd_rate").textContent=blended.toFixed(2)+"%";
+ const soonest=rungs.find(r=>alloc[r.k]>0);
+ $("#fd_liq").textContent=soonest?soonest.lbl:"—";
+ } else {$("#fd_rate").textContent="—";$("#fd_liq").textContent="—";}
+ if(left===0){$("#fd_note").innerHTML=" Fully laddered. A ladder means <b>some money matures every year</b> (liquidity) while the rest earns the higher long-tenure rates.";state.simComplete=true;enableCta();}
+ else{$("#fd_note").innerHTML="₹"+formatINR(left)+" still unallocated. Spread it across rungs.";}
+ }
+ rw.querySelectorAll(".order-btn").forEach(b=>{
+ b.onclick=()=>{const m=b.dataset.m,dlt=+b.dataset.d*step;
+ if(dlt>0 && used()+step>pool)return;
+ alloc[m]=Math.max(0,alloc[m]+dlt);update();};
+ });
+ update();
+}
+
+function renderSimNetworth(el,sc){
+ const d=document.createElement("div");d.className="sim-card";
+ const items=[
+ {id:"a",lbl:"Savings + cash",amt:80000,asset:true},
+ {id:"b",lbl:"Mutual funds / SIP",amt:250000,asset:true},
+ {id:"c",lbl:"EPF / PF",amt:150000,asset:true},
+ {id:"d",lbl:"Fixed deposits",amt:100000,asset:true},
+ {id:"e",lbl:"Bike / car",amt:120000,asset:true},
+ {id:"f",lbl:"Credit-card dues",amt:45000,asset:false},
+ {id:"g",lbl:"Personal loan",amt:200000,asset:false},
+ {id:"h",lbl:"Phone EMI left",amt:30000,asset:false}
+ ];
+ d.innerHTML=`
+ <div class="sim-title">${sc.title}</div>
+ <div class="sim-sub">${sc.sub}</div>
+ <div class="ci-viz">
+ <div class="ci-label">YOUR NET WORTH</div>
+ <div class="ci-final" id="nw_val">&#8377;0</div>
+ <div class="ci-breakdown">
+ <div class="ci-chip gain"><div class="sm">ASSETS</div><div class="bg" id="nw_a">&#8377;0</div></div>
+ <div class="ci-chip"><div class="sm">LIABILITIES</div><div class="bg" id="nw_l" style="color:var(--err)">&#8377;0</div></div>
+ </div>
+ </div>
+ <div class="sort-hint">Tap each item you have. Assets add, debts subtract.</div>
+ <div id="nw_items" style="display:flex;flex-direction:column;gap:8px;margin-top:6px"></div>`;
+ el.appendChild(d);
+ const wrap=d.querySelector("#nw_items"), on={};
+ items.forEach(it=>{
+ const b=document.createElement("button");b.className="cib-btn "+(it.asset?"good":"bad");
+ b.style.display="flex";b.style.justifyContent="space-between";b.style.alignItems="center";b.style.opacity=".45";
+ b.innerHTML=`<span>${it.asset?"+":"−"} ${it.lbl}</span><span>${niceMoney(it.amt)}</span>`;
+ b.onclick=()=>{on[it.id]=!on[it.id];b.style.opacity=on[it.id]?"1":".45";recalc();};
+ wrap.appendChild(b);
+ });
+ function recalc(){
+ let A=0,L=0;
+ items.forEach(it=>{if(on[it.id]){if(it.asset)A+=it.amt;else L+=it.amt;}});
+ $("#nw_a").textContent=niceMoney(A);$("#nw_l").textContent=niceMoney(L);
+ const nw=A-L;
+ $("#nw_val").textContent=(nw<0?"−":"")+niceMoney(Math.abs(nw));
+ $("#nw_val").style.color=nw<0?"var(--err)":"var(--gold)";
+ state.simComplete=true;enableCta();
+ }
+ state.simComplete=true;enableCta();
+}
+
+
+function renderEstimate(el,sc){
+  const d=document.createElement("div");d.className="calc";
+  const mid=Math.round(((sc.min+sc.max)/2)/(sc.step||1))*(sc.step||1);
+  d.innerHTML=`<div class="q-kick">${sc.kicker}</div><div class="calc-q">${sc.q}</div>
+    <div class="est-viz"><div class="est-val" id="estVal">${mid}${sc.unit||""}</div><div class="est-label">Your guess &mdash; drag to change</div></div>
+    <input type="range" class="sim-slider" id="estS" min="${sc.min}" max="${sc.max}" step="${sc.step||1}" value="${mid}">
+    <div class="est-scale"><span>${sc.min}${sc.unit||""}</span><span>${sc.max}${sc.unit||""}</span></div>`;
+  el.appendChild(d);
+  state.estVal=mid;
+  $("#estS").addEventListener("input",e=>{state.estVal=+e.target.value;$("#estVal").textContent=state.estVal+(sc.unit||"");});
+}
+function renderOddOne(el,sc){
+  const d=document.createElement("div");
+  d.innerHTML=`<div class="q-kick">${sc.kicker}</div><div class="q-text">${sc.q}</div><div class="odd-grid"></div>`;
+  const grid=d.querySelector(".odd-grid");
+  sc.opts.forEach((o,i)=>{
+    const b=document.createElement("button");b.className="odd-card";b.textContent=o;
+    b.onclick=()=>{grid.querySelectorAll(".odd-card").forEach(x=>x.classList.remove("sel"));b.classList.add("sel");state.selected=i;enableCta();};
+    grid.appendChild(b);
+  });
+  el.appendChild(d);state._currentSc=sc;
+}
+function markChoice(correctIdx,chosenIdx,selector){
+  document.querySelectorAll(selector).forEach((el,i)=>{
+    if(i===correctIdx)el.classList.add("ok");
+    else if(i===chosenIdx)el.classList.add("bad");
+    el.style.pointerEvents="none";
+  });
+}
+function gradeEstimate(sc){
+  const ok=Math.abs(state.estVal-sc.answer)<=sc.tol;
+  state.total++;
+  const reveal=`<br><br>You guessed <b>${state.estVal}${sc.unit||""}</b> &middot; actual <b>${sc.answer}${sc.unit||""}</b>.`;
+  if(ok){
+    state.correct++;state.combo++;state.maxCombo=Math.max(state.maxCombo,state.combo);
+    let xp=15;if(state.combo>=3)xp+=5;
+    awardXP(xp,"+"+xp+""+(state.combo>=3?" · x"+state.combo:""));
+    showFeedback("ok",sc.okMsg||"SPOT ON!",(sc.okBody||"")+reveal,"+"+xp+"",()=>nextScreen());
+  } else {
+    breakCombo();
+    showFeedback("err",sc.errMsg||"NOT QUITE",(sc.errBody||"")+reveal,"",()=>nextScreen());
+  }
+  $("#comboVal").textContent=state.combo;$("#comboChip").classList.toggle("hot",state.combo>=3);
+  if(state.ep===0&&ok)state.skipHits++;
+}
+
+
+function renderSpeed(el,sc){
+  state.simComplete=false;state.speedDone=false;
+  const wrap=document.createElement("div");wrap.className="speed-wrap";el.appendChild(wrap);
+  wrap.innerHTML=`<div class="speed-intro">
+    <div class="q-kick">${sc.kicker||"SPEED ROUND"}</div>
+    <div class="speed-title">${sc.q||"Beat the clock"}</div>
+    <div class="speed-desc">${sc.intro||"Answer as many as you can before the timer runs out. Tap fast &mdash; every right answer is instant XP."}</div>
+    <div class="speed-meta"><span>${sc.questions.length} questions</span><span>${sc.time||25}s on the clock</span><span>+5 each</span></div>
+    <button class="speed-start" id="speedStart">START</button></div>`;
+  $("#speedStart").onclick=()=>startSpeed(sc,wrap);
+}
+function startSpeed(sc,wrap){
+  state.speedIdx=0;state.speedScore=0;state.speedTotal=sc.questions.length;
+  const total=sc.time||25;let left=total;
+  wrap.innerHTML=`<div class="speed-hud"><div class="speed-clock" id="speedClock">${left}</div><div class="speed-score">Score<b id="speedScore">0/${state.speedTotal}</b></div></div>
+    <div class="speed-bar"><div class="speed-bar-fill" id="speedFill"></div></div><div id="speedQ"></div>`;
+  renderSpeedQ(sc,wrap);
+  clearInterval(state.speedTimer);
+  state.speedTimer=setInterval(()=>{
+    left--;const clk=$("#speedClock");if(clk)clk.textContent=left;
+    const f=$("#speedFill");if(f)f.style.width=(left/total*100)+"%";
+    if(left<=5&&clk)clk.classList.add("low");
+    if(left<=0)endSpeed(sc,wrap);
+  },1000);
+}
+function renderSpeedQ(sc,wrap){
+  if(state.speedIdx>=state.speedTotal){endSpeed(sc,wrap);return;}
+  const q=sc.questions[state.speedIdx],box=$("#speedQ");
+  box.innerHTML=`<div class="speed-qtext">${q.q}</div><div class="speed-opts"></div>`;
+  const opts=box.querySelector(".speed-opts");
+  const correctText=q.opts[q.ans];
+  const order=q.opts.map((t,idx)=>({t,idx})).sort(()=>Math.random()-0.5);
+  order.forEach(({t})=>{
+    const b=document.createElement("button");b.className="speed-opt";b.type="button";b.textContent=t;
+    b.onclick=()=>{
+      [...opts.children].forEach(x=>x.disabled=true);
+      const right=(t===correctText);
+      if(right){b.classList.add("ok");state.speedScore++;state.correct++;$("#speedScore").textContent=state.speedScore+"/"+state.speedTotal;awardXP(5,"+5");}
+      else{b.classList.add("bad");[...opts.children].forEach(x=>{if(x.textContent===correctText)x.classList.add("ok");});}
+      setTimeout(()=>{state.speedIdx++;renderSpeedQ(sc,wrap);},430);
+    };
+    opts.appendChild(b);
+  });
+}
+function endSpeed(sc,wrap){
+  clearInterval(state.speedTimer);
+  if(state.speedDone)return;state.speedDone=true;
+  const s=state.speedScore,t=state.speedTotal,pct=Math.round(s/t*100);
+  const bonus=s===t?10:(s>=Math.ceil(t*0.6)?5:0);
+  if(bonus>0)awardXP(bonus,"+"+bonus+" · SPEED BONUS");
+  wrap.innerHTML=`<div class="speed-result">
+    <div class="q-kick">TIME</div>
+    <div class="speed-final">${s}/${t}</div>
+    <div class="speed-final-label">${pct>=80?"Lightning fast.":pct>=50?"Solid run.":"Keep drilling."}</div>
+    ${bonus>0?`<div class="speed-bonus">+${bonus} token speed bonus</div>`:""}
+    <div class="speed-note">${sc.okBody||""}</div></div>`;
+  state.simComplete=true;enableCta();
+}
+
+/* ===== CTA / GRADING ===== */
+function setCta(mode,label,hint){
+ state.ctaMode=mode;cta.textContent=label;ctaHint.textContent=hint||"";
+ if(mode==="passive")cta.disabled=false;
+ else if(mode==="sim"&&state.simComplete)cta.disabled=false;
+ else cta.disabled=true;
+}
+function enableCta(){cta.disabled=false;}
+function ctaDisable(){cta.disabled=true;}
+cta.addEventListener("click",onCheckClick);
+
+function onCheckClick(){
+ const ep=EPISODES[state.ep];const sc=ep.screens[state.screen];
+ if(state.ctaMode==="passive"||["story","fact","capSays","warn"].includes(sc.type)){nextScreen();return;}
+ if(sc.type==="hotTake"){
+ if(!state.hotEngaged)return;
+ awardXP(5,"+5 · ENGAGEMENT");
+ showFeedback("info"," GOT IT.",state._currentInsight,"+5",()=>nextScreen());return;
+ }
+ if(["mcq","calc"].includes(sc.type)){markChoice(sc.ans,state.selected,".opt");gradeGeneric(sc,state.selected===sc.ans);return;}
+ if(sc.type==="trueFalse"){markChoice(sc.ans?0:1,state.selected?0:1,".opt");gradeGeneric(sc,state.selected===sc.ans);return;}
+ if(sc.type==="oddone"){markChoice(sc.odd,state.selected,".odd-card");gradeGeneric(sc,state.selected===sc.odd);return;}
+ if(sc.type==="estimate"){gradeEstimate(sc);return;}
+ if(sc.type==="popquiz"){
+ clearInterval(state._pqTimer);
+ const correct=state.selected===sc.ans;markChoice(sc.ans,state.selected,".opt");
+ const bonus=state._pqTimedOut?0:10;
+ gradeGeneric(sc,correct,bonus,true);
+ state._pqTimedOut=false;return;
+ }
+ if(sc.type==="match"){if(state.matchLocks<sc.pairs.length)return;gradeGeneric(sc,true);return;}
+ if(sc.type==="sort"){
+ if(Object.keys(state.sortPlaced).length<sc.items.length)return;
+ let r=0;
+ sc.items.forEach(it=>{
+ if(state.sortPlaced[it.id]===it.bin){r++;const p=document.querySelector(`[data-chip="${it.id}"]`);if(p)p.classList.add("ok");}
+ else{const p=document.querySelector(`[data-chip="${it.id}"]`);if(p)p.classList.add("bad");}
+ });
+ const allRight=r===sc.items.length;
+ if(allRight)gradeGeneric(sc,true);
+ else {
+ state.total++;breakCombo();
+ showFeedback("err",`${r}/${sc.items.length} CORRECT`,(sc.errBody||"")+"<br><br>Fix the red ones, then SUBMIT again.","",()=>{
+ sc.items.forEach(it=>{
+ if(state.sortPlaced[it.id]!==it.bin){
+ const p=document.querySelector(`[data-chip="${it.id}"]`);if(p)p.remove();
+ const c=document.querySelector(`.sort-chip[data-id="${it.id}"]`);if(c)c.classList.remove("placed");
+ delete state.sortPlaced[it.id];
+ }
+ });
+ ctaDisable();
+ });
+ }
+ return;
+ }
+ if(sc.type==="speed"){if(!state.speedDone)return;nextScreen();return;}
+ if(sc.type.startsWith("sim-")){
+ if(!state.simComplete)return;
+ awardXP(15,"+15 · SIM CLEARED");
+ const msg =
+ sc.type==="sim-si-vs-ci"?"You just saw the <b>exponential gap</b>. Short timelines → similar. Long timelines → compound wins by <b>lakhs</b>. That gap is where wealth lives.":
+ sc.type==="sim-compound"?"₹5K/mo × 30 yr × 12% = <b>₹1.76 Cr</b>. You'd have invested just ₹18L. Captain earned you the rest. <b>Never underestimate time.</b>":
+ sc.type==="sim-cc-trap"?"The min-payment trap is mathematical, not emotional. Banks don't market it as a trap — but it is. <b>Pay full. Or don't swipe.</b>":
+ sc.type==="sim-emi"?"On a ₹50L × 20yr home loan, you pay <b>MORE interest than principal</b>. That's normal. Prepayment is your only weapon.":
+ "Your CIBIL is a 3-digit asset. 750+ saves lakhs on any loan. Boring consistency beats every 'hack'.";
+ showFeedback("ok"," LOCKED IN",msg,"+15",()=>nextScreen());return;
+ }
+ nextScreen();
+}
+
+function gradeGeneric(sc,correct,bonus=0,isPopquiz=false){
+ state.total++;
+ if(correct){
+ state.correct++;state.combo++;state.maxCombo=Math.max(state.maxCombo,state.combo);
+ let xp=isPopquiz?20:10;if(state.combo>=3)xp+=5;xp+=bonus;
+ awardXP(xp,"+"+xp+""+(state.combo>=3?" · x"+state.combo:""));
+ showFeedback("ok",sc.okMsg||" CORRECT",sc.okBody||"Nailed it.","+"+xp+"",()=>nextScreen());
+ } else {
+ breakCombo();
+ showFeedback("err",sc.errMsg||" MISS",sc.errBody||"Learn and move on.","",()=>nextScreen());
+ }
+ $("#comboVal").textContent=state.combo;$("#comboChip").classList.toggle("hot",state.combo>=3);
+ if(state.ep===0&&correct)state.skipHits++;
+}
+function breakCombo(){state.combo=0;$("#comboVal").textContent="0";$("#comboChip").classList.remove("hot");}
+function awardXP(amt,label){state.xp+=amt;$("#xpVal").textContent=state.xp;popXP(amt,label);checkLevelUp();try{syncTotalsToProgress();saveProgress();}catch(e){}}
+function popXP(amt,label){
+ let reason="";
+ if(label){const i=label.indexOf("·");if(i>-1)reason=label.slice(i+1).trim();}
+ xppop.innerHTML=`<span class="xpp-amt">+${amt}</span><span class="xpp-sub">Tokens earned</span>`+(reason?`<span class="xpp-tag">${reason}</span>`:"");
+ xppop.classList.remove("fire");void xppop.offsetWidth; xppop.classList.add("fire");
+ setTimeout(()=>xppop.classList.remove("fire"),1250);
+}
+function checkLevelUp(){
+ while(state.level<LEVELS.length-1&&state.xp>=LEVELS[state.level+1].xp){
+ state.level++;const lv=LEVELS[state.level];
+ $("#luTitle").textContent=lv.rank;$("#luBody").innerHTML=`You crossed <b>${lv.xp} tokens</b>. Captain tipped his helmet.`;
+ $("#levelupModal").classList.add("show");
+ $("#luBtn").onclick=()=>$("#levelupModal").classList.remove("show");
+ burst();
+ }
+}
+function showFeedback(kind,title,body,xpLabel,onContinue){
+ fb.classList.remove("ok","err","info");fb.classList.add(kind);
+ $("#fbEmoji").textContent=kind==="ok"?"✓":(kind==="err"?"✕":"i");
+ $("#fbTitle").innerHTML=title;$("#fbBody").innerHTML=body||"";
+ const x=$("#fbXp");if(xpLabel){x.classList.remove("hide");x.textContent=xpLabel;}else x.classList.add("hide");
+ fb.classList.add("show");
+ $("#fbCta").onclick=()=>{fb.classList.remove("show");if(onContinue)onContinue();};
+}
+
+function showFinale(){
+ const possible=LEVELS[LEVELS.length-1].xp;
+ const pct=Math.min(100,Math.round((state.xp/possible)*100));
+ let rank=" NEWBIE";for(let i=LEVELS.length-1;i>=0;i--){if(state.xp>=LEVELS[i].xp){rank=LEVELS[i].rank;break;}}
+ $("#finRank").textContent=rank;$("#finXp").textContent=state.xp;$("#finHit").textContent=state.correct;$("#finMax").textContent=state.maxCombo;$("#finPct").textContent=pct+"%";
+ const circ=540.35;setTimeout(()=>$("#finRingFg").setAttribute("stroke-dashoffset",circ-(circ*pct/100)),300);
+ $("#finale").classList.add("show");topbar.classList.add("hide");stage.classList.add("hide");ctabar.classList.add("hide");
+ burst();setTimeout(burst,600);setTimeout(burst,1200);
+ $("#finShare").onclick=()=>{
+ const txt=`I just met CAPTAIN INTEREST \n${state.xp} · ${state.correct} correct · max combo ${state.maxCombo}\nRank: ${rank}\n\nNow I know how compound interest really works — and how CC & EMI traps kill wealth. Try it → MoneyVerse`;
+ window.open(`https://wa.me/?text=${encodeURIComponent(txt)}`,"_blank");
+ };
+ $("#paywallBtn").onclick=()=>alert(" Early access coming soon.\n\n INFLARE — inflation\n RECSUS — recession\n MR. WEAL — real wealth");
+}
+
+/* ===== UTILS ===== */
+function formatINR(n){
+ const s=Math.abs(n).toString();
+ if(s.length<=3)return(n<0?"-":"")+s;
+ const last3=s.slice(-3),rest=s.slice(0,-3);
+ return(n<0?"-":"")+rest.replace(/\B(?=(\d{2})+(?!\d))/g,",")+","+last3;
+}
+function niceMoney(n){
+ n=Math.round(n);
+ if(n>=1e7)return"₹"+(n/1e7).toFixed(2)+" CR";
+ if(n>=1e5)return"₹"+(n/1e5).toFixed(2)+" L";
+ return"₹"+formatINR(n);
+}
+function burst(){
+ const div=document.createElement("div");div.className="confetti";
+ const colors=["#2563EB","#93B4F5","#1D4ED8","#CBD5E1","#ffffff"];
+ for(let i=0;i<30;i++){
+ const s=document.createElement("span");
+ s.style.left=Math.random()*100+"vw";
+ s.style.background=colors[i%colors.length];
+ s.style.animationDelay=(Math.random()*.6)+"s";
+ s.style.animationDuration=(1.8+Math.random()*1.4)+"s";
+ div.appendChild(s);
+ }
+ document.body.appendChild(div);
+ setTimeout(()=>div.remove(),4000);
+}
+</script>
+<script>window.addEventListener("load",function(){try{if(window.parent!==window)window.parent.postMessage({source:"mv-demo",event:"character_started",character:(window.MV_CHARACTER||"")},"*");}catch(e){}});</script>
+</body>
+</html>

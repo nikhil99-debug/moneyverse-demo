@@ -1,0 +1,951 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>The Nexus — MoneyVerse</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"></noscript>
+<style>
+/* ===================== TOKENS — CLEAN DARK ===================== */
+:root{
+  --font:'Space Grotesk',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+  --mono:'Space Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  --r:12px; --r-sm:9px; --r-lg:18px;
+  --ease:cubic-bezier(.4,0,.2,1);
+  --sh-sm:0 1px 3px rgba(0,0,0,.28);
+  --sh:0 10px 30px rgba(0,0,0,.42);
+  --sh-lg:0 24px 64px rgba(0,0,0,.58);
+
+  /* neutral dark slate — lets brand accents read cleanly */
+  --bg:#0e0f14; --surface:#171922; --surface-2:#1d202b; --surface-3:#262a37;
+  --ink:#f2f3f7; --text:#a7abb9; --muted:#6a6f80;
+  --line:#232734; --border:#2a2f3c; --line-strong:#3b4152;
+
+  /* VERSE identity */
+  --verse-green:#26d3ab; --verse-purple:#8b7dfb; --verse-amber:#f5b021;
+  --verse-coral:#ff6b6b; --verse-blue:#60a5fa; --verse-pink:#f472b6;
+  --verse-bg-card:#1d202b; --verse-border:#2a2f3c; --verse-text-muted:#6a6f80;
+
+  --coin:#f5b021; --coin-soft:rgba(245,176,33,.14);
+  --ok:#26d3ab; --ok-soft:rgba(38,211,171,.13);
+  --err:#ff6b6b; --err-soft:rgba(255,107,107,.13);
+
+  /* boss — crimson -> ember */
+  --villain:#ef4444; --villain-ember:#f97316;
+  --villain-wash:linear-gradient(100deg, rgba(239,68,68,0) 0%, rgba(239,68,68,.10) 45%, rgba(249,115,22,.26) 100%);
+
+  /* character accents */
+  --a-moneta:#22C55E; --a-weal:#EAB308; --a-captain:#3B82F6;
+  --a-recsus:#F87171; --a-vera:#22D3EE; --a-inflare:#F43F5E;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);font-family:var(--font);color:var(--text);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:hidden}
+.mono{font-family:var(--mono)}
+.shout{font-weight:700;letter-spacing:-.02em;line-height:1}
+.sys{font-weight:700;text-transform:uppercase;letter-spacing:.08em}
+
+/* ===================== SECTION HEADER ===================== */
+.section-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:36px 2px 16px}
+.section-head h2{margin:0;font-size:19px;font-weight:700;color:var(--ink);letter-spacing:-.01em}
+.section-head .sh-sub{font-size:13px;color:var(--muted);font-weight:500}
+.section-head .sh-act{font-size:13px;font-weight:700;color:var(--verse-green);cursor:pointer;background:none;border:none;padding:0}
+
+/* ===================== HUD ===================== */
+.hud{position:sticky;top:0;z-index:40;background:rgba(14,15,20,.86);backdrop-filter:saturate(1.2) blur(14px);border-bottom:1px solid var(--border)}
+.hud-in{max-width:1080px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:14px}
+.sigil{width:42px;height:42px;border-radius:13px;flex:none;display:grid;place-items:center;color:#fff;font-weight:700;font-size:15px;background:linear-gradient(135deg,var(--verse-green),var(--verse-purple))}
+.rankblock{display:flex;flex-direction:column;line-height:1.2;min-width:0}
+.rankblock .rk{font-weight:700;font-size:13px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rankblock .bal{font-family:var(--mono);font-size:12px;color:var(--muted);font-weight:400;margin-top:1px}
+.rankblock .bal b{color:var(--ink);font-weight:700}
+.rankblock .bal .sym{color:var(--verse-purple);font-weight:700}
+.spacer{flex:1}
+.chip{display:inline-flex;align-items:center;gap:6px;background:var(--surface-2);border:1px solid var(--border);padding:8px 13px;border-radius:100px;font-weight:600;font-size:12px;color:var(--text);white-space:nowrap}
+.chip b{font-family:var(--mono)}
+.chip.count b{color:var(--ink)}
+.chip .k{color:var(--muted);font-weight:500}
+.chip.rankchip{cursor:pointer;transition:border-color .15s,background .15s}
+.chip.rankchip b{color:var(--verse-green)}
+.chip.rankchip:hover{border-color:var(--line-strong);background:var(--surface-3)}
+.chip.rankchip:focus-visible{outline:2px solid var(--verse-green);outline-offset:2px}
+#streakChip{cursor:pointer}
+
+/* ===================== SHELL ===================== */
+.wrap{max-width:1080px;margin:0 auto;padding:32px 20px 48px;position:relative}
+main.wrap{padding-bottom:112px}
+.mast{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin:0 2px 26px}
+.mast h1{margin:0;font-size:30px;color:var(--ink);font-weight:700;letter-spacing:-.02em}
+.mast p{margin:8px 0 0;font-size:14px;color:var(--muted);max-width:540px;line-height:1.5}
+.mast .badge{font-size:12px;font-weight:600;color:var(--verse-amber);border:1px solid rgba(245,176,33,.35);background:var(--coin-soft);border-radius:100px;padding:8px 14px;white-space:nowrap}
+
+/* ===================== VERSE PORTFOLIO WIDGET ===================== */
+.portfolio{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:22px;box-shadow:var(--sh-sm)}
+.pf-head{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.pf-label{font-size:13px;color:var(--muted);font-weight:600}
+.pf-bal{margin-top:10px;font-family:var(--mono);font-size:40px;font-weight:700;color:var(--ink);letter-spacing:-.02em;display:flex;align-items:baseline;gap:7px}
+.pf-bal.pulse{animation:pfPulse .3s var(--ease)}
+.pf-bal .sym{color:var(--verse-purple);font-size:26px}
+.pf-bal .unit{font-size:14px;color:var(--muted);font-weight:400;letter-spacing:.08em}
+.pf-earn{font-size:13px;color:var(--muted);margin-top:6px}
+.pf-tier{margin-top:22px}
+.pf-tier-label{font-family:var(--mono);font-size:10px;letter-spacing:.08em;color:var(--verse-amber);background:var(--coin-soft);border-radius:6px;padding:3px 8px;font-weight:700}
+.pf-tier-name{font-weight:700;font-size:15px;color:var(--ink);margin-left:10px}
+.pf-tier-bar{height:8px;border-radius:100px;background:var(--surface-3);margin-top:13px;overflow:hidden}
+.pf-tier-bar>i{display:block;height:100%;border-radius:100px;transition:width .6s var(--ease)}
+.pf-tier-next{font-size:12px;color:var(--muted);margin-top:9px;display:inline-block}
+.pf-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin-top:20px}
+.pf-stat{display:flex;align-items:center;gap:11px;background:var(--surface-2);border:1px solid var(--border);border-radius:14px;padding:13px 14px}
+.pf-stat .ps-ic{width:34px;height:34px;border-radius:10px;flex:none;display:grid;place-items:center;font-size:16px;background:var(--surface-3)}
+.pf-stat .ps-tx{min-width:0}
+.pf-stat .ps-v{font-family:var(--mono);font-size:18px;font-weight:700;color:var(--ink);line-height:1}
+.pf-stat .ps-k{font-size:11.5px;color:var(--muted);font-weight:500;margin-top:4px}
+.pf-stat .ps-v.streak{color:var(--verse-amber)}
+.pf-stat .ps-v.mult{color:var(--verse-purple)}
+.pf-stat .ps-v.grank{color:var(--verse-green)}
+.pf-tx{margin-top:20px;border-top:1px solid var(--border);padding-top:16px}
+.pf-tx-toggle{width:100%;text-align:left;background:none;border:none;color:var(--text);font-size:13px;font-weight:600;cursor:pointer;display:flex;justify-content:space-between;align-items:center;padding:0}
+.pf-tx-toggle:hover{color:var(--ink)}
+.pf-tx-list{margin-top:12px}
+.pf-tx-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}
+.pf-tx-row:last-child{border-bottom:none}
+.pf-tx-reason{font-size:13px;color:var(--text);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pf-tx-time{font-size:11px;color:var(--muted);white-space:nowrap}
+.pf-tx-amt{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--verse-green)}
+.pf-tx-empty{font-size:13px;color:var(--muted);padding:6px 0}
+
+/* ===================== DASHBOARD LAYOUT ===================== */
+.dash-top{display:grid;grid-template-columns:1.5fr 1fr;gap:20px;align-items:start}
+.dash-top .portfolio{margin-bottom:0}
+
+/* ===================== LEADERBOARD PANEL ===================== */
+.lb-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:18px 16px 14px;box-shadow:var(--sh-sm)}
+.lb-panel-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.lb-panel-head .t{font-size:15px;font-weight:700;color:var(--ink)}
+.lb-panel-head button{background:none;border:none;color:var(--verse-green);font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;padding:0}
+.lbp-row{display:flex;align-items:center;gap:11px;padding:9px 8px;border-radius:12px;border:1px solid transparent}
+.lbp-row+.lbp-row{margin-top:2px}
+.lbp-row.you{background:var(--ok-soft);border-color:rgba(38,211,171,.35)}
+.lbp-rank{width:20px;text-align:center;font-family:var(--mono);font-size:13px;font-weight:700;color:var(--muted);flex:none}
+.lbp-av{width:30px;height:30px;border-radius:50%;flex:none;display:grid;place-items:center;color:#0c1512;font-weight:700;font-size:11px;font-family:var(--mono)}
+.lbp-nm{font-size:13.5px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lbp-row.you .lbp-nm{color:var(--verse-green)}
+.lbp-val{margin-left:auto;font-family:var(--mono);font-size:13px;font-weight:700;color:var(--ink);white-space:nowrap}
+.lbp-row.you .lbp-val{color:var(--verse-green)}
+.lbp-sep{text-align:center;color:var(--muted);font-size:13px;padding:2px}
+
+/* ===================== GLOBAL LEADERBOARD MODAL ===================== */
+#lb{position:fixed;inset:0;z-index:92;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,.66);backdrop-filter:blur(6px)}
+#lb.show{display:flex}
+.lb-card{position:relative;width:100%;max-width:460px;max-height:86vh;display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:var(--sh-lg);overflow:hidden;animation:pop .28s var(--ease)}
+.lb-head{padding:22px 22px 0}
+.lb-title{font-weight:700;font-size:20px;color:var(--ink);letter-spacing:-.02em}
+.lb-sub{font-size:13px;color:var(--muted);margin-top:5px}
+.lb-close{position:absolute;top:16px;right:16px;border:none;background:var(--surface-2);width:32px;height:32px;border-radius:10px;font-size:14px;cursor:pointer;color:var(--muted)}
+.lb-close:hover{color:var(--ink);background:var(--surface-3)}
+.lb-tabs{display:flex;gap:24px;margin-top:18px;border-bottom:1px solid var(--border)}
+.lb-tab{flex:none;font-family:var(--font);font-weight:700;font-size:14px;padding:0 0 12px;border:none;background:none;color:var(--muted);cursor:pointer;position:relative}
+.lb-tab.on{color:var(--ink)}
+.lb-tab.on::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2.5px;border-radius:2px;background:var(--verse-green)}
+.lb-list{overflow-y:auto;padding:12px 14px 16px}
+.lb-row{display:flex;align-items:center;gap:12px;padding:11px 10px;border-radius:12px;border:1px solid transparent}
+.lb-row+.lb-row{margin-top:2px}
+.lb-rank{width:26px;text-align:center;font-family:var(--mono);font-weight:700;font-size:14px;color:var(--muted);flex:none}
+.lb-rank.medal{font-size:17px}
+.lb-av{width:36px;height:36px;border-radius:50%;flex:none;display:grid;place-items:center;color:#0c1512;font-weight:700;font-size:13px}
+.lb-nm{font-weight:600;font-size:14px;color:var(--ink);line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.lb-meta{font-size:11.5px;color:var(--muted);margin-top:2px}
+.lb-val{margin-left:auto;font-family:var(--mono);font-weight:700;font-size:14px;color:var(--ink);white-space:nowrap}
+.lb-val small{color:var(--muted);font-weight:500;font-size:10px}
+.lb-row.you{background:var(--ok-soft);border-color:rgba(38,211,171,.35)}
+.lb-row.you .lb-nm{color:var(--verse-green)}
+.lb-tag{font-size:9px;font-weight:700;letter-spacing:.06em;background:var(--verse-green);color:#0c1512;padding:2px 7px;border-radius:100px}
+.lb-mult{font-family:var(--mono);font-size:9.5px;font-weight:700;padding:2px 7px;border-radius:100px;border:1px solid currentColor}
+
+/* ===================== TERRITORY GRID ===================== */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.terr{position:relative;overflow:hidden;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:var(--sh-sm);cursor:pointer;text-align:left;font-family:var(--font);color:inherit;padding:0;transition:transform .16s var(--ease),border-color .16s,box-shadow .16s}
+.terr:hover{transform:translateY(-3px);border-color:var(--line-strong);box-shadow:var(--sh)}
+.terr:focus-visible{outline:3px solid var(--verse-blue);outline-offset:2px}
+.terr .content{position:relative;z-index:2;padding:18px}
+.terr .top{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.tsig{width:44px;height:44px;border-radius:13px;flex:none;display:grid;place-items:center;color:#0c1512;font-weight:700;font-size:18px}
+.who{font-weight:700;font-size:16px;color:var(--ink);line-height:1.15}
+.topic{font-size:12px;color:var(--muted);margin-top:2px}
+.state{display:inline-block;font-size:10.5px;padding:4px 11px;border-radius:100px;margin-bottom:14px;letter-spacing:.01em;font-weight:700}
+.meta{font-size:12px;color:var(--muted);margin-top:14px}
+.pdot{width:9px;height:9px;border-radius:50%;margin-left:auto;flex:none}
+.progwrap{display:flex;gap:5px;margin-top:6px}
+.progseg{flex:1;height:6px;background:var(--surface-3);border-radius:100px;overflow:hidden}
+.progseg>i{display:block;height:100%;border-radius:100px}
+.cleanse{margin-top:15px;display:inline-flex;align-items:center;gap:7px;border:none;border-radius:100px;padding:10px 18px;font-family:var(--font);font-weight:700;font-size:12.5px;color:#fff;background:var(--villain);cursor:pointer;transition:filter .15s}
+.cleanse:hover{filter:brightness(1.08)}
+.st-thriving .pdot{background:var(--verse-green);box-shadow:0 0 0 4px rgba(38,211,171,.16)}
+.st-decaying{border-color:rgba(239,68,68,.45)}
+.st-decaying .villain-edge{position:absolute;top:0;left:0;bottom:0;width:4px;background:linear-gradient(180deg,var(--villain),var(--villain-ember));z-index:3}
+.st-decaying .villain-haze{display:none}
+.st-corrupted{border-color:rgba(239,68,68,.5)}
+.st-corrupted .villain-wash{position:absolute;inset:0;z-index:1;background:var(--villain-wash);pointer-events:none}
+.stamp{position:absolute;top:14px;right:12px;z-index:4;background:var(--villain-ember);color:#0c0c0f;font-size:9.5px;font-weight:700;letter-spacing:.03em;padding:4px 9px;border-radius:8px}
+.st-dormant .content{opacity:.5;filter:grayscale(.6)}
+.st-dormant .tsig{background:var(--muted)!important}
+
+/* ===================== BOSS (INFLARE) ===================== */
+.rift{margin-top:0;position:relative;overflow:hidden;border-radius:var(--r-lg);border:1px solid var(--border);background:var(--surface);box-shadow:var(--sh-sm)}
+.rift::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:linear-gradient(180deg,var(--villain),var(--villain-ember));z-index:3}
+.rift::after{content:"";position:absolute;inset:0;background:var(--villain-wash);opacity:.7;pointer-events:none}
+.rift-in{position:relative;z-index:2;padding:20px 22px;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.rift .mask{width:52px;height:52px;border-radius:15px;flex:none;display:grid;place-items:center;color:#fff;font-size:24px;background:linear-gradient(135deg,var(--villain),var(--villain-ember))}
+.rift .txt{flex:1;min-width:220px}
+.rift .rk{font-size:10.5px;color:var(--villain-ember);margin-bottom:5px;letter-spacing:.06em;font-weight:700}
+.rift .taunt{font-weight:700;font-size:18px;color:var(--ink);line-height:1.2}
+.rift .sub{font-size:13px;color:var(--text);margin-top:5px;line-height:1.45}
+.rift .rprog{display:flex;gap:5px;margin-top:13px;max-width:300px}
+.rift .rprog .progseg{background:var(--surface-3)}
+.rift-cta{border:none;border-radius:100px;padding:12px 20px;font-family:var(--font);font-weight:700;font-size:12.5px;letter-spacing:.02em;color:#fff;background:linear-gradient(120deg,var(--villain),var(--villain-ember));cursor:pointer;white-space:nowrap;transition:filter .15s}
+.rift-cta:hover{filter:brightness(1.08)}
+.rift-cta.locked{background:var(--surface-2);color:var(--muted);border:1px solid var(--border);cursor:not-allowed}
+
+/* ===================== VERSE MARKET ===================== */
+.market{margin-top:36px}
+.mk-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:16px}
+.mk-head h2{margin:0;font-size:19px;color:var(--ink);font-weight:700;letter-spacing:-.01em}
+.mk-head span{font-size:13px;color:var(--muted);font-weight:500}
+.mk-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+.mk-card{position:relative;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px;transition:transform .15s var(--ease),border-color .15s}
+.mk-card:hover{border-color:var(--line-strong);transform:translateY(-2px)}
+.mk-card.hot{border-color:rgba(245,176,33,.45)}
+.mk-card .hotbadge{position:absolute;top:12px;right:12px;font-size:9px;font-weight:700;background:var(--verse-amber);color:#0c0c0f;padding:3px 7px;border-radius:6px;letter-spacing:.06em}
+.mk-emoji{font-size:28px;line-height:1}
+.mk-name{font-weight:700;font-size:15px;color:var(--ink);margin-top:12px;line-height:1.25}
+.mk-partner{font-size:12px;color:var(--muted);margin-top:3px;font-weight:500}
+.mk-cost{font-family:var(--mono);font-size:15px;font-weight:700;color:var(--verse-amber);margin-top:14px}
+.mk-btn{margin-top:14px;width:100%;border:1px solid var(--border);background:var(--surface-2);color:var(--ink);font-family:var(--font);font-weight:700;font-size:13px;padding:11px;border-radius:12px;cursor:pointer;transition:all .15s}
+.mk-btn:hover{border-color:var(--verse-amber);color:var(--verse-amber)}
+.mk-btn.claimed{background:var(--ok-soft);border-color:var(--verse-green);color:var(--verse-green);cursor:default}
+.mk-btn.short{background:transparent;border-color:var(--border);color:var(--muted);cursor:not-allowed}
+
+/* ===================== MISSION RAIL ===================== */
+.rail{position:sticky;bottom:0;z-index:30;background:rgba(14,15,20,.9);backdrop-filter:saturate(1.2) blur(14px);border-top:1px solid var(--border)}
+.rail-in{max-width:1080px;margin:0 auto;padding:12px 20px;display:flex;gap:12px;overflow-x:auto}
+.mission{flex:1;min-width:255px;display:flex;align-items:center;gap:12px;background:var(--surface-2);border:1px solid var(--border);border-radius:14px;padding:11px 13px;cursor:pointer;transition:border-color .15s,transform .15s,opacity .3s}
+.mission:hover{border-color:var(--line-strong);transform:translateY(-2px)}
+.mission.done{opacity:.5}
+.mission.done .mt{text-decoration:line-through}
+.mission .mi{width:36px;height:36px;border-radius:11px;flex:none;display:grid;place-items:center;font-size:16px;background:var(--surface-3)}
+.mission>div:nth-child(2){flex:1;min-width:0}
+.mission .mt{font-weight:700;font-size:13px;color:var(--ink);line-height:1.2;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.mission .ms{font-size:11.5px;color:var(--muted);margin-top:2px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.mission .reward{margin-left:auto;font-family:var(--mono);font-weight:700;font-size:11.5px;color:var(--verse-green);white-space:nowrap;background:var(--ok-soft);border:1px solid transparent;padding:5px 10px;border-radius:100px}
+.mission.done .reward{background:var(--verse-green);color:#0c1512}
+.mission.perfect{border-color:rgba(245,176,33,.4)}
+.mission.perfect .reward{color:var(--verse-amber);background:var(--coin-soft)}
+.rail-empty{flex:1;text-align:center;font-size:13px;color:var(--verse-green);font-weight:600;padding:14px}
+
+/* ===================== PORTAL CURTAIN ===================== */
+#curtain{position:fixed;inset:0;z-index:110;display:none;place-items:center;color:#fff}
+#curtain.show{display:grid}
+#curtain .cwrap{text-align:center;transform:translateY(6px);opacity:0;animation:cin .4s var(--ease) forwards}
+#curtain .ct{font-weight:700;font-size:13px;letter-spacing:.06em;text-transform:uppercase;opacity:.85}
+#curtain .cn{font-size:32px;font-weight:700;letter-spacing:-.02em;margin-top:6px}
+.spin{width:26px;height:26px;border-radius:50%;border:3px solid rgba(255,255,255,.3);border-top-color:#fff;margin:16px auto 0;animation:spin .7s linear infinite}
+
+/* ===================== DELTA REPLAY ===================== */
+#delta{position:fixed;inset:0;z-index:90;display:none;place-items:center;text-align:center;color:#fff;overflow:hidden;padding:24px}
+#delta.show{display:grid}
+#delta.out{animation:dOut .2s var(--ease) forwards}
+#delta .dwrap{opacity:0;animation:dIn .3s var(--ease) forwards}
+#delta .dinit{width:74px;height:74px;border-radius:20px;display:grid;place-items:center;margin:0 auto;font-weight:700;font-size:32px;color:#fff;background:rgba(255,255,255,.18);border:2px solid rgba(255,255,255,.55);opacity:0;transform:translateY(-20px);animation:dDrop .25s var(--ease) .15s forwards}
+#delta .dtitle{margin-top:18px;font-size:13px;letter-spacing:.02em;font-weight:700;color:rgba(255,255,255,.9)}
+#delta .dxp{margin-top:8px;font-family:var(--mono);font-size:40px;font-weight:700;line-height:1}
+#delta .dbarwrap{width:min(280px,72vw);height:8px;border-radius:100px;background:rgba(255,255,255,.25);margin:18px auto 0;overflow:hidden}
+#delta .dbar{height:100%;width:0;border-radius:100px;background:#fff;transition:width .8s var(--ease)}
+#delta .dbtn{margin-top:22px;background:transparent;border:1.5px solid rgba(255,255,255,.8);color:#fff;font-family:var(--font);font-weight:700;font-size:13px;letter-spacing:.02em;padding:12px 20px;border-radius:100px;cursor:pointer;opacity:0;animation:dIn .3s var(--ease) .9s forwards}
+.dbtn.primary{background:#fff;color:#12131a;border-color:#fff;margin-top:12px}
+
+/* ===================== VERSE EARN BURST ===================== */
+#verse-burst-container{position:fixed;inset:0;pointer-events:none;z-index:9999}
+.vburst{position:absolute;left:50%;top:120px;transform:translateX(-50%);text-align:center;animation:vburst .8s var(--ease) forwards}
+.vburst .vb-amt{font-family:var(--mono);font-size:24px;font-weight:700;color:var(--verse-green);text-shadow:0 0 14px rgba(38,211,171,.5)}
+.vburst .vb-reason{font-size:12px;color:var(--text);margin-top:3px}
+.vburst .vb-mult{display:inline-block;margin-top:6px;font-family:var(--mono);font-size:10px;font-weight:700;color:var(--verse-purple);background:rgba(139,125,251,.16);border:1px solid var(--verse-purple);padding:3px 9px;border-radius:100px}
+
+/* ===================== TOASTS ===================== */
+#toasts{position:fixed;top:80px;right:20px;z-index:9998;display:flex;flex-direction:column;gap:8px;align-items:flex-end}
+.toast{background:var(--surface);border:1px solid var(--verse-green);border-radius:12px;padding:12px 16px;font-size:13px;font-weight:600;color:var(--verse-green);transform:translateX(120%);animation:toastIn .25s var(--ease) forwards;box-shadow:var(--sh)}
+.toast.out{animation:toastOut .25s var(--ease) forwards}
+.toast.tier{border-color:var(--verse-amber);color:var(--verse-amber)}
+.toast.warn{border-color:var(--verse-coral);color:var(--verse-coral)}
+
+/* ===================== DEBUG BAR ===================== */
+#debugbar{position:fixed;bottom:96px;right:16px;z-index:200;width:190px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:14px;box-shadow:var(--sh-lg)}
+#debugbar .dl{font-size:11px;color:var(--muted);font-weight:700;margin-bottom:9px}
+#debugbar select,#debugbar button{width:100%;font-family:var(--font);font-size:13px;padding:9px 10px;border-radius:var(--r-sm);border:1px solid var(--border);margin-bottom:7px;background:var(--surface-2);color:var(--ink);cursor:pointer}
+#debugbar button.primary{background:var(--verse-green);color:#0c1512;border:none;font-weight:700}
+#debugbar button:last-child{margin-bottom:0}
+
+/* ===================== DAILY REWARD ===================== */
+#dailyReward{position:fixed;inset:0;z-index:95;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,.66);backdrop-filter:blur(6px)}
+#dailyReward.show{display:flex}
+.dr-card{position:relative;width:100%;max-width:420px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:var(--sh-lg);padding:24px;animation:pop .28s var(--ease)}
+.dr-close{position:absolute;top:16px;right:16px;border:none;background:var(--surface-2);width:32px;height:32px;border-radius:10px;font-size:14px;cursor:pointer;color:var(--muted)}
+.dr-close:hover{color:var(--ink);background:var(--surface-3)}
+.dr-title{font-size:20px;font-weight:700;color:var(--ink);letter-spacing:-.01em}
+.dr-sub{font-size:13px;color:var(--muted);margin-top:5px}
+.dr-week{display:grid;grid-template-columns:repeat(7,1fr);gap:7px;margin-top:18px}
+.dr-day{background:var(--surface-2);border:1px solid var(--border);border-radius:11px;padding:9px 3px;text-align:center}
+.dr-day .dd-n{font-size:8.5px;color:var(--muted);letter-spacing:.02em;font-weight:600}
+.dr-day .dd-c{font-size:16px;margin:4px 0 2px}
+.dr-day .dd-v{font-family:var(--mono);font-size:9px;font-weight:700;color:var(--verse-amber)}
+.dr-day.done{opacity:.5}
+.dr-day.today{border-color:var(--verse-green);background:var(--ok-soft)}
+.dr-day.today .dd-v{color:var(--verse-green)}
+.dr-miles{display:flex;gap:7px;margin-top:15px;flex-wrap:wrap}
+.dr-mile{flex:1;min-width:66px;background:var(--surface-2);border:1px solid var(--border);border-radius:11px;padding:8px 6px;text-align:center}
+.dr-mile.hit{border-color:var(--verse-purple)}
+.dr-mile .dm-d{font-size:8.5px;color:var(--muted);letter-spacing:.02em;font-weight:600}
+.dr-mile .dm-v{font-family:var(--mono);font-size:11px;font-weight:700;color:var(--verse-amber);margin-top:3px}
+.dr-mile.hit .dm-v{color:var(--verse-purple)}
+.dr-claim{margin-top:18px;width:100%;border:none;border-radius:12px;padding:13px;font-family:var(--font);font-weight:700;font-size:14px;color:#0c1512;background:var(--verse-green);cursor:pointer}
+.dr-claim:disabled{background:var(--surface-2);color:var(--muted);border:1px solid var(--border);cursor:default}
+
+/* ===================== KEYFRAMES ===================== */
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes cin{to{transform:none;opacity:1}}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes pfPulse{0%{transform:scale(1)}50%{transform:scale(1.04)}100%{transform:scale(1)}}
+@keyframes vburst{0%{opacity:0;transform:translate(-50%,10px)}15%{opacity:1;transform:translate(-50%,0)}100%{opacity:0;transform:translate(-50%,-40px)}}
+@keyframes toastIn{to{transform:translateX(0)}}
+@keyframes toastOut{to{transform:translateX(120%);opacity:0}}
+@keyframes dIn{to{opacity:1}}
+@keyframes dOut{to{opacity:0}}
+@keyframes dDrop{to{opacity:1;transform:none}}
+@keyframes pop{from{opacity:0;transform:scale(.96) translateY(6px)}to{opacity:1;transform:none}}
+
+/* hold the Nexus 'rise' until any overlay leaves */
+.terr,.rift,.portfolio,.market{opacity:0}
+body.ready .terr,body.ready .rift,body.ready .portfolio,body.ready .market{animation:rise .5s var(--ease) both}
+
+/* ===================== RESPONSIVE ===================== */
+@media(max-width:860px){ .dash-top{grid-template-columns:1fr} }
+@media(max-width:720px){ .mast h1{font-size:24px} .wrap{padding:26px 16px 44px} .section-head{margin-top:30px} }
+@media(max-width:560px){
+  .grid{grid-template-columns:1fr}
+  .hud .chip .k{display:none}
+  .hud .chip{padding:7px 11px}
+  .hud-in{gap:9px;padding:10px 14px}
+  .rankblock{flex:none}
+  .rankblock .rk,.rankblock .bal{white-space:nowrap}
+  .lb-card{max-height:92vh}
+  .mast{flex-direction:column;align-items:flex-start}
+  .mission{min-width:82vw}
+}
+@media(prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+  #curtain .cwrap{opacity:1;transform:none}
+  .terr,.rift,.portfolio,.market{opacity:1!important}
+  #delta .dwrap,#delta .dinit,#delta .dbtn{opacity:1!important;transform:none!important}
+  .toast{transform:none!important}
+}
+/* ===================== RESET DEMO BUTTON ===================== */
+#resetDemo{position:fixed;left:16px;bottom:80px;z-index:60;display:inline-flex;align-items:center;gap:6px;background:var(--surface-2);color:var(--muted);border:1px solid var(--border);border-radius:100px;padding:8px 13px;font-family:var(--font);font-size:11.5px;font-weight:600;cursor:pointer;opacity:.5;transition:opacity .15s,color .15s,border-color .15s}
+#resetDemo:hover{opacity:1;color:var(--verse-coral);border-color:var(--verse-coral)}
+@media(max-width:560px){#resetDemo{bottom:76px;left:12px;padding:7px 11px}}
+.terr.st-locked{opacity:.5;cursor:not-allowed}
+.terr.st-locked:hover{transform:none;border-color:var(--border);box-shadow:var(--sh-sm)}
+.terr.st-locked .tsig{filter:grayscale(1)}
+</style>
+<script src="shared-state.js"></script>
+</head>
+<body>
+
+<!-- HUD -->
+<header class="hud"><div class="hud-in">
+  <div class="sigil" id="sigil">NT</div>
+  <div class="rankblock">
+    <span class="rk" data-verse="tier-name">—</span>
+    <span class="bal"><span class="sym">V</span><b data-verse="balance">0</b> VERSE</span>
+  </div>
+  <div class="spacer"></div>
+  <button class="chip rankchip" id="lbopen" title="Global leaderboard" aria-label="Open global leaderboard"><span>🏆</span> <b data-verse="global-rank">#—</b>&nbsp;<span class="k">rank</span></button>
+  <button type="button" class="chip count" id="streakChip" title="Daily reward" aria-label="Open daily reward"><span>🔥</span> <b data-verse-streak>0</b>&nbsp;<span class="k">day streak</span></button>
+</div></header>
+
+<main class="wrap">
+  <div class="mast">
+    <div>
+      <h1 class="shout">The Nexus</h1>
+    </div>
+  </div>
+
+  <!-- DASHBOARD TOP: portfolio + live leaderboard panel -->
+  <div class="dash-top">
+  <!-- VERSE PORTFOLIO WIDGET -->
+  <section class="portfolio" aria-label="Your VERSE portfolio">
+    <div class="pf-head">
+      <div class="pf-label">Your VERSE Balance</div>
+    </div>
+    <div class="pf-bal" id="pfBal"><span class="sym">V</span><span data-verse="balance">0</span></div>
+    <div class="pf-earn">Earn by learning · Redeem for real rewards</div>
+    <div class="pf-tier">
+      <span class="pf-tier-label" data-verse="tier-label">TIER 0</span>
+      <span class="pf-tier-name" data-verse="tier-name" id="tierName">—</span>
+      <div class="pf-tier-bar"><i id="tierBar"></i></div>
+      <span class="pf-tier-next" id="tierNext"></span>
+    </div>
+    <div class="pf-stats">
+      <div class="pf-stat"><span class="ps-ic">🔥</span><div class="ps-tx"><div class="ps-v streak"><span data-verse-streak>0</span></div><div class="ps-k">Day streak</div></div></div>
+      <div class="pf-stat"><span class="ps-ic">⚡</span><div class="ps-tx"><div class="ps-v mult" data-verse="rank-mult">×1.0</div><div class="ps-k">Rank multiplier</div></div></div>
+      <div class="pf-stat"><span class="ps-ic">🏆</span><div class="ps-tx"><div class="ps-v grank" data-verse="global-rank">#—</div><div class="ps-k">Global rank</div></div></div>
+    </div>
+    <div class="pf-tx">
+      <button class="pf-tx-toggle" id="pfTxToggle" aria-expanded="false">Recent earnings <span id="pfTxCaret">▾</span></button>
+      <div class="pf-tx-list" id="pfTxList" style="display:none"></div>
+    </div>
+  </section>
+  <!-- LIVE LEADERBOARD PANEL (always visible) -->
+  <aside class="lb-panel" aria-label="Leaderboard">
+    <div class="lb-panel-head"><span class="t">🏆 Leaderboard</span><button id="lbViewAll">View all →</button></div>
+    <div id="lbpList"></div>
+  </aside>
+  </div>
+
+  <div class="section-head"><h2>Your characters</h2><span class="sh-sub">Tap a card to keep learning</span></div>
+
+  <!-- Territory grid -->
+  <section class="grid" id="grid" aria-label="Territories"></section>
+
+
+  <!-- VERSE Market -->
+  <section class="market" aria-label="VERSE market — redeem">
+    <div class="mk-head"><h2>VERSE Market</h2><span>Redeem your VERSE</span></div>
+    <div class="mk-grid" id="mkGrid"></div>
+  </section>
+</main>
+
+<!-- Mission rail -->
+<nav class="rail" aria-label="Today's missions"><div class="rail-in" id="rail"></div></nav>
+
+<!-- Overlays -->
+<div id="curtain"><div class="cwrap"><div class="ct">Entering</div><div class="cn" id="curtainName">—</div><div class="spin"></div></div></div>
+
+<div id="lb"><div class="lb-card">
+  <div class="lb-head">
+    <button class="lb-close" id="lbclose" aria-label="Close leaderboard">✕</button>
+    <div class="lb-title">Global Leaderboard</div>
+    <div class="lb-sub">Top-ranked students earn more VERSE per action</div>
+    <div class="lb-tabs">
+      <button class="lb-tab on" data-mode="all">VERSE Held</button>
+      <button class="lb-tab" data-mode="week">This week</button>
+    </div>
+  </div>
+  <div class="lb-list" id="lblist"></div>
+</div></div>
+
+<div id="delta"><div class="dwrap">
+  <div class="dinit" id="dinit">M</div>
+  <div class="dtitle" id="dtitle">Chapter complete</div>
+  <div class="dxp" id="dxp">+0 VERSE</div>
+  <div class="dbarwrap"><div class="dbar" id="dbar"></div></div>
+  <button class="dbtn primary" id="dbtn2" style="display:none">Play next chapter →</button>
+  <button class="dbtn" id="dbtn">Territory updated →</button>
+</div></div>
+
+<div id="dailyReward"><div class="dr-card">
+  <button class="dr-close" id="drClose" aria-label="Close">✕</button>
+  <div class="dr-title">Daily reward</div>
+  <div class="dr-sub" id="drSub">Claim today's VERSE</div>
+  <div class="dr-week" id="drWeek"></div>
+  <div class="dr-miles" id="drMiles"></div>
+  <button class="dr-claim" id="drClaim">Claim</button>
+</div></div>
+
+<button id="resetDemo" title="Wipe all demo progress and start fresh">↺ Reset demo</button>
+<div id="verse-burst-container"></div>
+<div id="toasts"></div>
+
+<script>
+/* ============ PLAYER ============ */
+const PLAYER={ name:"Nikhil Thakre", initials:"NT", streak:7 };
+
+/* ============ CHARACTERS ============ */
+const CHARACTERS=[
+  { id:"moneta",  name:"Moneta",           topic:"Money basics",                     accent:"var(--a-moneta)",  file:"moneta_interactive_green_white_1.html", total:10, done:10, daysIdle:0, key:true, locked:true  },
+  { id:"weal",    name:"Mr. Weal",         topic:"Wealth & compounding",             accent:"var(--a-weal)",    file:"mrweal_interactive_white_mustard.html", total:12, done:7,  daysIdle:4, key:false, locked:true },
+  { id:"captain", name:"Captain Interest", topic:"Credit & loans",                   accent:"var(--a-captain)", file:"captain.html",   total:10, done:4,  daysIdle:2, key:false },
+  { id:"recsus",  name:"Recsus",           topic:"Recession & risk",                 accent:"var(--a-recsus)",  file:"recsus_interactive_dark_red.html",      total:10, done:3,  daysIdle:6, key:false, locked:true },
+  { id:"vera",    name:"Vera",             topic:"Banking, investing, fraud & debt", accent:"var(--a-vera)",    file:"vera_interactive_teal_white.html",      total:7,  done:2,  daysIdle:1, key:false, locked:true },
+  { id:"inflare", name:"Inflare",          topic:"Inflation & prices",               accent:"var(--a-inflare)", file:"inflare.html",    total:10, done:0,  daysIdle:null,key:false },
+];
+const ACCENT_HEX={moneta:"#22C55E",weal:"#EAB308",captain:"#3B82F6",recsus:"#F87171",vera:"#22D3EE",inflare:"#F43F5E"};
+const REDUCE=matchMedia("(prefers-reduced-motion:reduce)").matches;
+
+/* ============ HYDRATE FROM SHARED STATE (real token + chapter progress) ============ */
+(function hydrateFromShared(){
+  if(!window.MoneyVerseState) return;
+  try{
+    MoneyVerseState.refreshFromModules();           // import each module's own progress store
+    const S=MoneyVerseState.getState();
+    CHARACTERS.forEach(c=>{
+      const cs=S.characters[c.id]||{tokens:0,chaptersCompleted:[],lastPlayed:null};
+      c.done   = Math.min(c.total,(cs.chaptersCompleted||[]).length);
+      c.tokens = cs.tokens||0;
+      c.daysIdle = cs.lastPlayed ? Math.floor((Date.now()-cs.lastPlayed)/86400000) : ((c.done>0||c.tokens>0)?0:null);
+      c.key = c.done>=c.total;                       // key earned once every chapter is done
+    });
+  }catch(e){ console.warn("hydrateFromShared failed",e); }
+})();
+
+/* ---- safe storage: file:// in Safari blocks localStorage; fall back to in-memory so the page still works ---- */
+function safeStore(getReal){
+  let mem={}, real=null;
+  try{ real=getReal(); real.setItem("__t","1"); real.removeItem("__t"); }catch(e){ real=null; }
+  if(real) return real;
+  return { getItem:k=>(k in mem?mem[k]:null), setItem:(k,v)=>{mem[k]=String(v);}, removeItem:k=>{delete mem[k];}, clear:()=>{mem={};} };
+}
+const LS=safeStore(()=>window.localStorage);
+const SS=safeStore(()=>window.sessionStorage);
+function fmt(n){return Math.round(n).toLocaleString("en-IN");}
+
+/* ============ TERRITORY STATE (unchanged) ============ */
+function deriveTerritoryState(daysIdle, decayMultiplier=1){
+  if(daysIdle==null) return "dormant";
+  const d=daysIdle/decayMultiplier;
+  if(d<1) return "thriving"; if(d<=2) return "stable"; if(d<=4) return "decaying"; return "corrupted";
+}
+function corruptionPercent(days){ return Math.min(80, Math.max(0,(days-2)*20)); }
+const RANK={dormant:0,thriving:1,stable:2,decaying:3,corrupted:4};
+function applyCap(list){
+  const broken=list.filter(t=>t.state==="decaying"||t.state==="corrupted").sort((a,b)=>RANK[b.state]-RANK[a.state]);
+  broken.slice(2).forEach(t=>{ t.state="stable"; }); return list;
+}
+let MODEL=CHARACTERS.map(c=>({ ...c, state:deriveTerritoryState(c.daysIdle) }));
+applyCap(MODEL);
+MODEL.sort((a,b)=>RANK[b.state]-RANK[a.state] || a.name.localeCompare(b.name));
+const keysEarned=CHARACTERS.filter(c=>c.key).length;
+
+/* ============ VERSE STATE ENGINE (Step 10) ============ */
+/* Displayed balance = tokens actually earned across the character modules
+   + any Nexus-side rewards (missions / daily) tracked in 'moneyverse_demo_verse_balance'. */
+function moduleTokens(){ return window.MoneyVerseState ? MoneyVerseState.totalTokens() : 0; }
+function VB(){ return moduleTokens() + parseInt(LS.getItem('moneyverse_demo_verse_balance')||'0'); }
+function initVerseState(){
+  /* nothing seeded — a fresh demo starts at zero and grows as chapters are played */
+  renderMarket(); renderMissions();
+  refreshVerseDisplays();
+}
+document.querySelectorAll('[data-verse-streak]').forEach(el=>el.textContent=PLAYER.streak);
+function refreshVerseDisplays(){
+  const balance=VB(), tier=getVerseTier(balance);
+  document.querySelectorAll('[data-verse="balance"]').forEach(el=>el.textContent=fmt(balance));
+  document.querySelectorAll('[data-verse="tier-name"]').forEach(el=>el.textContent=tier.name);
+  document.querySelectorAll('[data-verse="tier-label"]').forEach(el=>el.textContent=tier.label);
+  document.querySelectorAll('[data-verse="rank-mult"]').forEach(el=>el.textContent='×'+getRankMultiplier().toFixed(1));
+  updateTierProgressBar(balance,tier);
+  renderTx();
+  recomputeRank();
+}
+
+/* ============ VERSE TIERS (Step 8) ============ */
+const TIERS=[
+  {name:"Getting Started",min:0,    color:"#5a5a7a",label:"TIER 0"},
+  {name:"Budget Builder",  min:200,  color:"#60a5fa",label:"TIER 1"},
+  {name:"Saver",           min:500,  color:"#4ade80",label:"TIER 2"},
+  {name:"Investor",        min:1000, color:"#a855f7",label:"TIER 3"},
+  {name:"Wealth Architect",min:2500, color:"#f0a30a",label:"TIER 4"},
+  {name:"Market Maker",    min:5000, color:"#00d4a0",label:"TIER 5"},
+  {name:"VERSE Legend",    min:10000,color:"linear-gradient(90deg,#7c6dfa,#f472b6)",label:"TIER 6"},
+];
+function getVerseTier(b){ let t=TIERS[0]; for(const x of TIERS){ if(b>=x.min) t=x; } return t; }
+function nextTier(b){ return TIERS.find(x=>x.min>b)||null; }
+function updateTierProgressBar(balance,tier){
+  const bar=document.getElementById("tierBar"), nx=nextTier(balance), lbl=document.getElementById("tierNext");
+  const fill = tier.color.startsWith("linear") ? tier.color : tier.color;
+  bar.style.background=fill;
+  if(nx){ const span=nx.min-tier.min, prog=Math.min(100,Math.max(0,(balance-tier.min)/span*100));
+    bar.style.width=prog.toFixed(0)+"%"; if(lbl) lbl.textContent=`${fmt(nx.min-balance)} VERSE to ${nx.name}`;
+  }else{ bar.style.width="100%"; if(lbl) lbl.textContent="Max tier reached — VERSE Legend"; }
+}
+
+/* ============ EARNING ENGINE (Step 4) ============ */
+function getRankMultiplier(){ const d=boardData('all'), r=d.findIndex(p=>p.you)+1, n=d.length;
+  if(r===1)return 2.0; if(r===2)return 1.5; if(r===3)return 1.2; if(r/n<=0.10)return 1.2; return 1.0; }
+function getStreakBonus(){ const s=PLAYER.streak; return s>=7?1.2:s>=3?1.1:1.0; }
+function earnVerse(baseAmount, reason){
+  const multiplier=getRankMultiplier();
+  const afterMult=Math.round(baseAmount*multiplier);
+  const totalAmount=Math.round(afterMult*getStreakBonus());
+  const current=VB(), newBal=current+totalAmount;
+  LS.setItem('moneyverse_demo_verse_balance', (parseInt(LS.getItem('moneyverse_demo_verse_balance')||'0'))+totalAmount); // Nexus-side ledger only
+  const txLog=JSON.parse(LS.getItem('moneyverse_demo_verse_transactions')||'[]');
+  txLog.push({amount:totalAmount,reason,timestamp:Date.now(),multiplier});
+  LS.setItem('moneyverse_demo_verse_transactions', JSON.stringify(txLog.slice(-50)));
+  const before=getVerseTier(current), after=getVerseTier(newBal);
+  showVerseEarnAnimation(totalAmount, reason, multiplier);
+  animateBalance(current,newBal,()=>{ refreshVerseDisplays(); if(after.name!==before.name) toast(`⬆ Tier up — ${after.name}`,'tier'); });
+  return totalAmount;
+}
+function animateBalance(from,to,cb){
+  const els=document.querySelectorAll('[data-verse="balance"]'), pf=document.getElementById("pfBal");
+  if(pf){ pf.classList.remove("pulse"); void pf.offsetWidth; pf.classList.add("pulse"); }
+  if(REDUCE){ els.forEach(e=>e.textContent=fmt(to)); if(cb)cb(); return; }
+  const dur=600; let s=null;
+  function step(t){ if(!s)s=t; const p=Math.min(1,(t-s)/dur); const v=from+(to-from)*p;
+    els.forEach(e=>e.textContent=fmt(v));
+    if(p<1)requestAnimationFrame(step); else if(cb)cb(); }
+  requestAnimationFrame(step);
+}
+
+/* ============ EARN ANIMATION (Step 5) ============ */
+function showVerseEarnAnimation(amount, reason, mult){
+  if(REDUCE) return;
+  const c=document.getElementById("verse-burst-container");
+  const b=document.createElement("div"); b.className="vburst";
+  b.innerHTML=`<div class="vb-amt">+${fmt(amount)} VERSE</div><div class="vb-reason">${reason}</div>${mult>1?`<div class="vb-mult">×${mult.toFixed(1)} RANK BONUS</div>`:""}`;
+  c.appendChild(b); setTimeout(()=>b.remove(),820);
+}
+
+/* ============ TOASTS (Step 11) ============ */
+function toast(msg,type){
+  const t=document.createElement("div"); t.className="toast"+(type?(" "+type):""); t.textContent=msg;
+  document.getElementById("toasts").appendChild(t);
+  setTimeout(()=>{ t.classList.add("out"); setTimeout(()=>t.remove(),260); }, 2500);
+}
+
+/* ============ VERSE MARKET (Step 6) ============ */
+const REWARDS=[
+  {emoji:"🍔",name:"20% off any order",partner:"Swiggy",cost:500,hot:true},
+  {emoji:"🍕",name:"15% off your order",partner:"Zomato",cost:450},
+  {emoji:"☕",name:"Free tall drink",partner:"Starbucks",cost:800},
+  {emoji:"🛒",name:"10% off groceries",partner:"Zepto",cost:350},
+  {emoji:"🎟️",name:"Free movie ticket",partner:"BookMyShow",cost:700},
+  {emoji:"🛵",name:"Free delivery × 3",partner:"Dunzo",cost:300},
+  {emoji:"🍱",name:"1 free canteen meal",partner:"Campus Canteen",cost:200},
+  {emoji:"🎬",name:"1 month premium",partner:"Netflix",cost:1200},
+];
+function renderMarket(){
+  const g=document.getElementById("mkGrid"); g.innerHTML="";
+  const claimed=JSON.parse(LS.getItem('moneyverse_demo_verse_redemptions')||'[]');
+  REWARDS.forEach((r,i)=>{
+    const bal=VB(), has=bal>=r.cost, done=claimed.includes(r.partner+r.name);
+    const card=document.createElement("div"); card.className="mk-card"+(r.hot?" hot":"");
+    card.innerHTML=`${r.hot?'<div class="hotbadge">HOT</div>':''}
+      <div class="mk-emoji">${r.emoji}</div>
+      <div class="mk-name">${r.name}</div>
+      <div class="mk-partner">${r.partner}</div>
+      <div class="mk-cost">${fmt(r.cost)} VERSE</div>
+      <button class="mk-btn ${done?'claimed':(has?'':'short')}" ${done||!has?'disabled':''} data-i="${i}">
+        ${done?'Claimed ✓':(has?'Redeem':`Need ${fmt(r.cost-bal)} more`)}</button>`;
+    g.appendChild(card);
+  });
+  g.querySelectorAll(".mk-btn:not([disabled])").forEach(btn=>btn.addEventListener("click",()=>redeem(+btn.dataset.i)));
+}
+function redeem(i){
+  const r=REWARDS[i], bal=VB(); if(bal<r.cost) return;
+  LS.setItem('moneyverse_demo_verse_balance', (parseInt(LS.getItem('moneyverse_demo_verse_balance')||'0')) - r.cost); // spend from Nexus ledger
+  const claimed=JSON.parse(LS.getItem('moneyverse_demo_verse_redemptions')||'[]'); claimed.push(r.partner+r.name);
+  LS.setItem('moneyverse_demo_verse_redemptions', JSON.stringify(claimed));
+  refreshVerseDisplays(); renderMarket();
+  toast(`🎁 ${r.name} redeemed! Check your email.`);
+}
+
+/* ============ HUD basics ============ */
+document.getElementById("sigil").textContent=PLAYER.initials;
+
+/* ============ KEYS ============ */
+/* keysEarned (declared above) is consumed by the Rift boss gate below. The visual keys-core has been removed. */
+
+/* ============ TERRITORIES ============ */
+const grid=document.getElementById("grid");
+const STATE_CHIP={
+  thriving:["Played today","var(--ok-soft)","var(--ok)"],
+  stable:["Stable","var(--surface-3)","var(--muted)"],
+  decaying:["Decaying","var(--err-soft)","var(--villain-ember)"],
+  corrupted:["Corrupted","var(--err-soft)","var(--villain-ember)"],
+  dormant:["Unexplored","var(--surface-2)","var(--muted)"]
+};
+MODEL.forEach(t=>{
+  if(t.locked){
+    const initial=t.name.replace("Mr. ","")[0];
+    const lb=document.createElement("div"); lb.className="terr st-locked"; lb.setAttribute("aria-disabled","true");
+    lb.innerHTML=`<div class="content"><span class="state" style="background:var(--surface-2);color:var(--muted)">\uD83D\uDD12 Coming soon</span><div class="top"><div class="tsig" style="background:var(--surface-3);color:var(--muted)">${initial}</div><div><div class="who">${t.name}</div><div class="topic">${t.topic}</div></div></div><div class="meta">Launching soon</div></div>`;
+    grid.appendChild(lb); return;
+  }
+  const segs=8, filled=Math.round(t.done/t.total*segs); let seg="";
+  for(let i=0;i<segs;i++) seg+=`<div class="progseg"><i style="width:${i<filled?100:0}%;background:${t.accent}"></i></div>`;
+  const [label,chipBg,chipFg]=STATE_CHIP[t.state]; const initial=t.name.replace("Mr. ","")[0];
+  let overlays="";
+  if(t.state==="decaying") overlays=`<div class="villain-haze"></div><div class="villain-edge"></div>`;
+  if(t.state==="corrupted") overlays=`<div class="villain-wash"></div><div class="stamp">CORRUPTION ${corruptionPercent(t.daysIdle)}%</div>`;
+  const pct=Math.round(t.done/t.total*100);
+  const meta = t.state==="dormant" ? `${t.done}/${t.total} chapters · not started yet`
+            : t.state==="thriving" ? `${t.done}/${t.total} chapters · ${pct}% · played today`
+            : t.state==="corrupted" ? `${t.done}/${t.total} chapters · ${pct}% · corruption spreading`
+            : t.state==="decaying" ? `${t.done}/${t.total} chapters · ${pct}% · slipping`
+            : `${t.done}/${t.total} chapters · ${pct}% · idle ${t.daysIdle} day${t.daysIdle===1?"":"s"}`;
+  const dotHTML = t.state==="thriving" ? `<span class="pdot" style="background:${t.accent};color:${t.accent}"></span>` : "";
+  const btn=document.createElement("button"); btn.className="terr st-"+t.state; btn.dataset.id=t.id;
+  btn.setAttribute("aria-label",`${t.name} territory — ${label}. ${t.done} of ${t.total} chapters.`);
+  btn.innerHTML=`${overlays}<div class="content">
+      <span class="state" style="background:${chipBg};color:${chipFg}">${label}</span>
+      <div class="top"><div class="tsig" style="background:${t.accent}">${initial}</div>
+        <div><div class="who">${t.name}</div><div class="topic">${t.topic}</div></div>${dotHTML}</div>
+      <div class="meta">${meta}</div><div class="progwrap">${seg}</div>
+      ${t.state==="corrupted"?`<button class="cleanse" data-id="${t.id}">⚡ Cleanse</button>`:""}
+    </div>`;
+  grid.appendChild(btn);
+});
+
+/* ============ MISSIONS (Step 9) ============ */
+const MISSIONS=[
+  {i:"🛡️",t:"Hold the line",s:"Cleanse Recsus before it hits 80%",v:80},
+  {i:"📈",t:"Daily drill",s:"One chapter in any territory",v:50},
+  {i:"🔑",t:"Chase a key",s:"Finish Vera to earn her key",v:120},
+];
+function todayKey(){ return "moneyverse_demo_verse_missions_"+new Date().toISOString().slice(0,10); }
+function renderMissions(){
+  const rail=document.getElementById("rail"); rail.innerHTML="";
+  const done=JSON.parse(LS.getItem(todayKey())||'[]');
+  if(MISSIONS.length && MISSIONS.every((_,i)=>done.includes(i))){ rail.innerHTML=`<div class="rail-empty">✓ All missions complete today · come back tomorrow</div>`; return; }
+  MISSIONS.forEach((m,idx)=>{
+    const el=document.createElement("div"); el.className="mission"+(done.includes(idx)?" done":""); el.dataset.idx=idx;
+    el.innerHTML=`<div class="mi">${m.i}</div><div><div class="mt">${m.t}</div><div class="ms">${m.s}</div></div><div class="reward">+${m.v} VERSE</div>`;
+    el.addEventListener("click",()=>completeMission(idx)); rail.appendChild(el);
+  });
+  // Daily Perfect bonus row
+  const allDone=MISSIONS.every((_,i)=>done.includes(i));
+  const perfect=document.createElement("div"); perfect.className="mission perfect"; perfect.style.cursor="default";
+  perfect.innerHTML=`<div class="mi">⭐</div><div><div class="mt">Daily Perfect</div><div class="ms">${allDone?"Claimed — all missions done":"Finish all 3 missions"}</div></div><div class="reward">+150 VERSE</div>`;
+  rail.appendChild(perfect);
+}
+function completeMission(idx){
+  const key=todayKey(); const done=JSON.parse(LS.getItem(key)||'[]'); if(done.includes(idx))return;
+  done.push(idx); LS.setItem(key,JSON.stringify(done));
+  const m=MISSIONS[idx]; earnVerse(m.v,m.t); toast(`✓ ${m.t} · +${m.v} VERSE`);
+  const wasAll=MISSIONS.every((_,i)=>done.includes(i));
+  renderMissions();
+  if(wasAll && !JSON.parse(LS.getItem(key+"_perfect")||'false')){
+    LS.setItem(key+"_perfect","true");
+    setTimeout(()=>{ earnVerse(150,"Daily Perfect bonus"); toast("⭐ Daily Perfect · +150 VERSE","tier"); },700);
+  }
+}
+
+/* ============ PORTAL CURTAIN ============ */
+const curtain=document.getElementById("curtain");
+const ACCENT={moneta:"#22C55E",weal:"#EAB308",captain:"#3B82F6",recsus:"#0B0B0F",vera:"#22D3EE",inflare:"#F43F5E"};
+function enter(id){
+  const c=CHARACTERS.find(x=>x.id===id); if(!c)return;
+  curtain.style.background = id==="recsus" ? "#0B0B0F" : id==="inflare" ? "linear-gradient(120deg,#ef4444,#f97316)" : ACCENT[id];
+  document.getElementById("curtainName").textContent=c.name; curtain.classList.add("show");
+  const start=performance.now(), MIN=350, MAX=3000;
+  const pre=document.createElement("link"); pre.rel="prefetch"; pre.href=c.file; document.head.appendChild(pre);
+  let navigated=false; const go=()=>{ if(navigated)return; navigated=true; location.href=c.file; };
+  if(REDUCE){ go(); return; }
+  fetch(c.file,{method:"HEAD"}).catch(()=>{}).finally(()=>{ const wait=Math.max(0,MIN-(performance.now()-start)); setTimeout(go,wait); });
+  setTimeout(go,MAX);
+}
+document.addEventListener("click",e=>{
+  const clean=e.target.closest(".cleanse"); if(clean){e.stopPropagation();enter(clean.dataset.id);return;}
+  const terr=e.target.closest(".terr"); if(terr){enter(terr.dataset.id);}
+});
+
+/* ============ DELTA REPLAY (awards VERSE on dismiss) ============ */
+function revealNexus(){ document.body.classList.add("ready"); }
+function getReturnPayload(){
+  const params=new URLSearchParams(location.search); const demo=params.get("demo_return");
+  if(demo){ const c=CHARACTERS.find(x=>x.id===demo); if(c) return {characterId:demo,verseEarned:200,chapterTitle:`${c.name} · chapter complete`,timestamp:Date.now()}; }
+  try{ const raw=SS.getItem("nexus_return"); if(raw){ const p=JSON.parse(raw); if(p && (Date.now()-p.timestamp)<60000) return p; } }catch(e){}
+  return null;
+}
+function showDelta(ret){
+  const c=CHARACTERS.find(x=>x.id===ret.characterId); if(!c){ revealNexus(); return; }
+  const accent=ACCENT_HEX[c.id]||"#334155"; const overlay=document.getElementById("delta");
+  const amt=ret.verseEarned||ret.xpEarned||100;
+  overlay.style.background=hexA(accent,.95);
+  document.getElementById("dinit").textContent=c.name.replace("Mr. ","")[0];
+  document.getElementById("dtitle").textContent=ret.chapterTitle||"Chapter complete";
+  const newPct=Math.round(c.done/c.total*100), prevPct=Math.max(0,newPct-10);
+  const dxp=document.getElementById("dxp"), dbar=document.getElementById("dbar");
+  document.body.style.overflow="hidden"; overlay.classList.add("show"); dbar.style.width=prevPct+"%";
+  if(REDUCE){ dxp.textContent=`+${amt} VERSE`; dbar.style.width=newPct+"%"; }
+  else{ setTimeout(()=>countTo(dxp,amt,600,v=>`+${fmt(v)} VERSE`),400); setTimeout(()=>{ dbar.style.width=newPct+"%"; },500); }
+  let done=false;
+  const dismiss=()=>{ if(done)return; done=true; overlay.classList.add("out");
+    const finish=()=>{ overlay.classList.remove("show","out"); document.body.style.overflow=""; revealNexus(); earnVerse(amt, `${c.name} · chapter`); };
+    if(REDUCE){ finish(); } else { setTimeout(finish,200); } };
+  const nb=document.getElementById("dbtn2");
+  const nextC=CHARACTERS.find(x=>x.id!==c.id && x.done<x.total)||CHARACTERS.find(x=>x.done<x.total);
+  if(nb){ if(nextC){ nb.style.display=""; nb.textContent=`Play ${nextC.name} →`; nb.onclick=()=>enter(nextC.id); } else nb.style.display="none"; }
+  document.getElementById("dbtn").addEventListener("click",dismiss,{once:true}); setTimeout(dismiss,2800);
+}
+function countTo(el,to,dur,tmpl){ let s=null; function step(t){ if(!s)s=t; const p=Math.min(1,(t-s)/dur); el.textContent=tmpl(Math.round(to*p)); if(p<1)requestAnimationFrame(step);} requestAnimationFrame(step); }
+function hexA(hex,a){ const n=parseInt(hex.slice(1),16); return `rgba(${(n>>16)&255},${(n>>8)&255},${n&255},${a})`; }
+
+/* ============ LEADERBOARD (VERSE HELD) ============ */
+const LEADERBOARD=[
+  {name:"Aarav Menon",   initials:"AM", verse:4820, wk:410, campus:"IIT Bombay"},
+  {name:"Diya Kapoor",   initials:"DK", verse:4310, wk:520, campus:"Raisoni · Nagpur"},
+  {name:"Kabir Shah",    initials:"KS", verse:3990, wk:300, campus:"VIT Vellore"},
+  {name:"Ananya Rao",    initials:"AR", verse:3560, wk:640, campus:"SRM Chennai"},
+  {name:"Rohan Gupta",   initials:"RG", verse:2870, wk:280, campus:"Raisoni · Nagpur"},
+  {name:"Ishaan Verma",  initials:"IV", verse:2210, wk:190, campus:"DU North"},
+  {name:"Meera Nair",    initials:"MN", verse:1980, wk:470, campus:"Christ Bengaluru"},
+  {name:"Vivaan Joshi",  initials:"VJ", verse:1750, wk:120, campus:"Raisoni · Nagpur"},
+  {name:"Saanvi Reddy",  initials:"SR", verse:1520, wk:330, campus:"BITS Pilani"},
+  {name:"Arjun Iyer",    initials:"AI", verse:1290, wk:90,  campus:"NIT Trichy"},
+  {name:"Zoya Khan",     initials:"ZK", verse:1040, wk:210, campus:"Raisoni · Nagpur"},
+  {name:"Reyansh Das",   initials:"RD", verse:860,  wk:60,  campus:"Amity Noida"},
+  {name:"Aditya Pillai", initials:"AP", verse:610,  wk:150, campus:"MIT Manipal"},
+];
+const LB_COLORS=["#3B82F6","#22C55E","#EAB308","#22D3EE","#7c6dfa","#f472b6","#00d4a0","#f0a30a","#60a5fa","#a855f7"];
+let LB_MODE="all";
+function boardData(mode){
+  const you={name:PLAYER.name,initials:PLAYER.initials,verse:VB(),wk:PLAYER.weeklyWk||620,campus:"Raisoni · Nagpur",you:true};
+  const arr=LEADERBOARD.map((p,i)=>({...p,color:LB_COLORS[i%LB_COLORS.length]})); arr.push(you);
+  arr.sort((a,b)=> mode==="week" ? b.wk-a.wk : b.verse-a.verse); return arr;
+}
+function myRank(mode){ return boardData(mode).findIndex(p=>p.you)+1; }
+function recomputeRank(){
+  const r=myRank('all'); document.querySelectorAll('[data-verse="global-rank"]').forEach(el=>el.textContent="#"+r);
+  renderLbPanel();
+  const lb=document.getElementById("lb"); if(lb&&lb.classList.contains("show")) renderBoard(LB_MODE);
+  rivalCheck();
+}
+/* inline dashboard leaderboard panel — top 5 + you */
+function lbpRow(p,rank){
+  const av=p.you?"linear-gradient(135deg,var(--verse-purple),var(--verse-green))":p.color;
+  const medal=rank===1?"🥇":rank===2?"🥈":rank===3?"🥉":String(rank);
+  const el=document.createElement("div"); el.className="lbp-row"+(p.you?" you":"");
+  el.innerHTML=`<div class="lbp-rank">${medal}</div><div class="lbp-av" style="background:${av}">${p.initials}</div><div class="lbp-nm">${p.name}${p.you?" · YOU":""}</div><div class="lbp-val">${fmt(p.verse)}</div>`;
+  return el;
+}
+function renderLbPanel(){
+  const list=document.getElementById("lbpList"); if(!list)return;
+  const d=boardData('all'), meIdx=d.findIndex(p=>p.you); list.innerHTML="";
+  d.slice(0,5).forEach((p,i)=>list.appendChild(lbpRow(p,i+1)));
+  if(meIdx>=5){ const sep=document.createElement("div"); sep.className="lbp-sep"; sep.textContent="···"; list.appendChild(sep); list.appendChild(lbpRow(d[meIdx],meIdx+1)); }
+}
+function multBadge(r){ return r===1?{t:'×2.0',c:'var(--verse-purple)'}:r===2?{t:'×1.5',c:'var(--verse-green)'}:r===3?{t:'×1.2',c:'var(--verse-blue)'}:{t:'×1.0',c:'var(--muted)'}; }
+function renderBoard(mode){
+  LB_MODE=mode; document.querySelectorAll(".lb-tab").forEach(t=>t.classList.toggle("on",t.dataset.mode===mode));
+  const d=boardData(mode), list=document.getElementById("lblist"); list.innerHTML="";
+  d.forEach((p,i)=>{ const rank=i+1, val=mode==="week"?p.wk:p.verse; const medal=rank===1?"🥇":rank===2?"🥈":rank===3?"🥉":String(rank);
+    const av=p.you?"linear-gradient(135deg,var(--verse-purple),var(--verse-green))":p.color; const mb=multBadge(rank);
+    const row=document.createElement("div"); row.className="lb-row"+(p.you?" you":"");
+    row.innerHTML=`<div class="lb-rank ${rank<=3?"medal":""}">${medal}</div>
+      <div class="lb-av" style="background:${av}">${p.initials}</div>
+      <div style="min-width:0"><div class="lb-nm">${p.name}${p.you?'<span class="lb-tag">YOU</span>':""}<span class="lb-mult" style="color:${mb.c}">${mb.t}</span></div><div class="lb-meta">${p.campus}</div></div>
+      <div class="lb-val">${fmt(val)} <small>VERSE</small></div>`;
+    list.appendChild(row);
+  });
+  const you=list.querySelector(".you"); if(you) you.scrollIntoView({block:"center"});
+}
+(function lbInit(){
+  const lb=document.getElementById("lb");
+  const open=()=>{ renderBoard(LB_MODE); lb.classList.add("show"); document.body.style.overflow="hidden"; };
+  const close=()=>{ lb.classList.remove("show"); document.body.style.overflow=""; };
+  document.getElementById("lbopen").addEventListener("click",open);
+  const va=document.getElementById("lbViewAll"); if(va) va.addEventListener("click",open);
+  document.getElementById("lbclose").addEventListener("click",close);
+  lb.addEventListener("click",e=>{ if(e.target===lb) close(); });
+  document.addEventListener("keydown",e=>{ if(e.key==="Escape"&&lb.classList.contains("show")) close(); });
+  document.querySelectorAll(".lb-tab").forEach(t=>t.addEventListener("click",()=>renderBoard(t.dataset.mode)));
+})();
+
+/* ============ DEBUG BAR (?debug=1) ============ */
+(function debug(){
+  if(new URLSearchParams(location.search).get("debug")!=="1") return;
+  const bar=document.createElement("div"); bar.id="debugbar";
+  const opts=CHARACTERS.map(c=>`<option value="${c.id}">${c.name}</option>`).join("");
+  bar.innerHTML=`<div class="dl">Demo controls</div><select id="dbgchar">${opts}</select>
+    <button class="primary" id="dbgtrigger">Trigger chapter return</button>
+    <button id="dbgearn">Earn +120 VERSE</button>
+    <button id="dbgreset">Reset VERSE</button>`;
+  document.body.appendChild(bar);
+  document.getElementById("dbgtrigger").addEventListener("click",()=>{ const id=document.getElementById("dbgchar").value; const c=CHARACTERS.find(x=>x.id===id);
+    SS.setItem("nexus_return",JSON.stringify({characterId:id,verseEarned:200,chapterTitle:`${c.name} · chapter complete`,timestamp:Date.now()})); location.href=location.pathname+"?debug=1"; });
+  document.getElementById("dbgearn").addEventListener("click",()=>earnVerse(120,"Quiz streak"));
+  document.getElementById("dbgreset").addEventListener("click",()=>{ ['moneyverse_demo_verse_balance','moneyverse_demo_verse_transactions','moneyverse_demo_verse_redemptions'].forEach(k=>LS.removeItem(k)); SS.clear(); location.href=location.pathname+"?debug=1"; });
+})();
+
+
+/* ===== NEW: transaction history ===== */
+function relTime(ts){ let s=Math.max(0,(Date.now()-ts)/1000);
+  if(s<60)return Math.floor(s)+"s ago"; let m=s/60; if(m<60)return Math.floor(m)+"m ago";
+  let hh=m/60; if(hh<24)return Math.floor(hh)+"h ago"; return Math.floor(hh/24)+"d ago"; }
+function renderTx(){
+  const list=document.getElementById("pfTxList"); if(!list)return;
+  const tx=JSON.parse(LS.getItem('moneyverse_demo_verse_transactions')||'[]').slice(-5).reverse();
+  list.innerHTML = tx.length
+    ? tx.map(t=>`<div class="pf-tx-row"><span class="pf-tx-reason">${t.reason}</span><span class="pf-tx-time">${relTime(t.timestamp)}</span><span class="pf-tx-amt">+${fmt(t.amount)}</span></div>`).join("")
+    : `<div class="pf-tx-empty">No earnings yet — play a chapter to start.</div>`;
+}
+(function txInit(){ const btn=document.getElementById("pfTxToggle"),list=document.getElementById("pfTxList"),car=document.getElementById("pfTxCaret");
+  if(!btn)return; btn.addEventListener("click",()=>{ const openNow=list.style.display==="none"; list.style.display=openNow?"block":"none";
+    if(car)car.textContent=openNow?"▴":"▾"; btn.setAttribute("aria-expanded",String(openNow)); if(openNow)renderTx(); }); })();
+
+
+/* ===== NEW: rival catch-up ===== */
+let _rivalShown=false;
+function rivalCheck(){ if(_rivalShown)return; const d=boardData('all'); const i=d.findIndex(p=>p.you); if(i<=0)return;
+  const above=d[i-1], gap=above.verse-d[i].verse;
+  if(gap>0 && gap<200){ _rivalShown=true; toast(`${above.name} is ${fmt(gap)} VERSE ahead — play one chapter to pass them.`,'warn'); } }
+
+/* ===== NEW: daily login reward ===== */
+const DAILY_REWARDS=[25,40,80,60,90,120,200];
+const DAILY_MILES=[{d:3,v:80},{d:7,v:200},{d:14,v:500},{d:30,v:1500}];
+function todayStr(){ return new Date().toISOString().slice(0,10); }
+function dailyClaimedToday(){ return LS.getItem('moneyverse_demo_verse_daily_claimed')===todayStr(); }
+function dayIdx(){ return ((Math.max(1,PLAYER.streak)-1)%7); }
+function todayReward(){ return DAILY_REWARDS[dayIdx()]; }
+function openDailyReward(){
+  const m=document.getElementById('dailyReward'); if(!m)return; const di=dayIdx();
+  document.getElementById('drSub').innerHTML=`Day <b style="color:var(--verse-amber)">${PLAYER.streak}</b> streak · claim today’s VERSE`;
+  const wk=document.getElementById('drWeek'); wk.innerHTML='';
+  for(let i=0;i<7;i++){ const cell=document.createElement('div'); cell.className='dr-day '+(i<di?'done':i===di?'today':'');
+    cell.innerHTML=`<div class="dd-n">DAY ${i+1}</div><div class="dd-c">${i===di?'🎁':(i<di?'✓':'🔒')}</div><div class="dd-v">+${DAILY_REWARDS[i]}</div>`; wk.appendChild(cell); }
+  const ml=document.getElementById('drMiles'); ml.innerHTML='';
+  DAILY_MILES.forEach(x=>{ const c=document.createElement('div'); c.className='dr-mile'+(PLAYER.streak>=x.d?' hit':'');
+    c.innerHTML=`<div class="dm-d">DAY ${x.d}</div><div class="dm-v">+${x.v}${PLAYER.streak>=x.d?' ✓':''}</div>`; ml.appendChild(c); });
+  const btn=document.getElementById('drClaim');
+  if(dailyClaimedToday()){ btn.disabled=true; btn.textContent='Claimed today ✓'; }
+  else { btn.disabled=false; btn.textContent=`Claim +${todayReward()} VERSE`; }
+  m.classList.add('show'); document.body.style.overflow='hidden';
+}
+function closeDailyReward(){ const m=document.getElementById('dailyReward'); if(!m)return; m.classList.remove('show'); document.body.style.overflow=''; }
+function maybeShowDailyReward(){ if(dailyClaimedToday())return; if(document.getElementById('delta').classList.contains('show'))return; openDailyReward(); }
+(function drInit(){
+  const btn=document.getElementById('drClaim'),close=document.getElementById('drClose'),m=document.getElementById('dailyReward'),sc=document.getElementById('streakChip');
+  if(sc) sc.addEventListener('click',openDailyReward);
+  if(close) close.addEventListener('click',closeDailyReward);
+  if(m) m.addEventListener('click',e=>{ if(e.target===m) closeDailyReward(); });
+  document.addEventListener('keydown',e=>{ if(e.key==="Escape"&&m&&m.classList.contains('show')) closeDailyReward(); });
+  if(btn) btn.addEventListener('click',()=>{ if(dailyClaimedToday())return;
+    LS.setItem('moneyverse_demo_verse_daily_claimed',todayStr()); const r=todayReward();
+    earnVerse(r,'Daily login reward'); toast(`🎁 Daily reward · +${r} VERSE`,'tier');
+    btn.disabled=true; btn.textContent='Claimed today ✓'; setTimeout(closeDailyReward,750); });
+})();
+
+/* ============ RESET DEMO ============ */
+(function(){
+  const btn=document.getElementById("resetDemo"); if(!btn) return;
+  btn.addEventListener("click",()=>{
+    if(!confirm("Reset the demo to its starting point? This restores the sample progress.")) return;
+    try{ if(window.MoneyVerseState) MoneyVerseState.resetDemo(); }catch(e){}
+    try{ ['moneyverse_demo_verse_balance','moneyverse_demo_verse_transactions','moneyverse_demo_verse_redemptions','moneyverse_demo_verse_daily_claimed'].forEach(k=>LS.removeItem(k)); }catch(e){}
+    try{ if(window.parent!==window) window.parent.postMessage({source:"mv-demo",event:"reset_clicked"},"*"); }catch(e){}
+    location.reload();
+  });
+})();
+
+/* ============ BOOT ============ */
+try{ initVerseState(); }catch(e){ console.error("initVerseState failed",e); }
+try{
+  const _ret=getReturnPayload();
+  if(_ret && CHARACTERS.find(c=>c.id===_ret.characterId)){ SS.removeItem("nexus_return"); showDelta(_ret); }
+  else{ revealNexus(); }
+}catch(e){ console.error("boot failed",e); revealNexus(); }
+/* demo: daily-reward auto-popup suppressed so it doesn't stack on the intro; still opens via the streak chip */
+</script>
+</body></html>

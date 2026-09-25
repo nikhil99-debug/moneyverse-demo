@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Static, self-contained demo modules served as-is from /public.
+    "public/**",
   ]),
 ]);
 

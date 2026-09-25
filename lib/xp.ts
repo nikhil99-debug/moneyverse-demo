@@ -29,7 +29,7 @@ export const LEVELS = [
 ] as const;
 
 export function getLevelForXP(xp: number) {
-  let currentLevel = LEVELS[0];
+  let currentLevel: (typeof LEVELS)[number] = LEVELS[0];
   for (const level of LEVELS) {
     if (xp >= level.xpRequired) {
       currentLevel = level;

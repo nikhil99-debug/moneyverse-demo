@@ -41,8 +41,8 @@ export default function PaymentWall({ characterColor, characterName, onClose }: 
       });
       const data = await res.json();
 
-      if (data.orderId && typeof window !== 'undefined' && (window as Record<string, unknown>).Razorpay) {
-        const RazorpayClass = (window as Record<string, unknown>).Razorpay as new (options: Record<string, unknown>) => { open: () => void };
+      if (data.orderId && typeof window !== 'undefined' && (window as unknown as Record<string, unknown>).Razorpay) {
+        const RazorpayClass = (window as unknown as Record<string, unknown>).Razorpay as new (options: Record<string, unknown>) => { open: () => void };
         const rzp = new RazorpayClass({
           key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
           amount: data.amount,
