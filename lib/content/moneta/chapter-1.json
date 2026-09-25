@@ -1,0 +1,147 @@
+{
+  "character": "moneta",
+  "chapter": 1,
+  "title": "The Trade",
+  "isFree": true,
+  "estimatedTimeMinutes": 12,
+  "sections": [
+    {
+      "id": "s1",
+      "type": "text",
+      "title": "Welcome to the Origin of Money",
+      "content": "Before banks, before coins, before even the concept of 'price' existed — humans needed a way to get what they didn't have.\n\nImagine you're a wheat farmer in ancient Mesopotamia. You've got tons of wheat, but you need shoes. Simple, right? Just find a shoemaker and trade.\n\nExcept... it's not that simple."
+    },
+    {
+      "id": "s2",
+      "type": "flashcard_stack",
+      "cards": [
+        {
+          "front": "What was the biggest problem with barter?",
+          "back": "Double coincidence of wants — both parties needed to want what the other had, at the exact same time."
+        },
+        {
+          "front": "What is the 'Double Coincidence of Wants'?",
+          "back": "For a barter trade to work, Person A must want what Person B has, AND Person B must want what Person A has, at the same time and place."
+        },
+        {
+          "front": "Why couldn't barter scale to large societies?",
+          "back": "With hundreds of goods, the number of possible exchange rates becomes unmanageable. 100 goods = 4,950 different exchange rates to remember!"
+        },
+        {
+          "front": "What are the 3 problems with barter?",
+          "back": "1. Double coincidence of wants\n2. No common measure of value (how many shoes = 1 cow?)\n3. Indivisibility (can't cut a cow in half for change)"
+        }
+      ]
+    },
+    {
+      "id": "s3",
+      "type": "interactive",
+      "component": "BarterSimulator",
+      "props": {
+        "items": ["wheat", "shoes", "pottery", "cloth"]
+      }
+    },
+    {
+      "id": "s4",
+      "type": "text",
+      "title": "Commodity Money: The First Solution",
+      "content": "Humans needed something that EVERYONE agreed was valuable. Enter commodity money — physical goods that served as a medium of exchange.\n\nDifferent civilizations chose different commodities:\n\n• Salt — so valuable that Roman soldiers were paid in it\n• Cowrie shells — used across Africa, South Asia, and East Asia\n• Tobacco — used as currency in colonial America\n• Cattle — the Latin word 'pecunia' (money) comes from 'pecus' (cattle)\n\nThese items worked because they were:\n✓ Widely desired\n✓ Relatively durable\n✓ Portable (well, except cattle)\n✓ Somewhat divisible"
+    },
+    {
+      "id": "s5",
+      "type": "fun_fact",
+      "text": "The word SALARY comes from 'salarium' — Roman soldiers were literally paid in salt! Salt was so valuable it was called 'white gold.' That's where the phrase 'worth your salt' comes from.",
+      "emoji": "🧂"
+    },
+    {
+      "id": "s6",
+      "type": "comic_panel",
+      "panels": [
+        {
+          "dialogue": "I've watched them struggle for centuries. Trading sheep for grain, shells for tools. Always searching for what they need...",
+          "character": "Moneta"
+        },
+        {
+          "dialogue": "They needed something everyone agreed was valuable. Something they could carry, divide, and trust.",
+          "character": "Moneta"
+        },
+        {
+          "dialogue": "And so, from salt to shells to shiny metals — they began to discover ME. Money. The great connector.",
+          "character": "Moneta"
+        }
+      ]
+    },
+    {
+      "id": "s7",
+      "type": "fun_fact",
+      "text": "In Yap Island (Micronesia), money was made of giant stone discs called 'Rai stones' — some were 12 feet across and weighed 4 tons! Ownership was tracked by oral history since you obviously couldn't carry them around.",
+      "emoji": "🪨"
+    },
+    {
+      "id": "s8",
+      "type": "quiz",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "What is the main problem with the barter system?",
+          "options": [
+            "It was too expensive",
+            "Double coincidence of wants",
+            "It required banks",
+            "Only worked with gold"
+          ],
+          "correct": 1,
+          "explanation": "Both parties needed to want exactly what the other had — at the same time. Imagine trying to trade your wheat for shoes, but the shoemaker doesn't want wheat!"
+        },
+        {
+          "id": "q2",
+          "question": "Where does the word 'salary' come from?",
+          "options": [
+            "The Latin word for gold",
+            "The Greek word for coins",
+            "The Latin word for salt (salarium)",
+            "The Sanskrit word for wealth"
+          ],
+          "correct": 2,
+          "explanation": "Roman soldiers were paid in salt — 'salarium.' Salt was extremely valuable in the ancient world, used for preserving food and as a disinfectant."
+        },
+        {
+          "id": "q3",
+          "question": "Which of these was NOT used as commodity money?",
+          "options": [
+            "Cowrie shells",
+            "Salt",
+            "Tobacco",
+            "Paper"
+          ],
+          "correct": 3,
+          "explanation": "Paper itself was never commodity money — it has no intrinsic value. Paper money came much later as a REPRESENTATION of value (promissory notes). Shells, salt, and tobacco were all used as commodity money."
+        },
+        {
+          "id": "q4",
+          "question": "What makes something a good commodity money?",
+          "options": [
+            "It must be rare and beautiful",
+            "It must be desired, durable, portable, and divisible",
+            "It must be approved by a government",
+            "It must be made of metal"
+          ],
+          "correct": 1,
+          "explanation": "Good commodity money needs to be widely desired, durable (doesn't rot), portable (easy to carry), and divisible (can be split into smaller units)."
+        },
+        {
+          "id": "q5",
+          "question": "With 100 different goods in a barter economy, how many exchange rates would you need?",
+          "options": [
+            "100",
+            "1,000",
+            "4,950",
+            "10,000"
+          ],
+          "correct": 2,
+          "explanation": "The formula is n(n-1)/2. With 100 goods: 100 × 99 / 2 = 4,950 different exchange rates! Money solves this by giving everything ONE price."
+        }
+      ]
+    }
+  ]
+}
