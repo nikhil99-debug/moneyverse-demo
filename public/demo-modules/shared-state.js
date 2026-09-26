@@ -194,6 +194,12 @@
         "3":{status:"unlocked",score:0,xpEarned:0,completedAt:null}
       }));
       lsSet("moneyverse_demo_verse_balance", "100");
+      // seeded "recent earnings" so the demo doesn't look empty on first load
+      lsSet("moneyverse_demo_verse_transactions", JSON.stringify([
+        {amount:210, reason:"Captain Interest · chapter", timestamp:now-6*day, multiplier:1},
+        {amount:250, reason:"Inflare · chapter",          timestamp:now-4*day, multiplier:1},
+        {amount:205, reason:"Captain Interest · chapter", timestamp:now-1*day, multiplier:1}
+      ]));
       lsSet("moneyverse_demo_seeded", "1");
     }catch(e){}
   }
